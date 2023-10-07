@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import { RouterProvider, createHashRouter } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+import InstanceBaseUrl from "./Routing/InstanceBaseUrl";
+import { Indexroute } from "./Routing/index";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 function App() {
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#f25922" },
+      secondary: { main: "#1a2c41" },
+    },
+  });
+  const router = createHashRouter(Indexroute, { basename: "/" });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Toaster
+        position="bottom-center"
+        containerStyle={{
+          top: 20,
+          left: 20,
+          bottom: 60,
+          right: 20,
+        }}
+        toastOptions={{
+          style: {
+            borderRadius: "10px",
+            color: "black",
+          },
+        }}
+      />
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+      <InstanceBaseUrl />
+      {/* {InstanceBaseUrl()} */}
+    </>
   );
 }
 

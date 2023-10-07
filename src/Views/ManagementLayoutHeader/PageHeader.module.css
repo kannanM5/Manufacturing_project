@@ -1,0 +1,55 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 10px;
+}
+.header_left {
+  font-size: var(--textMd);
+  display: flex;
+  align-items: center;
+}
+.header_left .heading {
+  color: black;
+  font-family: var(--fontBold);
+  font-size: var(--textXXl);
+  font-weight: var(--fontweight);
+}
+.header_left .line {
+  width: 3px;
+  height: 70%;
+  background-color: var(--btnClr);
+  margin-right: 10px;
+  border-radius: 5px;
+}
+.header_right {
+  cursor: pointer;
+  display: flex;
+}
+.downloadBtn {
+  background: rgba(0, 0, 0, 0.9) !important;
+  color: white !important;
+  font-size: 15px !important;
+  text-transform: capitalize !important;
+  padding-right: 15px !important;
+}
+@media (max-width: 575px) {
+  .header_left .heading {
+    font-size: 20px;
+  }
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .header_right {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    flex-wrap: wrap;
+  }
+  .header_left {
+    margin-bottom: 10px;
+  }
+  .header_left .line {
+    height: 90%;
+  }
+}
