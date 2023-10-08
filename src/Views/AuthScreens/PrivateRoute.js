@@ -12,7 +12,7 @@ export const AuthPrivateRoute = () => {
   return getCookie("mconnect_user_data") === "" ? (
     <Outlet />
   ) : (
-    <Navigate to={"/dashboard/management/device"} />
+    <Navigate to={"/dashboard"} />
   );
 };
 /**
@@ -58,69 +58,4 @@ export const OtpPrivateRoute = () => {
   );
 };
 
-/**
- * A private route component that only allows access to the route if the user has
- * the necessary permission.
- * @returns {JSX.Element} - The component to render based on the user's permission.
- */
-export const DevicePrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.device
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
-/**
- * A private route component for employees. It checks if the user has the necessary
- * permission to access the route and renders the appropriate component.
- * @returns {JSX.Element} - The rendered component based on the user's permission.
- */
-export const EmployeePrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.employee
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
-/**
- * A private route component for machines that checks the user's permission level
- * before rendering the content.
- * @returns {JSX.Element} - The rendered component.
- */
-export const MachinePrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.machine
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
-/**
- * Renders a private route component that only allows access to employees with a specific permission level.
- * @returns {JSX.Element} - The rendered private route component.
- */
-export const ShiftPrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.shift
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
-/**
- * A private route component for the work schedule page that checks the employee's permission
- * before rendering the content.
- * @returns {JSX.Element} - The rendered component based on the employee's permission.
- */
-export const WorkShedulePrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.work_orders
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
-/**
- * A private route component for work orders that checks the employee's permission level.
- * If the employee has permission to access work orders, it renders the child components.
- * Otherwise, it redirects the user to the dashboard.
- * @returns {JSX.Element} - The rendered components based on the employee's permission level.
- */
-export const WorkOrderPrivateRoute = () => {
-  const EmployeePermission = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission?.work_orders
-    : null;
-  return EmployeePermission === 1 ? <Outlet /> : <Navigate to={"/dashboard"} />;
-};
+

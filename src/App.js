@@ -1,7 +1,6 @@
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-import InstanceBaseUrl from "./Routing/InstanceBaseUrl";
 import { Indexroute } from "./Routing/index";
 import { ThemeProvider, createTheme } from "@mui/material";
 
@@ -34,8 +33,8 @@ function App() {
       <ThemeProvider theme={theme}>
         <RouterProvider router={router} />
       </ThemeProvider>
-      <InstanceBaseUrl />
-      {/* {InstanceBaseUrl()} */}
+    
+
     </>
   );
 }

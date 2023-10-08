@@ -3,9 +3,7 @@ import {
   Signup,
   ForgotCredential,
   ForgotPasspage,
-  Forgotorgpage,
   Resetpassword,
-  Orgmustcopypage,
   OTPVerificationpage,
 } from "../Views/AuthScreens/index";
 import {
@@ -34,17 +32,6 @@ export const authroute = [
       {
         path: "forgot_password",
         element: <ForgotPasspage />,
-      },
-
-      {
-        path: "forgot_Org",
-
-        element: <Forgotorgpage />,
-      },
-
-      {
-        path: "orgcode_instruction",
-        element: <Orgmustcopypage />,
       },
     ],
   },

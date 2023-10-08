@@ -7,7 +7,7 @@ function LineInspectionReport() {
   return (
     <>
       <div>
-        <PageHeader Btntitle={"Add Product"} heading={"Add inscepection Report"} />
+        <PageHeader Btntitle={"Add Product"} heading={"Prepare inscepection Report"} />
         <Box>
           <TableContainer>
             <table className={classes.devicetable}>

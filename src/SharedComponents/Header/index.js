@@ -122,12 +122,14 @@ export default function Header() {
     return refData.length > 0 ? refData?.[0]?.pathname : "/dashboard";
   };
 
+  
+
   const menuData = [
     {
       id: 1,
       name: "List Of Products",
-      pathname: "/dasboard/product_list",
-      naviagationPath: "/dasboard/product_list",
+      pathname: "product_list",
+      naviagationPath: "/product_list",
       isVisible: true,
     },
     {
@@ -135,7 +137,7 @@ export default function Header() {
       name: "Add Inscepection Report",
       // name: getManagementInitialRoute() == "/dashboard" ? "" : "Management",
       pathname: "management",
-      naviagationPath: getManagementInitialRoute(),
+      naviagationPath: "/LineInspectionReport",
       downarrow: dropdownarrow,
       uparrow: dropdownUparrow,
       isVisible: true,
@@ -143,15 +145,15 @@ export default function Header() {
     {
       id: 3,
       name: "Edit Incepection Report",
-      pathname: "Workorder",
-      naviagationPath: "/Workorder",
+      pathname: "EditinscepectionReprt",
+      naviagationPath: "/EditinscepectionReprt",
       isVisible: loginUserData?.work_orders === 1 ? true : false,
     },
 
     {
       id: 4,
       name: "Prepare Incepection Report",
-      naviagationPath: "/report/employee_report",
+      naviagationPath: "/Prepareinscepectionreport",
       pathname: "report/employee_report",
       downarrow: dropdownarrow,
       isVisible: loginUserData?.report === 1 ? true : false,
@@ -273,6 +275,7 @@ export default function Header() {
     setValue(newValue);
   };
 
+
   const [show, setShow] = useState(false);
   const toggleShow = () => {
     setShow((prevShow) => !prevShow);
@@ -327,15 +330,20 @@ export default function Header() {
         }
       }
     });
+    
     findActiveTab = findActiveTab.filter((ele) => ele);
     if (findActiveTab && findActiveTab?.[0]?.name) {
-      if (window.history.pushState(null, window.location.href)) {
-        setValue(findActiveTab?.[0]?.name);
-      } else {
-        setValue(findActiveTab?.[0]?.name);
-      }
+      setValue(findActiveTab?.[0]?.name);
+      
     }
   }, [pathname]);
+
+  
+
+  
+
+
+
 
   /**
    * Executes a side effect when the value of `deleteModal` changes.

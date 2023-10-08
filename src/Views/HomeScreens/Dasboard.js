@@ -2,8 +2,23 @@ import React from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import { Box, TableContainer } from "@mui/material";
+import {shamir} from "../../Services/Services"
+import { CustomButton } from "../../Components";
 
 export default function emptypage() {
+
+  const handledata = () => {
+    let formdata = new FormData()
+    shamir().then((res) => {
+      // if(res.data.status){
+      //  let response = JSON.parse(res.data.message) 
+       console.log("res", JSON.parse(res.data.message));
+      // }  
+    }).catch((err) => {
+      console.log("res111111", err);
+    })
+  }
+
   return (
     <div>
       <PageHeader Btntitle={"Add"} heading={"Line Inspection Report"} />
@@ -46,6 +61,8 @@ export default function emptypage() {
           </table>
         </TableContainer>
       </Box>
+      
+      <CustomButton title="submit" onButtonPress={handledata}></CustomButton>
     </div>
   );
 }
