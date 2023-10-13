@@ -130,33 +130,22 @@ export default function Header() {
       name: "List Of Products",
       pathname: "product_list",
       naviagationPath: "/product_list",
-      isVisible: true,
+     
     },
+    
     {
       id: 2,
-      name: "Add Inscepection Report",
-      // name: getManagementInitialRoute() == "/dashboard" ? "" : "Management",
-      pathname: "management",
-      naviagationPath: "/LineInspectionReport",
-      downarrow: dropdownarrow,
-      uparrow: dropdownUparrow,
-      isVisible: true,
-    },
-    {
-      id: 3,
-      name: "Edit Incepection Report",
-      pathname: "EditinscepectionReprt",
-      naviagationPath: "/EditinscepectionReprt",
-      isVisible: loginUserData?.work_orders === 1 ? true : false,
+      name: "Inspection Criteria",
+      pathname: "inspection_criteria",
+      naviagationPath: "/inspection_criteria",
     },
 
     {
-      id: 4,
+      id: 3,
       name: "Prepare Incepection Report",
       naviagationPath: "/Prepareinscepectionreport",
       pathname: "report/employee_report",
       downarrow: dropdownarrow,
-      isVisible: loginUserData?.report === 1 ? true : false,
     },
   ];
 
@@ -339,18 +328,7 @@ export default function Header() {
   }, [pathname]);
 
   
-
   
-
-
-
-
-  /**
-   * Executes a side effect when the value of `deleteModal` changes.
-   * @param {function} effect - The side effect to execute.
-   * @param {Array} dependencies - An array of dependencies that the effect depends on.
-   * @returns None
-   */
 
   return (
     <>
@@ -572,9 +550,10 @@ export default function Header() {
                       onChange={handleTabChange}
                       aria-label="lab API tabs example"
                       className={
-                        ele.name === value
+                        ele.name === value 
                           ? `${styles.activeTab} ${styles.tabColor}`
                           : `${styles.tabColor}`
+
                       }
                       style={{
                         background: "rgb(242, 89, 34) !important",

@@ -1,22 +1,15 @@
-import {
-  DashboardPrivateRoute,
-  WorkOrderPrivateRoute,
-} from "../Views/AuthScreens/PrivateRoute";
 import AuthLayout from "../Layout/AuthLayout";
 import DashboardLayout from "../Layout/DashboardLayout";
 import ManagementLayout from "../Layout/ManagementLayout";
-// import Dashboard from "../Views/HomeScreens/Dashboard";
-// import Profile from "../Views/HomeScreens/UserProfile/Profile";
-// import ChangePassword from "../Views/HomeScreens/UserProfile/ChangePassword";
 import ErrorElement from "../Error/ErrorElement";
 import { authroute } from "./AuthRouting";
-import { managementRoute } from "./ManagementRoute";
-import ProfileLayout from "../Layout/ProfileLayout";
 import ListOfProducts from "../Views/HomeScreens/ListOfProducts";
 import EmptyPage from "../Views/HomeScreens/Dasboard";
-import LineInspectionReport from "../Views/HomeScreens/LineInspectionReport";
-import EditinscepectionReprt from "../Views/HomeScreens/EditinscepectionReprt"
 import Prepareinscepectionreport from "../Views/HomeScreens/Prepareinscepectionreport"
+import Incominginspectionreport from "../Views/HomeScreens/Incominginspectionreport"
+import Settingapprovalreport from "../Views/HomeScreens/Settingapprovalreport"
+import Finalinspectionreport from "../Views/HomeScreens/Finalinspectionreport"
+import InpectionCriteria from "../Views/HomeScreens/InspectionCriteria"
 
 export const Indexroute = [
   {
@@ -70,16 +63,7 @@ export const Indexroute = [
   //     },
   //   ],
   // },
-   {
-    path: "/dasboard",
-    element: <DashboardLayout />,
-    children: [
-          {
-            index:true,
-            element: <EmptyPage />
-          }
-        ]
-    },
+  
     {
       element: <DashboardLayout />,
       children: [
@@ -87,18 +71,38 @@ export const Indexroute = [
               path: "/product_list",
               element: <ListOfProducts />
             },
-            {
-              path: "/LineInspectionReport",
-              element: <LineInspectionReport />,
-            },
-            {
-              path: "/EditinscepectionReprt",
-              element: <EditinscepectionReprt />,
+          
+             {
+              path:"inspection_criteria",
+              element:<InpectionCriteria/>
              },
              {
               path: "/Prepareinscepectionreport",
-              element: <Prepareinscepectionreport />,
-              },
+              element: <ManagementLayout />,
+              children:[
+                {
+                  index:true,
+                  element: <Prepareinscepectionreport />
+                },
+                {
+                  path:"incoming_inspection_report",
+                  element: <Incominginspectionreport />
+                },
+                {
+                  path:"setting_approval_report",
+                  element: <Settingapprovalreport />
+                },
+                {
+                  path:"line_inspection_report",
+                  element: <Prepareinscepectionreport />
+                },
+                
+                {
+                  path:"final_inspection_report",
+                  element: <Finalinspectionreport />
+                }
+              ]
+             },
                       
           ]
       },   
@@ -108,4 +112,5 @@ export const Indexroute = [
     path: "*",
     element: <ErrorElement />,
   },
+ 
 ];

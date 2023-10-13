@@ -3,11 +3,11 @@ import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import { Box, TableContainer } from "@mui/material";
 import classes from "./Management.module.css";
 
-function LineInspectionReport() {
+function SettingInspectionReport() {
   return (
     <>
       <div>
-        <PageHeader Btntitle={"Add Product"} heading={"Edit inscepection Report"} />
+        <PageHeader heading={"Setting inscepection Report"} />
         <Box>
           <TableContainer>
             <table className={classes.devicetable}>
@@ -44,4 +44,4 @@ function LineInspectionReport() {
   );
 }
 
-export default LineInspectionReport;
+export default SettingInspectionReport;

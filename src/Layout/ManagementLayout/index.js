@@ -16,21 +16,10 @@ export default function ManagementLayout({ type }) {
   const [TabData, setTabData] = useState([]);
   const [value, setValue] = useState("1");
 
-  /**
-   * Handles the change event when the tab value is changed.
-   * @param {React.ChangeEvent<{}>} event - The change event object.
-   * @param {string} newValue - The new value of the tab.
-   * @returns None
-   */
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-  /**
-   * useEffect hook that updates the value based on the active tab in the TabData array.
-   * @param {pathnameType[]} TabData - An array of objects representing tabs.
-   * @param {string} pathname - The current pathname.
-   * @returns None
-   */
+  
   useEffect(() => {
     let findActiveTab = TabData.map((ele) => {
       if (pathname === ele.pathname) {
@@ -46,62 +35,33 @@ export default function ManagementLayout({ type }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (type === 1) {
       setTabData([
         {
           id: 21,
-          name: "Device Management",
-          pathname: "/dashboard/management/device",
-          isVisible: loginUserData?.device === 1 ? true : false,
+          name: "Incoming Inspection report",
+          pathname: "/Prepareinscepectionreport/incoming_inspection_report",
+          isVisible: true,
         },
         {
           id: 22,
-          name: "Machine Management",
-          pathname: "/dashboard/management/machine",
-          isVisible: loginUserData?.machine === 1 ? true : false,
+          name: "Setting Approval Report",
+          pathname: "/Prepareinscepectionreport/setting_approval_report",
+          isVisible: true,
         },
         {
           id: 24,
-          name: "Employee Management",
-          pathname: "/dashboard/management/employee_management",
-          isVisible: loginUserData?.employee === 1 ? true : false,
+          name: "line Inspection report",
+          pathname: "/Prepareinscepectionreport/line_inspection_report",
+          isVisible: true,
         },
         {
           id: 25,
-          name: "Shift",
-          pathname: "/dashboard/management/shift",
-          isVisible: loginUserData?.shift === 1 ? true : false,
-        },
-        {
-          id: 26,
-          name: "Work Schedule",
-          pathname: "/dashboard/management/work_shedule",
-          isVisible: loginUserData?.work_orders === 1 ? true : false,
-        },
+          name: "Final Inspection Report",
+          pathname: "/Prepareinscepectionreport/final_inspection_report",
+          isVisible: true,
+        },,
       ]);
-    } else if (type === 2) {
-      setTabData([
-        {
-          id: 27,
-          name: "Employee Login Report",
-          pathname: "/report/employee_report",
-          isVisible: true,
-        },
-        {
-          id: 28,
-          name: "Machine Report",
-          pathname: "/report/machine_report",
-          isVisible: true,
-        },
-        {
-          id: 29,
-          name: "Workorder Plan Report",
-          pathname: "/report/workorderplan_report",
-          isVisible: true,
-        },
-      ]);
-    }
-  }, [type]);
+    }, [type]);
   return (
     <>
       <div className={classes.subHead}>

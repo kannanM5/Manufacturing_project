@@ -11,6 +11,8 @@ import {
   OtpPrivateRoute,
   ResetPasswordPrivateRoute,
 } from "../Views/AuthScreens/PrivateRoute";
+import Dashboard from "../Views/HomeScreens/Dasboard";
+import DashboardLayout from "../Layout/DashboardLayout";
 
 export const authroute = [
   {
@@ -55,4 +57,13 @@ export const authroute = [
       },
     ],
   },
+  {
+    element: <DashboardLayout />,
+    children: [
+          {
+            path:"/dasboard",
+            element: <Dashboard />
+          }
+        ]
+    },
 ];

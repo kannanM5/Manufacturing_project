@@ -3,7 +3,7 @@ import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import { Box, TableContainer } from "@mui/material";
 import classes from "./Management.module.css";
 
-function LineInspectionReport() {
+function PrepareInspectionReport() {
   return (
     <>
       <div>
@@ -44,4 +44,4 @@ function LineInspectionReport() {
   );
 }
 
-export default LineInspectionReport;
+export default PrepareInspectionReport;
