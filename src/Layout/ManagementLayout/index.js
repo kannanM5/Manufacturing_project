@@ -19,7 +19,7 @@ export default function ManagementLayout({ type }) {
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-  
+
   useEffect(() => {
     let findActiveTab = TabData.map((ele) => {
       if (pathname === ele.pathname) {
@@ -35,36 +35,37 @@ export default function ManagementLayout({ type }) {
   }, [pathname]);
 
   useEffect(() => {
-      setTabData([
-        {
-          id: 21,
-          name: "Incoming Inspection report",
-          pathname: "/Prepareinscepectionreport/incoming_inspection_report",
-          isVisible: true,
-        },
-        {
-          id: 22,
-          name: "Setting Approval Report",
-          pathname: "/Prepareinscepectionreport/setting_approval_report",
-          isVisible: true,
-        },
-        {
-          id: 24,
-          name: "line Inspection report",
-          pathname: "/Prepareinscepectionreport/line_inspection_report",
-          isVisible: true,
-        },
-        {
-          id: 25,
-          name: "Final Inspection Report",
-          pathname: "/Prepareinscepectionreport/final_inspection_report",
-          isVisible: true,
-        },,
-      ]);
-    }, [type]);
+    setTabData([
+      {
+        id: 21,
+        name: "Incoming Inspection report",
+        pathname: "/Prepareinscepectionreport/incoming_inspection_report",
+        isVisible: true,
+      },
+      {
+        id: 22,
+        name: "Setting Approval Report",
+        pathname: "/Prepareinscepectionreport/setting_approval_report",
+        isVisible: true,
+      },
+      {
+        id: 24,
+        name: "line Inspection report",
+        pathname: "/Prepareinscepectionreport/line_inspection_report",
+        isVisible: true,
+      },
+      {
+        id: 25,
+        name: "Final Inspection Report",
+        pathname: "/Prepareinscepectionreport/final_inspection_report",
+        isVisible: true,
+      },
+      ,
+    ]);
+  }, [type]);
   return (
     <>
-      <div className={classes.subHead}>
+      {/* <div className={classes.subHead}>
         {TabData.map((ele, ind) => {
           return (
             <>
@@ -99,7 +100,7 @@ export default function ManagementLayout({ type }) {
             </>
           );
         })}
-      </div>
+      </div> */}
       <Outlet />
     </>
   );

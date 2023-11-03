@@ -11,7 +11,7 @@ import {
   OtpPrivateRoute,
   ResetPasswordPrivateRoute,
 } from "../Views/AuthScreens/PrivateRoute";
-import Dashboard from "../Views/HomeScreens/Dasboard";
+import Dashboard from "../Views/HomeScreens/Dashboard";
 import DashboardLayout from "../Layout/DashboardLayout";
 
 export const authroute = [
@@ -22,10 +22,6 @@ export const authroute = [
       {
         index: true,
         element: <Signin />,
-      },
-      {
-        path: "Signup",
-        element: <Signup />,
       },
       {
         path: "forgot_credential",
@@ -57,13 +53,13 @@ export const authroute = [
       },
     ],
   },
-  {
-    element: <DashboardLayout />,
-    children: [
-          {
-            path:"/dasboard",
-            element: <Dashboard />
-          }
-        ]
-    },
+  // {
+  //   element: <DashboardLayout />,
+  //   children: [
+  //     {
+  //       path: "/dasboard",
+  //       element: <Dashboard />,
+  //     },
+  //   ],
+  // },
 ];

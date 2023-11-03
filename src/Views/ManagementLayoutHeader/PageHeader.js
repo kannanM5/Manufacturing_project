@@ -40,10 +40,11 @@ function PageHeader({
                 boxShadow: "0px 1.89921px 3.79843px rgba(0, 0, 0, 0.06)",
               }}
             />
-            {pathname === "/dashboard/management/work_shedule" ||
-            pathname === "/Workorder" ||
-            pathname === "/Workorder/Workorderlist" ||
-            pathname === "/dashboard/management/machine/macine_details_list" ? (
+            {pathname ===
+              "/Prepareinscepectionreport/incoming_inspection_report" ||
+            pathname === "/Prepareinscepectionreport/final_inspection_report" ||
+            pathname === "/Prepareinscepectionreport/setting_approval_report" ||
+            pathname === "/Prepareinscepectionreport/line_inspection_report" ? (
               <div style={{ marginLeft: "23px" }}>
                 <CustomButton
                   onButtonPress={onPressOvertime}

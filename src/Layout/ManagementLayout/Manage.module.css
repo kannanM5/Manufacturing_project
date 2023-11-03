@@ -1,36 +1,27 @@
-.subHead{
-    background-color: #FFF9F8;
-    display: flex;
-    font-size: var(--textSm1);
-    font-family: var(--fontRegular);
-    font-weight: var(--fontWm);
-    justify-content: center;
-    cursor: pointer;
-    width: 100%;
-    position: sticky;
-    top: 50px;
-    z-index: 10;
-}
-.tabContent {
-    text-transform: capitalize !important;
-    font-family: Poppins Regular !important;
-    font-size: 15px !important;
-    font-weight: 500 !important;
-    line-height: 23px !important;
-    letter-spacing: 0em !important;
-    text-align: left !important;
-
+.subHead {
+  background-color: #fff9f8;
+  display: flex;
+  font-size: var(--textSm1);
+  font-family: var(--fontRegular);
+  font-weight: var(--fontWm);
+  justify-content: center;
+  cursor: pointer;
+  width: 100%;
+  position: sticky;
+  top: 50px;
+  z-index: 10;
 }
 .activeTab {
-color: #000000 !important;
+  color: #000000 !important;
 }
-@media (min-width:768px) and (max-width:992px){
-   .subHead{
+
+@media (min-width: 768px) and (max-width: 992px) {
+  .subHead {
     display: none;
-   } 
+  }
 }
-@media  (max-width:767px){
-    .subHead{
-        display: none;
-       }
+@media (max-width: 767px) {
+  .subHead {
+    display: none;
+  }
 }

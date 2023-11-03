@@ -1,79 +1,13 @@
-.subbtn button {
-  height: 42px;
-  width: 120px;
-  margin: 10px 0px !important;
-}
-.noData {
-  text-align: center;
-  width: 100%;
-  height: 250px;
-}
-.nodatafound img {
-  width: 200px;
-  height: 200px;
-}
-.nodatafound p {
-  font-size: var(--textMd);
-  font-family: var(--fontRegular);
-  color: var(--tableHeadBg);
-}
-.pagination {
-  padding: 30px 30px 20px 30px !important;
-}
-.management {
-  width: 100%;
-  font-family: var(--fontRegular);
-}
-.management .device_Table {
-  width: 99%;
-  padding: 10px 15px 10px 25px;
-}
-/* all tables same css */
-table {
-  width: 100%;
-  font-family: var(--fontRegular);
-}
-table thead {
-  background-color: var(--tableHeadBg);
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
-}
-
-table th {
-  font-size: var(--textSm);
-  font-weight: var(--fontWm);
-  color: var(--whiteColor);
-  padding: 10px;
-}
-
-tbody td:first-child {
-  padding-left: 25px;
-}
-table td {
-  font-size: var(--textSm1);
-  font-weight: var(--fontWs);
-  color: var(--inputBodyClr);
-  padding: 10px;
-}
-table th:first-child {
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
-table th:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-tr:nth-child(1) {
-  border-bottom: none !important;
-}
-tr:nth-child(3n) {
-  background-color: rgba(135, 132, 132, 0.07) !important;
-  border-radius: 6px;
-}
-tr:nth-child(3n + 1) {
-  border-bottom: 1px solid rgba(135, 132, 132, 0.2);
-}
-table .icons {
+/* dashborad */
+.DubpilcateDashboard {
   display: flex;
+  /* height: calc(100vh - 30px); */
+  justify-content: center;
+  align-items: center;
+}
+.DubpilcateDashboard p {
+  /* font-family: var(--fontMedium); */
+  font-size: var(--mdText);
 }
 table .icons img {
   cursor: pointer;
@@ -84,188 +18,133 @@ table .icons img {
   text-align: center;
   border: 0.5px solid rgba(0, 0, 0, 0.25);
 }
-table .icons img:nth-child(2) {
-  margin-right: 10px;
-  margin-left: 10px;
-}
+/* list of products  */
 
-/* pagenation */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  margin: 10px 0;
+.listOfProducts,
+.insepectionCreteria {
+  width: 95%;
+  margin: auto;
 }
-.pagination li {
-  list-style-type: none !important;
-}
-
-/* all popup same head */
-.popup img {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1.5px solid #878484;
-  width: 20px;
-  height: 20px;
-}
-.popup .popup_head {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 5px;
-}
-.popup {
-  width: 90%;
-  margin: 10px auto;
-  font-family: var(--fontRegular);
-}
-.popup .line {
-  width: 3px;
-  height: 80%;
-  background-color: var(--btnClr);
-  margin-right: 10px;
-  border-radius: 5px;
-}
-.popup .popup_head_left {
-  font-size: var(--textMd);
-  font-weight: var(--fontWxl);
-  display: flex;
-  align-items: center;
-}
-.popup .popup_body {
-  width: 93%;
-  margin: 5px auto;
-}
-
-/* all popup same head close*/
-.popup .add_device_input {
-  display: flex;
-}
-.popup .add_device_input input {
-  font-size: var();
-  width: 90%;
-}
-.popup .instruction {
-  border-top: 1px solid rgba(135, 132, 132, 0.4);
-}
-.popup .instruction_head {
-  font-size: var(--textMd);
-  font-weight: var(--fontWxl);
-  margin: 8px 0;
-}
-.popup .instruction span {
-  margin-left: 12px;
-}
-.popup .nextBtn {
-  display: flex;
-  justify-content: flex-end;
-  color: var(--btnClr);
-  font-size: var(--textSm);
-  font-weight: var(--fontWm);
-}
-.popup .instruction input {
-  margin: 5px;
-  accent-color: #878484;
-  border: 1px solid #878484;
-}
-
-/* machine management  */
-.management .machine_Table {
-  width: 99%;
-  padding: 10px 15px 10px 25px;
-}
-
-/* shiftGroup */
-.management .shifts {
-  background-color: var(--whiteColor);
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0px 1.89921px 3.79843px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(135, 132, 132, 0.4);
-  border-top-right-radius: 0;
-}
-.management .shift .shiftEdit {
-  width: 70%;
-  text-align: end;
-}
-.shift .shifEditBtn {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  justify-content: flex-end;
-}
-.shifEditBtn .shiftEditBtn button {
-  background-color: var(--tableHeadBg) !important;
-  padding: 8px 9px;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-.management .shifts .childShifts {
-  border-bottom: 1px solid rgba(135, 132, 132, 0.4);
-  display: flex;
-  flex-wrap: wrap;
+.listOfTable {
   width: 100%;
 }
-.management .shifts .childShifts:last-child {
-  border-bottom: none;
+.listOfTable th {
+  text-align: center;
+  background-color: lightblue;
+  height: 40px;
 }
-.management .shifts .childShifts .name {
-  padding: 15px;
+.listOfTable thead th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
-.shifts .childShifts .name .heading {
-  font-style: var(--fontRegular);
-  font-size: var(--textSm);
-  font-weight: var(--fontweight);
-  text-decoration: underline;
-  text-decoration-color: rgba(135, 132, 132, 0.4);
-  text-decoration-thickness: 2px;
+.listOfTable thead th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
-.shifts .from {
-  margin: 5px 20px 3px 0;
+.listOfTable tbody td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
-.shifts .type {
-  font-size: var(--textSm);
-  font-weight: var(--fontweight);
+.listOfTable tbody td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
-.nodatafound {
+.listOfTable tbody tr {
+  background-color: rgb(241, 248, 228);
+}
+/* prepare insepection report  */
+.reportInsepection .Dashboard td {
+  border: 0.5px solid black;
+}
+.reportInsepection .Dashboard table {
+  border-collapse: collapse;
+}
+.Dashboard {
+  width: 97%;
+  margin: 5px auto 20px auto;
+}
+.Dashboard .heading {
+  font-family: var(--fontBold);
+}
+.Dashboard table {
+  margin-top: 20px !important;
+  margin: auto;
   width: 100%;
+  /* border-collapse: collapse; */
+}
+.Dashboard tbody td {
   text-align: center;
 }
-
-/* machine group */
-
-.management .machineGroup_Table {
-  width: 99%;
-  padding: 10px 15px 10px 25px;
+.Dashboard .observe {
+  text-align: center;
+  width: 90px;
 }
-
-/* @media (width:992px){
-/* work schedule */
-.work_schedule {
+.Dashboard .fourHeadings th {
+  height: 35px;
+  padding-left: 10px;
+}
+/* .Dashboard .secondRowThirdColumn {
+  background-color: red;
+  width: 300px;
+} */
+.Dashboard .secondHead {
+  text-align: center;
+}
+.devicetable td input {
+  padding-left: 10px;
+  border: none;
+  outline: unset;
+  background-color: transparent;
   width: 100%;
-  padding: 10px 15px 10px 25px;
+  height: 20px;
+  padding: 10px;
 }
-.workDays {
-  width: 95%;
-  margin: 0 auto 20px 25px;
+.Dashboard .serialNo {
+  width: 40px;
+}
+.Dashboard .secondFourtColumn {
+  width: 500px;
+}
+.Dashboard .final {
+  text-align: right;
+  height: 50px;
+}
+.Dashboard .finalStatus {
+  display: flex;
+  justify-content: right;
+  gap: 30px;
+  margin-right: 90px;
+}
+.Dashboard .finalStatus label {
+  margin-left: 10px;
+}
+.Dashboard td {
+  height: 40px;
+  text-align: center;
+}
+.Dashboard .CompanyName {
+  text-align: center;
+  padding: 20px 0;
 }
 
-.workDays p {
-  font-size: var(--textSm);
-  font-weight: var(--fontweight);
+/* export  */
+.selectHead {
+  color: var(--blackColor);
   font-family: var(--fontRegular);
-  margin-bottom: 10px !important;
+  font-size: var(--textSm1);
+  margin-bottom: 5px !important;
+  font-weight: var(--fontWm);
 }
-.tableChange {
-  display: flex;
-  cursor: pointer;
-  font-size: var(--textXXl);
-  font-weight: var(--fontWs);
-  font-family: var(--fontRegular);
-  margin-left: 23px;
-  margin-bottom: 10px;
+.Export {
+  width: 95%;
+  margin: auto;
 }
+
+/* prpareinspection report  */
+
 .tabContent {
   text-transform: capitalize !important;
-  font-family: var(--fontRegular) !important;
+  font-family: Poppins Regular !important;
   font-size: 15px !important;
   font-weight: 500 !important;
   line-height: 23px !important;
@@ -273,230 +152,29 @@ table .icons img:nth-child(2) {
   text-align: left !important;
 }
 
-.activeTab {
-  color: #000000 !important;
-}
-.textClose {
-  margin-top: 6px;
-  cursor: pointer;
-}
-.shiftpageconten {
-  padding: 10px 15px 10px 25px;
-}
-
-.workscheduletable td > div:nth-child(1) {
-  overflow: inherit !important;
-}
-.MuiAutocomplete-root > div {
-  border: var(--inputBorder) !important;
-}
-.paginationsizedropdown {
-  display: flex;
-  justify-content: end;
-  margin-right: 25px;
-}
-
-/* machine details list */
-
-.machineDetailsList {
-  width: 95%;
-  margin: auto auto;
-}
-.machineImage {
+.PrepareInspectionReport {
+  padding: 15px;
+  width: 30%;
+  border-radius: 8px;
+  margin: auto;
+  box-shadow: var(--shadow);
   border: var(--inputBorder);
-  border-radius: 8px;
-  padding: 6px;
-  width: 270px;
-  max-width: 100%;
-}
-.machineImage img {
-  border-radius: 8px;
-  max-width: 100%;
-  width: 100%;
-  height: 200px;
-  pointer-events: none;
-}
-.machineDetailsList #machine_Detail {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.macineHeading {
-  width: 97%;
-  margin: auto auto;
-}
-.Head {
-  width: 99%;
-  margin: auto auto;
-  border-bottom: var(--inputBorder);
-}
-.machineDetailsList .details {
-  line-height: 30px;
-  font-family: var(--fontRegular);
-  display: flex;
-}
-.machineDetailsList .details p {
-  min-width: 175px;
-  font-size: 16px;
-  margin-right: 5px;
-}
-.machineDetailsList .details span {
-  font-size: 16px;
-}
-/* employeee details list */
-.empImage {
-  border: var(--inputBorder);
-  border-radius: 8px;
-  padding: 6px;
-  width: 270px;
-  max-width: 100%;
-}
-.empImage img {
-  border-radius: 8px;
-  max-width: 100%;
-  width: 100%;
-  height: 200px;
-  pointer-events: none;
-}
-.employee_details {
-  width: 95%;
-  margin: auto auto;
-}
-.details strong {
-  margin-right: 8px;
-}
-.employee_details .details {
-  line-height: 27px;
-  font-family: var(--fontRegular);
-  display: flex;
-}
-.employee_details .details p {
-  min-width: 130px;
-  font-size: 16px;
-}
-.employee_details .details span {
-  font-size: 16px;
-}
-.employee_details #employee_Detail {
-  margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.details .permisson {
-  justify-content: flex-start;
-  align-items: center;
-  display: flex;
-  margin-right: 20px;
-}
-.allPermission {
-  display: flex;
-  flex-wrap: wrap;
-}
-.dot {
-  width: 10px;
-  height: 10px;
-  margin-right: 5px;
-  border-radius: 50%;
-  display: inline-block;
-}
-.title {
-  color: var(--blackColor) !important;
-  font-size: var(--textSm1) !important;
-  margin-bottom: 5px !important;
-  font-weight: var(--fontWm) !important;
-}
-@media (max-width: 1200px) {
-  .wrkschdlbtn {
-    width: 10% !important;
-  }
-  .machinetable {
-    width: 1430px !important;
-    overflow-y: auto;
-  }
 }
 @media (max-width: 992px) {
   .devicetable {
     width: 1030px !important;
     overflow-y: auto !important;
   }
-  .machinetable,
-  .workscheduletable {
-    width: 1550px !important;
-    overflow-y: auto;
-  }
-  table thead tr th {
-    font-size: 14px;
-  }
-  .wrkschdlbtn {
-    width: 15% !important;
-  }
-  .shiftbuttongroup {
-    display: flex;
-    justify-content: end;
-  }
 }
-
 @media (max-width: 767px) {
   .devicetable {
     width: 1030px !important;
     overflow-y: auto !important;
   }
-  .machinetable {
-    width: 1550px !important;
-    overflow-y: auto !important;
-  }
-  .machinegrptable {
-    width: 730px !important;
-    overflow-y: auto !important;
-  }
-  .workscheduletable {
-    width: 900px !important;
-    overflow-y: auto;
-  }
-  table thead tr th {
-    font-size: 14px;
-  }
-  .wrkschdlbtn {
-    width: 20% !important;
-  }
-  .tableChange p {
-    font-size: 15px;
-    font-weight: 600;
-  }
 }
-
 @media (max-width: 575px) {
-  .workscheduletable {
-    width: 800px !important;
-    overflow-y: auto;
-  }
   .devicetable {
     width: 1100px !important;
     overflow-y: auto !important;
-  }
-  .machinetable {
-    width: 1250px !important;
-    overflow-y: auto !important;
-  }
-  .machinegrptable {
-    width: 730px !important;
-    overflow-y: auto !important;
-  }
-
-  table thead tr th {
-    font-size: 14px !important;
-  }
-  .wrkschdlbtn {
-    width: 30% !important;
-  }
-  .tableChange p {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .workDays p {
-    margin-left: -10px;
-  }
-  .shiftpageconten {
-    padding: 10px 10px;
   }
 }

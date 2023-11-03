@@ -9,7 +9,7 @@ import { getCookie } from "../../Store/Storage/Cookie";
  * @returns {JSX.Element} - The rendered component or redirect.
  */
 export const AuthPrivateRoute = () => {
-  return getCookie("mconnect_user_data") === "" ? (
+  return getCookie("vt_enterprise_login") === "" ? (
     <Outlet />
   ) : (
     <Navigate to={"/dashboard"} />
@@ -34,7 +34,7 @@ export const ResetPasswordPrivateRoute = () => {
  * @returns {JSX.Element} - The rendered component or the redirect component.
  */
 export const DashboardPrivateRoute = () => {
-  return getCookie("mconnect_user_data") === "" ? (
+  return getCookie("vt_enterprise_login") !== "" ? (
     <Outlet />
   ) : (
     <Navigate to={"/"} />
@@ -57,5 +57,3 @@ export const OtpPrivateRoute = () => {
     <Navigate to={"/"} />
   );
 };
-
-

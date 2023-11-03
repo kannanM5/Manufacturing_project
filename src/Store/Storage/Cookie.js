@@ -1,33 +1,33 @@
-/**
- * Sets a cookie with the given name, value, and expiration days.
- * @param {string} cname - The name of the cookie.
- * @param {string | number} cvalue - The value of the cookie.
- * @param {number} [exdays=28] - The number of days until the cookie expires.
- * @returns None
- */
-export function setCookie(cname, cvalue, exdays = 28) {
+export function setCookie(cname, cvalue, exdays = 7) {
+  const storedValue =
+    typeof cvalue === "string" ? cvalue : JSON.stringify(cvalue);
   const d = new Date();
   d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
   let expires = "expires=" + d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  document.cookie = cname + "=" + storedValue + ";" + expires + ";path=/";
 }
 
-/**
- * Retrieves the value of a cookie with the given name.
- * @param {string} cname - The name of the cookie to retrieve.
- * @returns The value of the cookie, or an empty string if the cookie does not exist.
- */
+const isJsonString = (value) => {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
 export function getCookie(cname) {
   let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(";");
+  let ca = document.cookie.split(";");
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) == " ") {
       c = c.substring(1);
     }
     if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
+      return isJsonString(c.substring(name.length, c.length))
+        ? JSON.parse(c.substring(name.length, c.length))
+        : c.substring(name.length, c.length);
     }
   }
   return "";

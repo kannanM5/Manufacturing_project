@@ -218,20 +218,17 @@
 .btncontent {
   display: flex;
   width: 100%;
-  margin-top: 20px;
+  justify-content: flex-end;
 }
 .btncontent .signupbtn {
   width: 160px;
 }
-.btncontent .alreadyhvacc {
-  margin-left: 20px;
-  font-family: var(--fontRegular);
-  font-size: var(--textSm1);
-  color: var(--textcolor2);
-  font-weight: var(--fontWs);
-}
-.alreadyhvacc a {
-  color: var(--btnClr);
+.SignupCompanyName {
+  font-family: var(--fontBold);
+  font-size: var(--textXl2);
+  color: white;
+  letter-spacing: 2px;
+  padding-bottom: 20px;
 }
 @media (min-width: 1400px) {
   .signupcontainer2 {

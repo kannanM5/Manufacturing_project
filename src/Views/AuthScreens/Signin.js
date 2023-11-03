@@ -5,34 +5,22 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import captrefres from "../../Assets/Icons/Svg/caprefres.svg";
-import { captchaService } from "../../Services/Services";
-import checkbox from "../../Assets/Icons/Svg/checkBox.svg";
-import instance from "../../Services/Axios";
+import { captchaService, userSignin } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import {
-  handleStoreToken,
-  handleStoreUserData,
-} from "../../Store/Reducers/LoginReducer";
+import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
 import img from "../../Assets/Images/Svg/loginimg.svg";
-import { loginService } from "../../Services/Services";
 import { setCookie } from "../../Store/Storage/Cookie";
-import tikCheckbox from "../../Assets/Icons/Svg/isChecked.svg";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import classes from "./AuthScreens.module.css";
+import { EMAIL_REGEX } from "../../Utility/Constants";
+import { useToken } from "../../Utility/StoreData";
 
 function Signin() {
   const validationSchema = Yup.object({
-    user_code: Yup.string().required("Employee id is required"),
-    organization_code: Yup.string()
-      .required("Organization code is required")
-      .trim("Remove leading and trailing spaces")
-      .strict(true),
+    email: Yup.string()
+      .required("Email is required")
+      .matches(EMAIL_REGEX, "Enter valid email"),
     password: Yup.string().required("Password is required"),
-    captcha: Yup.string()
-      .required("Captcha is required")
-      .trim("Remove leading and trailing spaces")
-      .strict(true),
   });
   const { REACT_APP_SALT_KEY } = process.env;
   const dispatch = useDispatch();
@@ -54,20 +42,38 @@ function Signin() {
     setFieldTouched,
   } = useFormik({
     initialValues: {
-      user_code: "",
-      organization_code: "",
+      email: "",
       password: "",
-      device_type: 3,
-      captcha: "",
     },
     validateOnBlur: true,
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: (values) => {
       handleLogin(values);
     },
   });
-  const handleLogin = () => {
-    navigate("/dasboard");
+  const handleLogin = (data) => {
+    setloader(true);
+    let formData = new FormData();
+    formData.append("email", data?.email);
+    formData.append("password", data?.password);
+    userSignin(formData)
+      .then((response) => {
+        console.log(response, "RESPONSE");
+        if (response?.data?.status === 1) {
+          navigate("/dashboard");
+          toast.success(response?.data?.msg);
+          dispatch(handleStoreUserData(response?.data?.data));
+          setCookie("vt_enterprise_login", response?.data);
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
   /**
    * Handles the login process with the provided login data.
@@ -193,13 +199,12 @@ function Signin() {
   }, []);
   return (
     <div className={classes.container1}>
+      <p className={classes.SignupCompanyName}>V.T. ENTERPRISE</p>
       {loader ? <Loader /> : null}
       <div className={classes.container2}>
         <div className={`col-lg-5 col-md-6 ${classes.leftcontent}`}>
           <div className={classes.title}>Welcome!</div>
-          <div className={classes.desc}>
-            Sign in with your username or email
-          </div>
+          <div className={classes.desc}>Sign in with your email</div>
           <div>
             <img src={img} alt="login_img"></img>
           </div>
@@ -209,35 +214,27 @@ function Signin() {
         >
           <div className={classes.inputsection}>
             <TextInputBox
-              title="User name"
-              value={values.user_code}
-              placeHolder="User name"
-              onChangeText={(text) => {
-                const numericText = text.replace(/[^0-9]/g, "");
-                handleChange("user_code")(numericText);
-              }}
+              title="Email"
+              value={values.email}
+              placeHolder="Enter your email"
+              onChangeText={handleChange("email")}
               customInputProps={{
                 maxLength: 50,
                 onBlur: () => {
                   try {
-                    validationSchema.validateSyncAt(
-                      "user_code",
-                      values.user_code
-                    );
+                    validationSchema.validateSyncAt("email", values.user_code);
                   } catch (error) {
                     if (error instanceof Error) {
-                      setFieldTouched("user_code", true);
-                      setFieldError("user_code", error.message);
+                      setFieldTouched("email", true);
+                      setFieldError("email", error.message);
                     }
                   }
                 },
               }}
-              name="user_code"
+              name="email"
               type={"text"}
               requiredText="*"
-              errorText={
-                touched.user_code && errors.user_code ? errors.user_code : ""
-              }
+              errorText={touched.email && errors.email ? errors.email : ""}
             />
           </div>
           <div className={`mb-3 ${classes.inputsection}`}>
@@ -245,7 +242,7 @@ function Signin() {
               requiredText="*"
               type={"text"}
               isSecure={true}
-              placeHolder="Enter password"
+              placeHolder="Enter your password"
               value={values.password}
               name="password"
               customInputProps={{
@@ -271,74 +268,19 @@ function Signin() {
               }
             />
           </div>
-          {/* <div className={classes.inputsection}>
-            <label>
-              Captcha<span>*</span>
-            </label>
-            <div
-              className={classes.inputfield2}
-              style={{
-                border:
-                  errors.captcha && touched.captcha
-                    ? "1px solid red"
-                    : "1px solid var(--inputBorder);",
-              }}
-            >
-              <div className={classes.captcha}>
-                {captcha !== null && <img src={captcha} alt="captcha" />}
-              </div>
-              <input
-                type="text"
-                value={values.captcha}
-                placeholder="Enter captcha"
-                disabled={captchaloader}
-                onChange={handleChange("captcha")}
-                name="captcha"
-                onBlur={() => {
-                  try {
-                    validationSchema.validateSyncAt("captcha", values.captcha);
-                  } catch (error) {
-                    if (error instanceof Error) {
-                      setFieldTouched("captcha", true);
-                      setFieldError("captcha", error.message);
-                    }
-                  }
-                }}
-                maxLength={50}
-              ></input>
-              <div className={classes.captrefre}>
-                <img
-                  src={captrefres}
-                  alt="refres"
-                  style={{
-                    transition: "0.7s",
-                    transform: `rotate(${rotate}deg)`,
-                  }}
-                  onClick={() => {
-                    // getCaptcha();
-                    setRotate((prev) => prev + 180);
-                  }}
-                ></img>
-              </div>
-            </div>
-            {touched.captcha && errors.captcha ? (
-              <p className={classes.err}>{errors.captcha}</p>
-            ) : (
-              ""
-            )}
-          </div> */}
+
           <div className={classes.forgotpassword}>
             <Link to="forgot_password ">Forgot Password?</Link>
           </div>
           <div className="my-3">
             <CustomButton title="Sign In" onButtonPress={handleSubmit} />
           </div>
-          <div style={{ justifyContent: "center", display: "flex" }}>
+          {/* <div style={{ justifyContent: "center", display: "flex" }}>
             <p style={{ marginRight: "10px" }}> Dont’t have an account ?</p>
             <div>
               <Link to="Signup">Sign up</Link>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

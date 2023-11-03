@@ -1,10 +1,23 @@
 .container {
-  background-color: var(--menuBg);
-  height: 50px;
+  /* background-color: var(--capimgbg); */
+  background-color: white;
+  height: 65px;
   position: fixed;
   top: 0;
   z-index: 100;
   width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+.tablist {
+  height: 55px;
+  display: flex;
+  margin: 0 10px;
+  align-items: center;
+}
+.tablist p {
+  padding: 0 10px;
+  color: black;
+  font-family: var(--fontRegular);
 }
 .content .child2 {
   display: flex;
@@ -81,11 +94,13 @@
   font-size: var(--textSm1);
   font-weight: var(--fontWm);
   font-family: var(--fontRegular);
+  color: black;
 }
 .user_id {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: var(--fontWs);
   font-family: var(--fontRegular);
+  color: black;
 }
 .nameContainer {
   justify-content: center;
@@ -109,6 +124,7 @@
 }
 .profileLogout {
   display: flex;
+  flex-direction: column;
   border-bottom: none;
   padding-bottom: 0;
 }

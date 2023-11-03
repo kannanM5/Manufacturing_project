@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
+import classes from "./Modal.module.css";
+import close from "../Assets/Icons/Svg/close.svg";
+import { TextIncreaseSharp } from "@mui/icons-material";
+import { CustomButton, TextInputBox } from "../Components";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
-import classes from "./Management.module.css";
-import { CustomButton, TextInputBox } from "../../Components";
 
 const useStyles = makeStyles(() => ({
   Select: {
@@ -14,53 +15,67 @@ const useStyles = makeStyles(() => ({
     },
   },
 }));
-function PrepareInspectionReport() {
+function GetPrepareReport({ onClose, heading, modalClose }) {
+  const navigate = useNavigate();
   const muiclass = useStyles();
   const [dropdownName, setDropDownName] = useState(1);
   const dropDownItem = [
     {
       id: 1,
       name: "Incoming Inspection Report",
-      path: "/#/incoming_inspection_report",
+      path: "/Prepareinscepectionreport/incoming_inspection_report",
     },
     {
       id: 2,
       name: "Setting Approval Report",
-      path: "/#/setting_approval_report",
+      path: "/Prepareinscepectionreport/setting_approval_report",
     },
     {
       id: 3,
       name: "Line Inspection Report",
-      path: "/#/line_inspection_report",
+      path: "/Prepareinscepectionreport/line_inspection_report",
     },
     {
       id: 4,
       name: "Final Inspection Report",
-      path: "/#/final_inspection_report",
+      path: "/Prepareinscepectionreport/final_inspection_report",
     },
   ];
-  const handleClick = () => {
-    const getDetails = dropDownItem.find((ele) => ele.id === dropdownName);
-    if (getDetails) {
-      window.open(getDetails.path, "_blank");
-    }
+  const handleCLick = () => {
+    const getDetails = dropDownItem.find((ele) => ele?.id === dropdownName);
+    navigate(getDetails?.path);
+    modalClose();
   };
-
   return (
-    <>
-      <PageHeader BtnTrue={true} heading={"Prepare Inspection Report"} />
-      <div className={classes.PrepareInspectionReport}>
+    <div>
+      <div className={classes.popup}>
+        <div className={classes.popup_head}>
+          <div className={classes.popup_head_left}>
+            <div className={classes.line}></div>
+            <div>
+              <p className={classes.Heading}>{heading}</p>
+            </div>
+          </div>
+        </div>
+        <img
+          className={classes.close}
+          src={close}
+          alt="close"
+          onClick={onClose}
+        />
+      </div>
+      <div className={classes.getReport}>
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-6">
             <TextInputBox title="Part No" placeHolder="Enter Part No" />
           </div>
-          <div className="col-lg-12">
+          <div className="col-6">
             <TextInputBox title="Process" placeHolder="Enter Process" />
           </div>
         </div>
-        <div className="col-lg-12 mt-3">
+        <div className="col-6 mt-3">
           <p className={classes.selectHead}>Select Report Type</p>
-          <FormControl fullWidth={true}>
+          <FormControl>
             <Select
               className={muiclass?.Select}
               value={dropdownName}
@@ -78,12 +93,12 @@ function PrepareInspectionReport() {
             </Select>
           </FormControl>
         </div>
-        <div className="col-lg-3 my-4">
-          <CustomButton title="Submit" onButtonPress={handleClick} />
+        <div className="col-lg-2 my-4">
+          <CustomButton title="Submit" onButtonPress={handleCLick} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
-export default PrepareInspectionReport;
+export default GetPrepareReport;

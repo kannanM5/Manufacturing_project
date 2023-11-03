@@ -8,7 +8,6 @@ import * as Yup from "yup";
 import { getCatchMsg, trimString } from "../../Utility/GeneralUtils";
 import { setCookie } from "../../Store/Storage/Cookie";
 import { otpverifyService } from "../../Services/Services";
-import { resendotpService } from "../../Services/Services";
 import { CustomButton, Loader } from "../../Components";
 import classes from "./AuthScreens.module.css";
 
@@ -169,31 +168,31 @@ function OTPVerificationpage() {
     setloader(true);
 
     const formData = new FormData();
-    if (values.org_code && values.email_ph_no) {
-      formData.append("reset_key", values.reset_key);
-      formData.append("org_code", values.org_code);
-      formData.append("email", values.email_ph_no);
-    } else if (values.email_ph_no) {
-      formData.append("reset_key", values.reset_key);
-      formData.append("email", values.email_ph_no);
-    } else {
-      formData.append("email", values.email);
-      formData.append("reset_key", values.reset_key);
-    }
-    resendotpService(formData)
-      .then((res) => {
-        if (res.data.status === 1) {
-          setTimeRemaining(res.data.duration);
-          setFieldValue("reset_key", res.data.reset_key);
-          toast.success(res.data.msg);
-        } else {
-          toast.error(res.data.msg);
-        }
-      })
-      .catch((err) => toast.error(getCatchMsg(err)))
-      .finally(() => {
-        setloader(false);
-      });
+    // if (values.org_code && values.email_ph_no) {
+    //   formData.append("reset_key", values.reset_key);
+    //   formData.append("org_code", values.org_code);
+    //   formData.append("email", values.email_ph_no);
+    // } else if (values.email_ph_no) {
+    //   formData.append("reset_key", values.reset_key);
+    //   formData.append("email", values.email_ph_no);
+    // } else {
+    //   formData.append("email", values.email);
+    //   formData.append("reset_key", values.reset_key);
+    // }
+    // resendotpService(formData)
+    //   .then((res) => {
+    //     if (res.data.status === 1) {
+    //       setTimeRemaining(res.data.duration);
+    //       setFieldValue("reset_key", res.data.reset_key);
+    //       toast.success(res.data.msg);
+    //     } else {
+    //       toast.error(res.data.msg);
+    //     }
+    //   })
+    //   .catch((err) => toast.error(getCatchMsg(err)))
+    //   .finally(() => {
+    //     setloader(false);
+    //   });
   };
 
   /**

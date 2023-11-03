@@ -1,0 +1,96 @@
+/* all popup same head  and close*/
+.popup .popup_head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.modalbtn button {
+  height: 42px;
+  margin: 10px 0px !important;
+}
+.popup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin: 10px auto;
+  font-family: var(--fontRegular);
+}
+.popup .line {
+  width: 3px;
+  height: 80%;
+  background-color: var(--btnClr);
+  margin-right: 10px;
+  border-radius: 5px;
+}
+.popup .popup_head_left {
+  font-size: var(--textMd);
+  font-weight: var(--fontWxl);
+  display: flex;
+  align-items: center;
+}
+.popup .Heading {
+  color: black;
+  font-family: var(--fontBold);
+  font-size: var(--textXXl);
+  font-weight: var(--fontweight);
+}
+.close {
+  cursor: pointer;
+  right: 20px;
+  top: 20px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 1.5px solid #878484;
+  width: 20px;
+  height: 20px;
+}
+
+.Container {
+  width: 97%;
+  margin: auto;
+}
+.getReport {
+  width: 97%;
+  margin: auto;
+}
+
+/* confirmation  modal  */
+
+.confirmModal .confirm_Btns {
+  width: 100%;
+  display: flex;
+  margin: 25px auto;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+}
+.confirm_Btns button {
+  padding: 10px 20px;
+}
+.confirm_Btns .cancelBtn button {
+  background-color: var(--tableHeadBg) !important;
+}
+.confirmModal .text {
+  font-size: var(--textSm1);
+  font-weight: var(--fontWs);
+  text-align: center;
+}
+.confirmModal .deleteIcon {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.selectHead {
+  color: var(--blackColor);
+  font-family: var(--fontRegular);
+  font-size: var(--textSm1);
+  margin-bottom: 5px !important;
+  font-weight: var(--fontWm);
+}
+
+/* employeeChangePassword  */
+
+.employeeChangePassword {
+  width: 92%;
+  margin: auto;
+}
