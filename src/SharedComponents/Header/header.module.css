@@ -8,6 +8,10 @@
   width: 100%;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
+
+/* .dropDownContainer {
+  background-color: red;
+} */
 .tablist {
   height: 55px;
   display: flex;
@@ -121,6 +125,12 @@
   letter-spacing: 0em !important;
   text-align: left !important;
   color: #fff !important;
+}
+
+.tabContent:hover {
+  background-color: rgb(244, 235, 224);
+  border-radius: 10;
+  color: white;
 }
 .profileLogout {
   display: flex;

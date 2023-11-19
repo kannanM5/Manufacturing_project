@@ -70,6 +70,11 @@ const useStyles = makeStyles((theme) => ({
   menuList: {
     paddingTop: "8px !important",
     paddingBottom: "8px !important",
+    paddingRight: "0px !important",
+  },
+
+  MuiListItemgutters: {
+    paddingRight: "0px !important",
   },
 }));
 export default function Header() {
@@ -509,17 +514,14 @@ export default function Header() {
               onClick={() => {
                 setArrow((pre) => !pre);
               }}
-              style={{ padding: "5px 12px" }}
+              style={{ padding: "5px" }}
             >
-              <div style={{ display: "flex", cursor: "pointer" }}>
-                {/* <img
-                  onError={({ currentTarget }) => {
-                    currentTarget.src = defaultProfileImg;
-                  }}
-                  src={userDetails?.pic}
-                  // alt="your image"
-                  className={classes.user_image}
-                /> */}
+              <div
+                style={{
+                  display: "flex",
+                  cursor: "pointer",
+                }}
+              >
                 <div className={classes.nameContainer}>
                   <p className={classes.user_name}>User Name : {userName}</p>
                 </div>
@@ -529,7 +531,6 @@ export default function Header() {
                     transform: `rotate(${Arrow ? 180 : 0}deg)`,
                     marginTop: "2px",
                     fill: "black",
-                    // backgroundColor: "black",
                   }}
                 />
               </div>
@@ -558,10 +559,9 @@ export default function Header() {
                         }}
                         className={muiStyle.menuList}
                         style={{
+                          width: "100%",
                           display: "flex",
-                          justifyContent: "center",
                           alignItems: "center",
-                          // marginBottom: "8px",
                         }}
                       >
                         <img
@@ -575,38 +575,6 @@ export default function Header() {
                       </div>
                     </MenuItem>
                   ))}
-                  {/* <MenuItem
-                    onClick={() => {
-                      setdeleteModal({
-                        modal: true,
-                        id: "",
-                      });
-                    }}
-                    className={muiStyle.menuList}
-                  >
-                    <div className={classes.profileLogout}>
-                      <div style={{ display: "flex", marginBottom: 7 }}>
-                        <img
-                          src={defaultProfileImg}
-                          width="17px"
-                          height="17px"
-                          alt="password"
-                          style={{ marginRight: "8px" }}
-                        />
-                        <p style={{ marginBottom: "3px" }}>Create account</p>
-                      </div>
-                      <div style={{ display: "flex" }}>
-                        <img
-                          src={logout}
-                          width="17px"
-                          height="17px"
-                          alt="password"
-                          style={{ marginRight: "8px" }}
-                        />
-                        <p style={{ marginTop: "2px" }}>Logout</p>
-                      </div>
-                    </div>
-                  </MenuItem> */}
                 </Menu>
               )}
             </Grid>

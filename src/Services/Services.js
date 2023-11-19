@@ -41,7 +41,27 @@ export const editProductService = (data) => {
 export const addInspectionCriteriaService = (data) => {
   return axios.post("addcriteria", data);
 };
+export const criteriaListService = (page, data) => {
+  return axios.post(`criterialist?page=${page}`, data);
+};
 
 export const shamir = (data) => {
   return axios.post("signup/sgdfjhsfj", data);
+};
+
+//inspection cretire report
+
+export const getInspectionReportList = (data) => {
+  return axios.post("getreportdata", data);
+};
+
+export const addInspectionReportList = (data) => {
+  return axios.post("addreportdata", data);
+};
+export const editInspectionReportList = (data) => {
+  return axios.post("geteditreportdata", data);
+};
+
+export const dummy = (data) => {
+  return axios.post("test", data);
 };

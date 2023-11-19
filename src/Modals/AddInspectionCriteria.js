@@ -8,27 +8,29 @@ import { getCatchMsg } from "../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 import { addInspectionCriteriaService } from "../Services/Services";
+import { ALPHA_NUM } from "../Utility/Constants";
 
 const validationSchema = Yup.object({
   characteristics: Yup.string()
     .required("Characteristics is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
-  specification: Yup.string()
-    .required("Specification is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .matches(ALPHA_NUM, "Enter valid characteristics"),
+  specification: Yup.string().required("Specification is required"),
   units: Yup.string()
     .required("Unit is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .matches(ALPHA_NUM, "Enter valid unit"),
   method_of_check: Yup.string()
     .required("Method of check is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .matches(ALPHA_NUM, "Enter valid method of check"),
 });
 
-function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
+function AddInspectionCriteria({
+  onClose,
+  heading,
+  getValue,
+  modalClose,
+  listApiCall,
+  editData,
+}) {
   const {
     handleSubmit,
     handleChange,
@@ -44,10 +46,10 @@ function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
     initialValues: {
       part_no: getValue?.part_no ? getValue?.part_no : "",
       process: getValue?.process ? getValue?.process : "",
-      characteristics: "",
-      specification: "",
-      units: "",
-      method_of_check: "",
+      characteristics: editData?.characteristics || "",
+      specification: editData?.specification || "",
+      units: editData?.units || "",
+      method_of_check: editData?.method_of_check || "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -57,6 +59,7 @@ function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
   const [loader, setloader] = useState(false);
   const token = useToken();
   const userId = useEmployeeId();
+
   const handleAddInspectionCriteria = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -70,11 +73,10 @@ function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
     formData.append("method_of_check", data?.method_of_check);
     addInspectionCriteriaService(formData)
       .then((response) => {
-        console.log(response?.data, "RESSSSSSS");
         if (response?.data?.status === 1) {
           toast.success(response?.data?.msg);
           modalClose();
-          // listApiCall();
+          listApiCall();
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -86,6 +88,7 @@ function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
         setloader(false);
       });
   };
+
   return (
     <div>
       <div className={classes.popup}>
@@ -230,7 +233,10 @@ function AddInspectionCriteria({ onClose, heading, getValue, modalClose }) {
         </div>
         <div className="row">
           <div className="col-lg-2 col-md-6 my-2">
-            <CustomButton onButtonPress={handleSubmit} title={"Submit"} />
+            <CustomButton
+              onButtonPress={handleSubmit}
+              title={editData ? "Update" : "Submit"}
+            />
           </div>
           <div className="col-lg-2 col-md-6 my-2">
             <CustomButton

@@ -21,7 +21,14 @@ export function getCatchMsg(error) {
     return "Something went wrong!";
   }
 }
+export function getInvalidMsg(data) {
+  if (data) {
+    const msg = Object.values(data)[0];
+    console.log(msg[0], "data");
 
+    toast.error(msg[0]);
+  }
+}
 /**
  * Checks if a given start date is the same as or before a given end date.
  * @param {string} startDate - The start date in the format "YYYY-MM-DD".

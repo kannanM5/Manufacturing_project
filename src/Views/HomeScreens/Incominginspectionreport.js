@@ -1,281 +1,267 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { shamir } from "../../Services/Services";
+import {
+  addInspectionReportList,
+  editInspectionReportList,
+  getInspectionReportList,
+  shamir,
+} from "../../Services/Services";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
+import { useEmployeeId, useToken } from "../../Utility/StoreData";
+import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { useFormik } from "formik";
+import { CustomButton } from "../../Components";
+import { array } from "yup";
+import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import CustomDatePicker from "../../Components/CustomDatePicker";
+import moment from "moment";
+var CryptoJS = require("crypto-js");
 
 export default function Emptypage() {
   const getCookieData = getCookie("Testing");
-  const [datas, setDatas] = useState(
-    getCookieData
-      ? getCookieData
-      : [
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-          {
-            id: 1,
-            first: "11",
-            // second: "12",
-            three: "13",
-            four: "14",
-            five: "15",
-            six: "16",
-            seven: "17",
-            eight: "18",
-            nine: "19",
-            ten: "20",
-            eleven: "21",
-            twele: "22",
-            thirteen: "23",
-            fourteen: "24",
-            fifteen: "25",
-            sixteen: "26",
-            seventeen: "27",
-          },
-        ]
-  );
+  const token = useToken();
+  const location = useLocation();
+  const [urlValues, setUrlValues] = useState();
+  // console.log(location, "location");
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const encryptedData = urlParams.get("data");
+
+    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+
+    const decryptedData = JSON.parse(decryptedText);
+    console.log(decryptedData, "TESTINGGG");
+    setUrlValues(decryptedData);
+  }, [location.search]);
+
+  useEffect(() => {
+    if (urlValues) {
+      if (urlValues?.buttonStatus == "Edit") {
+        handleEditReport();
+      } else {
+        handleGetProductsList();
+      }
+    }
+  }, [urlValues]);
+  const userId = useEmployeeId();
+  const [isFinalStatus, setisFinalstatus] = useState(null);
+  const [loader, setloader] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const { values, handleChange, setFieldValue, setValues } = useFormik({
+    initialValues: {
+      product_id: "",
+      part_no: "",
+      supplier_name: "",
+      report_status: "",
+      checked_by: "",
+      approved_by: "",
+      process: "",
+      invoice_no: "",
+      invoice_date: "",
+      final_status: isFinalStatus,
+      quantity: "",
+      datas: "",
+      tableHeadDataApi: "",
+    },
+  });
+  console.log(values, "VALUES");
+  // const getprocess = values?.datas.map((ele) => ele?.process);
+  // console.log(getprocess, "TOKENs");
   const tableHeadData = [
     {
       id: 1,
-      left: "Supplier Name:",
-      right: "Process:",
+      left: "Supplier Name :",
+      leftData: values?.supplier_name,
+      rightData: values?.process,
+      right: "Process :",
     },
     {
       id: 2,
-      left: "Part No:",
-      right: "Inv No:",
+      leftData: values?.tableHeadDataApi?.part_no,
+      rightData: values?.invoice_no,
+      left: "Part No :",
+      right: "Inv No :",
     },
     {
       id: "3",
-      left: "Drg. Issue No:",
-      right: "Inv Date:",
+      left: "Drg. Issue No :",
+      right: "Inv Date :",
+      leftData: values?.tableHeadDataApi?.drawing_issue_no,
+      rightData: values?.invoice_date,
     },
     {
       id: 4,
-      left: "Part Name",
-      right: "Quantity:",
+      left: "Part Name :",
+      right: "Quantity :",
+      leftData: values?.tableHeadDataApi?.part_name,
+      rightData: values?.quantity,
     },
   ];
 
-  // const handleClick = () => {
-  // shamir(
-  //   .then((data) => {
-  //     console.log(data, "response data then");
-  //     if (data && data.status === 1) {
-  //       console.log(data.message, "success");
-  //     } else {
-  //       console.log("Invalid response format or status is not 1");
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error(err, "error catch");
-  //     // You can add more specific error handling here if needed.
-  //   });
-  // };
+  const handleEditReport = () => {
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("part_no", urlValues?.part_no);
+    formData.append("process", urlValues?.process);
+    formData.append("user_id", userId);
+    formData.append("report_type", 1);
+    editInspectionReportList(formData).then((response) => {
+      setReportData(response?.data?.data);
+      console.log(response, "RES");
+    });
+  };
 
-  const handleCLick = () => {
-    shamir()
-      .then((res) => {
-        console.log(res, "response data then");
-        const response = JSON.parse(res.data);
-        console.log(response, "response");
-        if (response.data.status === 1) {
-          console.log("sucess", response.data.message);
-        } else if (res.data.status === 0) {
-          console.log(res.data.message, "fail");
+  // useEffect(() => {
+  //   if (token) handleGetProductsList();
+  // }, [token]);
+
+  // useEffect(() => {
+  //   if (urlValues) handleEditReport();
+  // }, [urlValues]);
+
+  useEffect(() => {
+    if (reportData) {
+      let tempData = [...reportData?.processData];
+      const getProcess = tempData.map((ele) => ele?.process);
+      setisFinalstatus(reportData?.productData?.final_status);
+      const processingData = tempData.map((ele) => {
+        if (ele?.observation) {
+          return {
+            ...ele,
+            observation: JSON.parse(ele?.observation),
+          };
+        } else {
+          return {
+            ...ele,
+            observation: ele?.observation,
+          };
+        }
+      });
+      console.log(processingData, "processingData");
+      setValues({
+        ...values,
+        process: getProcess[0],
+        product_id: reportData?.productData?.product_id,
+        datas: processingData,
+        tableHeadDataApi: reportData?.productData,
+        supplier_name: reportData?.productData?.supplier_name,
+        checked_by: reportData?.productData?.checked_by,
+        approved_by: reportData?.productData?.approved_by,
+        invoice_date: reportData?.productData?.invoice_date,
+        invoice_no: reportData?.productData?.invoice_no,
+        quantity: reportData?.productData?.quantity,
+      });
+    }
+  }, [reportData]);
+
+  const handleGetProductsList = () => {
+    setloader(true);
+    const formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("part_no", "ABC123");
+    formData.append("process", "process1");
+    getInspectionReportList(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          setReportData(response?.data?.data);
+          toast.success(response?.data?.msg);
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
         }
       })
-      .catch((err) => console.log(err, "error catch"));
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
 
-  const handleclick = () => {
-    setCookie("Testing", datas);
+  const handleAddIncomingReport = (data) => {
+    const observeData = [...data?.datas];
+    const sendData = observeData.map((ele) => {
+      return {
+        process_id: ele?.process_id,
+        status: ele?.status.toString(),
+        remarks: ele?.remark.toString(),
+        observationData: ele?.observation.map((observe) =>
+          observe ? observe : null
+        ),
+      };
+    });
+    const finalData = {
+      user_id: userId,
+      token: token,
+      product_id: data?.product_id,
+      invoice_no: data?.invoice_no,
+      invoice_date: data?.invoice_date,
+      quantity: parseInt(data?.quantity),
+      observationData: sendData,
+      supplier_name: data?.supplier_name,
+      checked_by: data?.checked_by.toString(),
+      approved_by: data?.approved_by.toString(),
+      final_status: data?.final_status.toString(),
+      report_type: 1,
+    };
+    addInspectionReportList(finalData).then((res) => {
+      console.log(res);
+    });
+    console.log(finalData, "sendData");
   };
 
+  const handleChangeValues = (event, index, inputIndex) => {
+    const tempData = [...values.datas];
+    const newData = tempData.map((ele, dataIndex) => {
+      if (dataIndex === index) {
+        const newObservation = Array.isArray(ele.observation)
+          ? [...ele.observation]
+          : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
+        const dyummy = (newObservation[inputIndex] = event.target.value);
+        console.log(dyummy, "OBSERVE");
+        newObservation[inputIndex] = event.target.value;
+        return {
+          ...ele,
+          observation: newObservation,
+        };
+      }
+      return ele;
+    });
+    setFieldValue("datas", newData);
+  };
+
+  const handleStatusChange = (rowIndex, event) => {
+    const updatedData = [...values.datas];
+    updatedData[rowIndex].status = event.target.value;
+    handleChange({
+      target: {
+        name: "data",
+        value: updatedData,
+      },
+    });
+  };
+  console.log(isFinalStatus, "FINAL");
+  const handleRemarkChange = (rowIndex, event) => {
+    const updatedData = [...values.datas];
+    updatedData[rowIndex].remark = event.target.value;
+    handleChange({
+      target: {
+        name: "data",
+        value: updatedData,
+      },
+    });
+  };
   return (
     <div>
       <PageHeader
         Btntitle={"Save"}
         BtntitleOne={"Finish"}
-        modal={handleclick}
+        // modal={handleclick}
         heading={"Incoming Inspection Report"}
       />
       <div className={classes.reportInsepection}>
@@ -293,14 +279,19 @@ export default function Emptypage() {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
                     <div
                       style={{
-                        paddingLeft: "20px",
+                        paddingLeft: "10px",
                       }}
                     >
-                      Logo
+                      <img
+                        src={Logo}
+                        alt="logo"
+                        style={{ width: 50, height: 50 }}
+                      />
                     </div>
                     <div className={classes.heading}>
                       INCOMING INSPECTION REPORT
@@ -315,19 +306,77 @@ export default function Emptypage() {
               <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
               {tableHeadData.map((head, index) => (
                 <tr key={index} className={classes.fourHeadings}>
-                  <th colSpan={2}>{head?.left}</th>
-                  <th colSpan={9}></th>
-                  <th colSpan={5} className={classes.secondRowThirdColumn}>
+                  <th colSpan={3}>{head?.left}</th>
+                  <td colSpan={11} className={classes.staticHeading}>
+                    {index === 0 ? (
+                      <input
+                        maxLength={50}
+                        type="text"
+                        value={head?.leftData}
+                        onChange={(event) => {
+                          const text = event.target.value;
+                          const alphabeticText = text.replace(
+                            /[^A-Za-z0-9 ]/g,
+                            ""
+                          );
+                          handleChange("supplier_name")(alphabeticText);
+                        }}
+                      />
+                    ) : (
+                      head?.leftData
+                    )}
+                  </td>
+                  <th colSpan={1} className={classes.secondRowThirdColumn}>
                     {head?.right}
                   </th>
-                  <th colSpan={2}></th>
+                  <td colSpan={3} className={classes.staticHeading}>
+                    {index === 0 ? (
+                      head?.rightData
+                    ) : index === 1 ? (
+                      <input
+                        maxLength={20}
+                        type="text"
+                        value={head?.rightData}
+                        onChange={(event) => {
+                          const text = event.target.value;
+                          const alphabeticText = text.replace(
+                            /[^A-Za-z0-9 ]/g,
+                            ""
+                          );
+                          handleChange("invoice_no")(alphabeticText);
+                        }}
+                      />
+                    ) : index === 2 ? (
+                      <CustomDatePicker
+                        borderNone={false}
+                        selectedDate={values?.invoice_date}
+                        onSelectDate={(val) => {
+                          setFieldValue(
+                            "invoice_date",
+                            moment(val).format("YYYY-MM-DD")
+                          );
+                        }}
+                      />
+                    ) : (
+                      <input
+                        maxLength={20}
+                        type="text"
+                        value={head?.rightData}
+                        onChange={(event) => {
+                          const text = event.target.value;
+                          const alphabeticText = text.replace(/[^0-9]/g, "");
+                          handleChange("quantity")(alphabeticText);
+                        }}
+                      />
+                    )}
+                  </td>
                 </tr>
               ))}
               <tr className={classes.secondHead}>
                 <th colSpan={1} rowSpan={2} className={classes.serialNo}>
                   S.No
                 </th>
-                <th colSpan={1} rowSpan={2}>
+                <th colSpan={2} rowSpan={2}>
                   Characteristics
                 </th>
                 <th colSpan={1} rowSpan={2}>
@@ -366,216 +415,56 @@ export default function Emptypage() {
               <th className={classes.observe}>10</th>
             </thead>
             <tbody>
-              {datas.map((ele, index) => (
-                <tr>
-                  <td>{index + 1}</td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.first}
-                      name="first"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].first = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  {/* <td>
-                  <input
-                    type="text"
-                    value={ele?.second}
-                    name="two"
-                    onChange={(event) => {
-                      let refData = [...datas];
-                      refData[index].second = event.target.value;
-                      setDatas([...refData]);
-                    }}
-                  />
-                </td> */}
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.three}
-                      name="three"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].three = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.four}
-                      name="four"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].four = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.five}
-                      name="five"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].five = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.six}
-                      name="six"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].six = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.seven}
-                      name="seven"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].seven = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.eight}
-                      name="eight"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].eight = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.nine}
-                      name="nine"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].nine = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.ten}
-                      name="ten"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].ten = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.eleven}
-                      name="eleven"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].eleven = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.twele}
-                      name="twele"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].twele = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.thirteen}
-                      name="thirteen"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].thirteen = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.fourteen}
-                      name="fourteen"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].fourteen = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.fifteen}
-                      name="fifteen"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].fifteen = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      value={ele?.sixteen}
-                      name="sixteen"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].sixteen = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                  <td colSpan={2}>
-                    <input
-                      type="text"
-                      value={ele?.seventeen}
-                      name="seventeen"
-                      onChange={(event) => {
-                        let refData = [...datas];
-                        refData[index].seventeen = event.target.value;
-                        setDatas([...refData]);
-                      }}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {values?.datas &&
+                values?.datas.map((ele, index) => (
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td colSpan={2}>{ele?.characteristics}</td>
+                    <td>{ele?.specification}</td>
+                    <td>{ele?.units}</td>
+                    <td>{ele?.method_of_check}</td>
+                    {ele?.observation
+                      ? ele?.observation.map((inputs, inputIndex) => (
+                          <td>
+                            <input
+                              maxLength={10}
+                              type="text"
+                              value={inputs}
+                              onChange={(event) =>
+                                handleChangeValues(event, index, inputIndex)
+                              }
+                            />
+                          </td>
+                        ))
+                      : [...Array(10)].map((emptyInput, inputIndex) => (
+                          <td key={inputIndex}>
+                            <input
+                              type="text"
+                              value={emptyInput ? emptyInput : ""}
+                              onChange={(event) =>
+                                handleChangeValues(event, index, inputIndex)
+                              }
+                            />
+                          </td>
+                        ))}
+                    <td>
+                      <input
+                        maxLength={20}
+                        type="text"
+                        value={ele?.status}
+                        onChange={(event) => handleStatusChange(index, event)}
+                      />
+                    </td>
+                    <td colSpan={2}>
+                      <input
+                        maxLength={20}
+                        type="text"
+                        value={ele?.remark}
+                        onChange={(event) => handleRemarkChange(index, event)}
+                      />
+                    </td>
+                  </tr>
+                ))}
               <tr>
                 <th colSpan={18} className={classes.final}>
                   <div className={classes.finalStatus}>
@@ -583,13 +472,21 @@ export default function Emptypage() {
                       Final Status
                     </p>
                     <div>
-                      <input type="checkbox"></input>
+                      <input
+                        type="checkbox"
+                        onClick={() => setisFinalstatus(1)}
+                        checked={isFinalStatus == 1 ? true : false}
+                      ></input>
                       <label style={{ fontFamily: "var(--fontRegular)" }}>
                         Accepted
                       </label>
                     </div>
                     <div>
-                      <input type="checkbox"></input>
+                      <input
+                        type="checkbox"
+                        checked={isFinalStatus == 0 ? true : false}
+                        onClick={() => setisFinalstatus(0)}
+                      ></input>
                       <label style={{ fontFamily: "var(--fontRegular)" }}>
                         Rejected
                       </label>
@@ -598,19 +495,47 @@ export default function Emptypage() {
                 </th>
               </tr>
               <tr>
-                <td colSpan={2} style={{ fontFamily: "var(--fontMedium)" }}>
-                  Checked BY
+                <td colSpan={4} style={{ fontFamily: "var(--fontMedium)" }}>
+                  Checked By
                 </td>
-                <td colSpan={8}></td>
-                <td colSpan={5} style={{ fontFamily: "var(--fontMedium)" }}>
+                <td colSpan={5}>
+                  <input
+                    maxLength={50}
+                    type="text"
+                    name="checked_by"
+                    value={values?.checked_by}
+                    onChange={(event) => {
+                      const text = event.target.value;
+                      const alphabeticText = text.replace(/[^A-Za-z0-9 ]/g, "");
+                      handleChange("checked_by")(alphabeticText);
+                    }}
+                  />
+                </td>
+                <td colSpan={4} style={{ fontFamily: "var(--fontMedium)" }}>
                   Approved By
                 </td>
-                <td colSpan={3}></td>
+                <td colSpan={5}>
+                  <input
+                    maxLength={50}
+                    type="text"
+                    name="approved_by"
+                    value={values?.approved_by}
+                    onChange={(event) => {
+                      const text = event.target.value;
+                      const alphabeticText = text.replace(/[^A-Za-z0-9 ]/g, "");
+                      handleChange("approved_by")(alphabeticText);
+                    }}
+                  />
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+      <CustomButton
+        title="send"
+        onButtonPress={() => handleAddIncomingReport(values)}
+      />
     </div>
   );
 }

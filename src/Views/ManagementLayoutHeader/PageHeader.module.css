@@ -1,5 +1,6 @@
 .header {
   display: flex;
+  height: 85px;
   justify-content: space-between;
   padding: 20px 10px;
 }
@@ -15,7 +16,7 @@
   font-weight: var(--fontweight);
 }
 .header_left .line {
-  width: 3px;
+  width: 4px;
   height: 70%;
   background-color: var(--btnClr);
   margin-right: 10px;

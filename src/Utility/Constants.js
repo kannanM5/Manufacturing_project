@@ -2,12 +2,6 @@ import { makeStyles } from "@material-ui/core";
 
 export const SALT_KEY = "L4jkmn71iwelcv@1qaz!";
 
-export const special_holiday = "Special Holiday";
-export const over_time = "Over Time";
-export const machine = "Machine";
-export const machine_group = "Machine Group";
-export const machine_Type = "Machine Type";
-
 export const muiStyles = makeStyles((theme) => ({
   dateStyles: {
     "& .MuiPaper-root": {
@@ -28,6 +22,7 @@ export const muiStyles = makeStyles((theme) => ({
       left: "15px !important",
       bottom: "0 !important",
       color: "black !important",
+      height: "3px",
     },
     "& button": {
       padding: "5px 16px !important",
@@ -74,21 +69,6 @@ export const muiStyles = makeStyles((theme) => ({
       paddingLeft: "5px !important",
     },
   },
-  dropdownBox: {
-    "& fieldset , & .MuiInputBase-root": {
-      border: "none !important",
-    },
-  },
-  breaktimeInputBox: {
-    "& .MuiInputBase-root": {
-      border: "none !important",
-    },
-  },
-  radioButtonColor: {
-    "&.MuiIconButton-label": {
-      color: "orange !important",
-    },
-  },
 }));
 
 export const EMAIL_REGEX =
@@ -100,7 +80,7 @@ export const MOBILE_REGEX =
 export const NUMBER = /^[0-9]*$/;
 export const PHONE_NUMBER = /^[6,7,8,9]{1}[0-9]{9}$/;
 
-export const SPECIAL_CHARACTER_REGEX = /^[A-Za-z0-9\s]+$/;
-export const ALPHA_NUM = /^[A-Za-z0-9-_\s]+$/;
+export const SPECIAL_CHARACTER_REGEX = /^[A-Za-z0-9+-/*\s]+$/;
+export const ALPHA_NUM = /^[A-Za-z0-9\s]+$/;
 export const NUMBERANDDOT = /^[0-9.]*$/;
 export const NAMES = /^[A-Za-z\s]+$/;

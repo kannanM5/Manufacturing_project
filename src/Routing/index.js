@@ -1,6 +1,5 @@
 import AuthLayout from "../Layout/AuthLayout";
 import DashboardLayout from "../Layout/DashboardLayout";
-import ManagementLayout from "../Layout/ManagementLayout";
 import ErrorElement from "../Error/ErrorElement";
 import { authroute } from "./AuthRouting";
 import ListOfProducts from "../Views/HomeScreens/ListOfProducts";

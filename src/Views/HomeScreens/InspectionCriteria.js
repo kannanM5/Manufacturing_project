@@ -1,34 +1,34 @@
 import React, { useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { Box, TableContainer } from "@mui/material";
 import classes from "./Management.module.css";
 import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
 import AddInspectionCriteria from "../../Modals/AddInspectionCriteria";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { addInspectionCriteriaService } from "../../Services/Services";
+import { criteriaListService } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { getCatchMsg } from "../../Utility/GeneralUtils";
+import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
-  part_no: Yup.string()
-    .required("Part number is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
-  process: Yup.string()
-    .required("Process is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+  part_no: Yup.string().required("Part number is required").strict(true),
+  process: Yup.string().required("Process is required").strict(true),
 });
 
 function InspectionCriteria() {
   const token = useToken();
+  const userId = useEmployeeId();
+  const [loader, setloader] = useState(false);
   const employeeId = useEmployeeId();
+  const [listInSpectionCriteria, setlistInSpectionCriteria] = useState();
+
   const [isShowModal, setIsShowModal] = useState({
     status: false,
     data: null,
     viewStatus: false,
   });
+
   const {
     handleSubmit,
     handleChange,
@@ -44,37 +44,44 @@ function InspectionCriteria() {
     initialValues: {
       process: "",
       part_no: "",
+      activeItem: "",
     },
     validationSchema: validationSchema,
     onSubmit: () => {
-      setIsShowModal((prev) => {
-        return {
-          ...prev,
-          status: true,
-        };
-      });
+      handleListCriteriaService(1, values);
     },
   });
 
-  const handleAddInspectionCretieria = () => {
-    const formData = new FormData();
+  const handleListCriteriaService = (page = 1, data) => {
+    setloader(true);
+    let formData = new FormData();
     formData.append("token", token);
-    formData.append("user_id");
-    formData.append("part_no");
-    formData.append("process");
-    formData.append("characteristics");
-    formData.append("specification");
-    formData.append("units");
-    addInspectionCriteriaService(formData).then((response) => {
-      if (response.data.status === 1) {
-      } else if (response.data.status === 0) {
-      }
-    });
+    formData.append("user_id", userId);
+    formData.append("limit", 10);
+    formData.append("part_no", data?.part_no);
+    formData.append("process", data?.process);
+    criteriaListService(page, formData)
+      .then((response) => {
+        console.log(response?.data, "RESSSSSSS");
+        if (response?.data?.status === 1) {
+          setlistInSpectionCriteria(response?.data?.data);
+          toast.success(response?.data?.msg);
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
+
   return (
     <>
+      <PageHeader heading={"Inspection Criteria"} BtnTrue={true} />
       <div>
-        <PageHeader heading={"Inspection Criteria"} BtnTrue={true} />
         {isShowModal?.status && (
           <GlobalModal
             size="lg"
@@ -90,7 +97,9 @@ function InspectionCriteria() {
             }}
           >
             <AddInspectionCriteria
+              listApiCall={() => handleListCriteriaService(1, values)}
               getValue={values}
+              editData={isShowModal?.data}
               heading={`${
                 isShowModal?.data ? "Edit" : "Add"
               } Insepction Criteria`}
@@ -125,7 +134,10 @@ function InspectionCriteria() {
                 customInputProps={{
                   onBlur: () => {
                     try {
-                      validationSchema.validateSyncAt("part_no", values.name);
+                      validationSchema.validateSyncAt(
+                        "part_no",
+                        values.part_no
+                      );
                     } catch (error) {
                       if (error instanceof Error) {
                         setFieldTouched("part_no", true);
@@ -152,7 +164,10 @@ function InspectionCriteria() {
                 customInputProps={{
                   onBlur: () => {
                     try {
-                      validationSchema.validateSyncAt("process", values.name);
+                      validationSchema.validateSyncAt(
+                        "process",
+                        values.process
+                      );
                     } catch (error) {
                       if (error instanceof Error) {
                         setFieldTouched("process", true);
@@ -171,7 +186,25 @@ function InspectionCriteria() {
             </div>
 
             <div className="col-lg-1 mt-4">
-              <CustomButton title="Enter " onButtonPress={handleSubmit} />
+              <CustomButton
+                title="Enter "
+                onButtonPress={() => {
+                  if (values.part_no && values.process) {
+                    setIsShowModal((prev) => {
+                      return {
+                        ...prev,
+                        status: true,
+                        data: null,
+                      };
+                    });
+                  } else {
+                    handleSubmit();
+                  }
+                }}
+              />
+            </div>
+            <div className="col-lg-1 mt-4">
+              <CustomButton title="Search " onButtonPress={handleSubmit} />
             </div>
           </div>
 
@@ -188,112 +221,31 @@ function InspectionCriteria() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>123</td>
-                  <td>Bold</td>
-                  <td>Ford</td>
-                  <td>1</td>
-                  <td>
-                    <CustomButton
-                      onButtonPress={() => {
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            status: true,
-                            data: 1,
-                          };
-                        });
-                      }}
-                      title="Edit"
-                      customButtonStyle={{
-                        width: "60px",
-                        padding: "3px",
-                      }}
-                    />
-
-                    <img
-                      src={EditIcon}
-                      alt="edit_icon"
-                      style={{ width: 20, height: 20 }}
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>123</td>
-                  <td>Bold</td>
-                  <td>Ford</td>
-                  <td>1</td>
-                  <td>
-                    <CustomButton
-                      onButtonPress={() => {
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            status: true,
-                            data: 1,
-                          };
-                        });
-                      }}
-                      title="Edit"
-                      customButtonStyle={{
-                        width: "60px",
-                        padding: "3px",
-                      }}
-                    />{" "}
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>123</td>
-                  <td>Bold</td>
-                  <td>Ford</td>
-                  <td>1</td>
-                  <td>
-                    <CustomButton
-                      onButtonPress={() => {
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            status: true,
-                            data: 1,
-                          };
-                        });
-                      }}
-                      title="Edit"
-                      customButtonStyle={{
-                        width: "60px",
-                        padding: "3px",
-                      }}
-                    />{" "}
-                  </td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>123</td>
-                  <td>Bold</td>
-                  <td>Ford</td>
-                  <td>1</td>
-                  <td>
-                    <CustomButton
-                      onButtonPress={() => {
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            status: true,
-                            data: 1,
-                          };
-                        });
-                      }}
-                      title="Edit"
-                      customButtonStyle={{
-                        width: "60px",
-                        padding: "3px",
-                      }}
-                    />{" "}
-                  </td>
-                </tr>
+                {listInSpectionCriteria?.items.map((products, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{products?.characteristics}</td>
+                    <td>{products?.specification}</td>
+                    <td>{products?.units}</td>
+                    <td>{products?.method_of_check}</td>
+                    <td>
+                      <img
+                        src={EditIcon}
+                        alt="edit_icon"
+                        style={{ width: 20, height: 20, cursor: "pointer" }}
+                        onClick={() => {
+                          setIsShowModal((prev) => {
+                            return {
+                              ...prev,
+                              data: products,
+                              status: true,
+                            };
+                          });
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
