@@ -1,5 +1,5 @@
 import { Pagination } from "@mui/material";
-import { Theme, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paginate: {

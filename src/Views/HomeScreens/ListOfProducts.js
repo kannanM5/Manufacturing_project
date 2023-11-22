@@ -2,30 +2,17 @@ import React, { useEffect } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import { useState } from "react";
-import {
-  CustomButton,
-  CustomPagination,
-  GlobalModal,
-  Loader,
-  TextInputBox,
-} from "../../Components";
+import { CustomPagination, GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import {
   useEmployeeId,
   useEmployeeType,
   useToken,
 } from "../../Utility/StoreData";
-import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ALPHA_NUM, NAMES } from "../../Utility/Constants";
-import {
-  addProductService,
-  dummy,
-  editProductService,
-  productsList,
-} from "../../Services/Services";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
-import toast from "react-hot-toast";
+import { ALPHA_NUM } from "../../Utility/Constants";
+import { productsList } from "../../Services/Services";
+import { getCatchMsg } from "../../Utility/GeneralUtils";
 import AddProducts from "../../Modals/AddProducts";
 
 const validationSchema = Yup.object({

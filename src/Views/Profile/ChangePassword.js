@@ -11,8 +11,6 @@ import { getCookie } from "../../Store/Storage/Cookie";
 import { superAdminChangePassword } from "../../Services/Services";
 
 function ChangePassword() {
-  const token = useToken();
-  const navigate = useNavigate();
   const [loader, setloader] = useState(false);
   const validationSchema = Yup.object().shape({
     old_password: Yup.string()

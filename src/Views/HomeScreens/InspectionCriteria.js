@@ -9,7 +9,6 @@ import { criteriaListService } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import toast from "react-hot-toast";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -20,7 +19,6 @@ function InspectionCriteria() {
   const token = useToken();
   const userId = useEmployeeId();
   const [loader, setloader] = useState(false);
-  const employeeId = useEmployeeId();
   const [listInSpectionCriteria, setlistInSpectionCriteria] = useState();
 
   const [isShowModal, setIsShowModal] = useState({
