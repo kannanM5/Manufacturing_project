@@ -41,6 +41,9 @@ export const editProductService = (data) => {
 export const addInspectionCriteriaService = (data) => {
   return axios.post("addcriteria", data);
 };
+export const editInspectionCriteriaService = (data) => {
+  return axios.post("editcriteria", data);
+};
 export const criteriaListService = (page, data) => {
   return axios.post(`criterialist?page=${page}`, data);
 };

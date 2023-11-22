@@ -7,8 +7,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { userSignin } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
+import {
+  handleStoreUserData,
+  handleStoreUserToken,
+} from "../../Store/Reducers/LoginReducer";
 import img from "../../Assets/Images/Svg/loginimg.svg";
+// import img from "../../Assets/Icons/SvgIcons/bolts_icon.svg";
 import { setCookie } from "../../Store/Storage/Cookie";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import classes from "./AuthScreens.module.css";
@@ -58,6 +62,7 @@ function Signin() {
         if (response?.data?.status === 1) {
           navigate("/dashboard");
           toast.success(response?.data?.msg);
+          dispatch(handleStoreUserToken(response?.data?.data?.token));
           dispatch(handleStoreUserData(response?.data?.data));
           setCookie("vt_enterprise_login", response?.data);
         } else if (response?.data?.status === 0) {
@@ -81,7 +86,11 @@ function Signin() {
           <div className={classes.title}>Welcome!</div>
           <div className={classes.desc}>Sign in with your email</div>
           <div>
-            <img src={img} alt="login_img"></img>
+            <img
+              src={img}
+              alt="login_img"
+              // style={{ width: "200px", height: "100px" }}
+            ></img>
           </div>
         </div>
         <div

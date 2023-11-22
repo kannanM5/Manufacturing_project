@@ -65,9 +65,7 @@ function InspectionCriteria() {
         console.log(response?.data, "RESSSSSSS");
         if (response?.data?.status === 1) {
           setlistInSpectionCriteria(response?.data?.data);
-          toast.success(response?.data?.msg);
-        } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          // toast.success(response?.data?.msg);
         }
       })
       .catch((err) => {
@@ -124,7 +122,7 @@ function InspectionCriteria() {
         )}
         <div className={classes.insepectionCreteria}>
           <div className="row">
-            <div className="col-lg-3">
+            <div className="col-lg-3 col-md-6">
               <TextInputBox
                 title="Part No"
                 placeHolder="Enter Part No"
@@ -154,7 +152,7 @@ function InspectionCriteria() {
                 }
               />
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-3 col-md-6">
               <TextInputBox
                 title="Process"
                 placeHolder="Enter Process"
@@ -185,7 +183,7 @@ function InspectionCriteria() {
               />
             </div>
 
-            <div className="col-lg-1 mt-4">
+            <div className="col-lg-1 col-md-6 col-3 mt-4">
               <CustomButton
                 title="Enter "
                 onButtonPress={() => {
@@ -203,14 +201,14 @@ function InspectionCriteria() {
                 }}
               />
             </div>
-            <div className="col-lg-1 mt-4">
+            <div className="col-lg-1 col-md-6 col-3 mt-4">
               <CustomButton title="Search " onButtonPress={handleSubmit} />
             </div>
           </div>
 
           <div className={`table-responsive ${classes.Dashboard}`}>
             <table className={classes.listOfTable}>
-              <thead>
+              <thead className={classes.NormalTable}>
                 <tr>
                   <th>S.No</th>
                   <th>Characteristics</th>

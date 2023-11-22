@@ -51,9 +51,7 @@ function ListOfProducts() {
   const userId = useEmployeeId();
   const userType = useEmployeeType();
   const [page, setPage] = useState(1);
-  const [tableData, setTableData] = useState([]);
   const [loader, setloader] = useState(false);
-  const [addUpdateStatus, setAddUpdateStatus] = useState(false);
   const [listOfProducts, setListOfProducts] = useState();
   const [isShowModal, setIsShowModal] = useState({
     status: false,
@@ -61,14 +59,8 @@ function ListOfProducts() {
   });
 
   useEffect(() => {
-    handleGetProductsList();
-  }, []);
-
-  // useEffect(() => {
-  //   dummy().then((res) => {
-  //     console.log("res", res);
-  //   });
-  // }, []);
+    if (token) handleGetProductsList();
+  }, [token]);
 
   const handleGetProductsList = (page = 1) => {
     setloader(true);
@@ -78,12 +70,9 @@ function ListOfProducts() {
     formData.append("limit", 10);
     productsList(page, formData)
       .then((response) => {
-        console.log(response?.data, "RESSSSSSSSS");
         if (response?.data?.status === 1) {
           setListOfProducts(response?.data?.data);
           // toast.success(response?.data?.msg);
-        } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
         }
       })
       .catch((err) => {
@@ -149,7 +138,7 @@ function ListOfProducts() {
 
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
-          <thead>
+          <thead className={classes.NormalTable}>
             <tr>
               <th>S.No</th>
               <th>Part No</th>

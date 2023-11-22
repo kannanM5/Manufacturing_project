@@ -7,7 +7,10 @@ import * as Yup from "yup";
 import { getCatchMsg } from "../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
-import { addInspectionCriteriaService } from "../Services/Services";
+import {
+  addInspectionCriteriaService,
+  editInspectionCriteriaService,
+} from "../Services/Services";
 import { ALPHA_NUM } from "../Utility/Constants";
 
 const validationSchema = Yup.object({
@@ -44,6 +47,7 @@ function AddInspectionCriteria({
     setValues,
   } = useFormik({
     initialValues: {
+      id: editData?.id,
       part_no: getValue?.part_no ? getValue?.part_no : "",
       process: getValue?.process ? getValue?.process : "",
       characteristics: editData?.characteristics || "",
@@ -53,7 +57,11 @@ function AddInspectionCriteria({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      handleAddInspectionCriteria(values);
+      if (editData) {
+        handleUpdateInspectionCriteria(values);
+      } else {
+        handleAddInspectionCriteria(values);
+      }
     },
   });
   const [loader, setloader] = useState(false);
@@ -88,7 +96,35 @@ function AddInspectionCriteria({
         setloader(false);
       });
   };
-
+  const handleUpdateInspectionCriteria = (data) => {
+    setloader(true);
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("part_no", data?.part_no);
+    formData.append("process", data?.process);
+    formData.append("characteristics", data?.characteristics);
+    formData.append("specification", data?.specification);
+    formData.append("units", data?.units);
+    formData.append("id", data?.id);
+    formData.append("method_of_check", data?.method_of_check);
+    editInspectionCriteriaService(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          toast.success(response?.data?.msg);
+          modalClose();
+          listApiCall();
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
   return (
     <div>
       <div className={classes.popup}>

@@ -25,7 +25,9 @@ import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { muiStyles } from "../../Utility/Constants";
 // import { LogoutConfirmationModal } from "../../Modals";
 import { GlobalModal } from "../../Components";
-import menuIcon from "../../Assets/Icons/png/menuIcon.png";
+import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
+import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
+import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import GetPrepareReport from "../../Modals/GetPrepareReport";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
   Menu: {
     "&>div:nth-child(3)": {
-      top: "51px !important",
+      top: "65px !important",
       left: "0 !important",
       right: "37px",
       width: "200px",
@@ -193,9 +195,7 @@ export default function Header() {
       id: 2,
       name: "Inspection Criteria",
       naviagationPath: "/inspection_criteria",
-      downarrow: dropdownarrow,
-      uparrow: dropdownUparrow,
-      icon: manage,
+      icon: incoming_icon,
       isVisible: true,
     },
     {
@@ -203,36 +203,35 @@ export default function Header() {
       name: "Prepare Inspection Report",
       pathname: "Prepareinscepectionreport",
       naviagationPath: "/Workorder",
-      icon: workorder,
+      icon: manage,
       privatePermission: true,
       isVisible: loginUserData?.work_orders === 1 ? true : false,
-      prepareInpectionSubHead: [
-        {
-          id: 31,
-          name: "Incoming Inspection Report",
-          navigationPath: "/incoming_inspection_report",
-        },
-        {
-          id: 32,
-          name: "Setting Approval Report",
-          navigationPath: "/setting_approval_report",
-        },
-        {
-          id: 33,
-          name: "Line Inspection Report",
-          navigationPath: "/line_inspection_report",
-        },
-        {
-          id: 34,
-          name: "Final Inspection Report",
-          navigationPath: "/final_inspection_report",
-        },
-      ],
+    },
+    {
+      id: 4,
+      name: "Export",
+      naviagationPath: "/export_page",
+      icon: export_icon,
+      isVisible: true,
+    },
+    {
+      id: 5,
+      name: "Create Account",
+      naviagationPath: "/employee_list",
+      icon: create_account,
+      isVisible: true,
+    },
+    {
+      id: 6,
+      name: "Change Password",
+      naviagationPath: "/change_password",
+      icon: change_password,
+      isVisible: true,
     },
     {
       id: 7,
       name: "Logout",
-      icon: logout2,
+      icon: logout,
       privatePermission: true,
       isVisible: true,
     },
@@ -248,15 +247,6 @@ export default function Header() {
     setShow((prevShow) => !prevShow);
   };
 
-  /**
-   * Handles the logout functionality.
-   * - Dispatches an action to store user details as null.
-   * - Removes the "mconnectLoginData" item from localStorage if "Remember" is not set.
-   * - Clears the "mconnect_user_data" cookie.
-   * - Navigates to the home page ("/").
-   * - Resets the baseURL of the instance to the default baseUrl.
-   * @returns None
-   */
   const handleLogout = () => {
     // setloader(true);
     let formData = new FormData();
@@ -345,9 +335,14 @@ export default function Header() {
           <div onClick={toggleShow} className={classes.menuIcon}>
             <img src={menuIcon} alt="menuIcon" />
           </div>
-          {/* <div>
-            <img src={logo} alt="logo" />
-          </div> */}
+          <div className={classes.sideMenuLogo}>
+            <img src={CompanyLogo} alt="logo" />
+            <h4
+              style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
+            >
+              V.T. ENTERPRISE
+            </h4>
+          </div>
           <div className={classes.offcanvas}>
             <Drawer
               className={muiStyle.Drawer}
@@ -365,7 +360,17 @@ export default function Header() {
                     <div key={ele.id.toString()}>
                       <div
                         onClick={() => {
-                          setPrepareInsepection(!prepareInsepection);
+                          if (ele?.id === 7) {
+                            setdeleteModal((prev) => {
+                              return {
+                                ...prev,
+                                modal: true,
+                              };
+                            });
+                          } else {
+                            toggleShow();
+                            navigate(ele?.naviagationPath);
+                          }
                         }}
                         // onClick={() => {
                         //   if (ele.id === 3) {
@@ -386,6 +391,7 @@ export default function Header() {
                       >
                         <div className={classes.sideMenu}>
                           <div className={classes.menu_content}>
+                            <img fill="white" src={ele?.icon} alt="icons"></img>
                             <p
                               onClick={() =>
                                 ele.name == "Logout" &&
@@ -447,29 +453,6 @@ export default function Header() {
             </h4>
           </div>
           <div className={classes.child2}>
-            {/* {menuData.map((ele, i) => {
-              return (
-                <>
-                  <div
-                    onClick={() => {
-                      if (ele?.id === 3) {
-                        navigate(ele?.naviagationPath);
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            status: true,
-                          };
-                        });
-                      } else {
-                        navigate(ele?.naviagationPath);
-                      }
-                    }}
-                    className={classes.tablist}
-                    key={i}
-                  >
-                    <p style={{ cursor: "pointer" }}>{ele?.name}</p>
-                  </div>
-                </> */}
             {menuData.map((ele, i) => {
               return (
                 <TabContext value={pathname} key={i}>
@@ -506,8 +489,6 @@ export default function Header() {
                 </TabContext>
               );
             })}
-            {/* );
-            })} */}
           </div>
           <div>
             <Grid
@@ -517,7 +498,9 @@ export default function Header() {
               style={{ padding: "5px" }}
             >
               <div
+                className={classes.tabContent}
                 style={{
+                  padding: "4px",
                   display: "flex",
                   cursor: "pointer",
                 }}

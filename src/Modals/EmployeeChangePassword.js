@@ -15,6 +15,7 @@ const validationSchema = Yup.object().shape({
     .trim("Remove leading and trailing spaces")
     .strict(true),
   repeat_password: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
     .required("Please enter confirm password")
     .trim("Remove leading and trailing spaces")
     .strict(true),

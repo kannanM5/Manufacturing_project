@@ -3,7 +3,7 @@ export const UserData = () => {
   return useSelector((state) => state.login?.userData);
 };
 export const useToken = () => {
-  return useSelector((state) => state.login?.userData?.token);
+  return useSelector((state) => state.login?.token);
 };
 
 export const useEmployeeId = () => {

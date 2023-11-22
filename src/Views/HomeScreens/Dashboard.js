@@ -6,6 +6,7 @@ function Dashboard() {
       <div className={classes.DubpilcateDashboard}>
         <p>Click to add</p>
       </div>
+      <div></div>
     </div>
   );
 }

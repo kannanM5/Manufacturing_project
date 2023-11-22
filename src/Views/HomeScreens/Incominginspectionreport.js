@@ -11,7 +11,7 @@ import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
 import { CustomButton } from "../../Components";
 import { array } from "yup";
@@ -62,7 +62,7 @@ export default function Emptypage() {
       approved_by: "",
       process: "",
       invoice_no: "",
-      invoice_date: "",
+      invoice_date: moment(new Date()).format("YYYY-MM-DD"),
       final_status: isFinalStatus,
       quantity: "",
       datas: "",
@@ -128,7 +128,7 @@ export default function Emptypage() {
     if (reportData) {
       let tempData = [...reportData?.processData];
       const getProcess = tempData.map((ele) => ele?.process);
-      setisFinalstatus(reportData?.productData?.final_status);
+      // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
         if (ele?.observation) {
           return {
@@ -138,7 +138,7 @@ export default function Emptypage() {
         } else {
           return {
             ...ele,
-            observation: ele?.observation,
+            observation: ele?.observation ? ele?.observation : "",
           };
         }
       });
@@ -152,13 +152,15 @@ export default function Emptypage() {
         supplier_name: reportData?.productData?.supplier_name,
         checked_by: reportData?.productData?.checked_by,
         approved_by: reportData?.productData?.approved_by,
-        invoice_date: reportData?.productData?.invoice_date,
+        invoice_date: reportData?.productData?.invoice_date
+          ? reportData?.productData?.invoice_date
+          : values?.invoice_date,
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
       });
     }
   }, [reportData]);
-
+  console.log(values, "VALUES");
   const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
@@ -184,12 +186,14 @@ export default function Emptypage() {
   };
 
   const handleAddIncomingReport = (data) => {
+    setloader(true);
     const observeData = [...data?.datas];
+    console.log(data, "observeData");
     const sendData = observeData.map((ele) => {
       return {
         process_id: ele?.process_id,
-        status: ele?.status.toString(),
-        remarks: ele?.remark.toString(),
+        status: ele?.status,
+        remarks: ele?.remark,
         observationData: ele?.observation.map((observe) =>
           observe ? observe : null
         ),
@@ -201,18 +205,28 @@ export default function Emptypage() {
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
       invoice_date: data?.invoice_date,
-      quantity: parseInt(data?.quantity),
+      quantity: data?.quantity,
       observationData: sendData,
       supplier_name: data?.supplier_name,
-      checked_by: data?.checked_by.toString(),
-      approved_by: data?.approved_by.toString(),
-      final_status: data?.final_status.toString(),
+      checked_by: data?.checked_by,
+      approved_by: data?.approved_by,
+      final_status: isFinalStatus.toString(),
       report_type: 1,
     };
-    addInspectionReportList(finalData).then((res) => {
-      console.log(res);
-    });
-    console.log(finalData, "sendData");
+    addInspectionReportList(finalData)
+      .then((res) => {
+        if (res?.data?.status === 1) {
+          toast.success(res?.data?.msg);
+        } else if (res?.data?.status === 0) {
+          getInvalidMsg(res?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
 
   const handleChangeValues = (event, index, inputIndex) => {
@@ -223,7 +237,6 @@ export default function Emptypage() {
           ? [...ele.observation]
           : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
         const dyummy = (newObservation[inputIndex] = event.target.value);
-        console.log(dyummy, "OBSERVE");
         newObservation[inputIndex] = event.target.value;
         return {
           ...ele,
@@ -234,27 +247,32 @@ export default function Emptypage() {
     });
     setFieldValue("datas", newData);
   };
-
   const handleStatusChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].status = event.target.value;
     handleChange({
       target: {
-        name: "data",
+        name: "datas",
         value: updatedData,
       },
     });
   };
-  console.log(isFinalStatus, "FINAL");
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event.target.value;
     handleChange({
       target: {
-        name: "data",
+        name: "datas",
         value: updatedData,
       },
     });
+  };
+  const getColor = (event) => {
+    if (event?.target?.value > 10) {
+      return "red";
+    } else {
+      return "green";
+    }
   };
   return (
     <div>
@@ -423,10 +441,11 @@ export default function Emptypage() {
                     <td>{ele?.specification}</td>
                     <td>{ele?.units}</td>
                     <td>{ele?.method_of_check}</td>
-                    {ele?.observation
+                    {ele?.observation !== ""
                       ? ele?.observation.map((inputs, inputIndex) => (
                           <td>
                             <input
+                              className={classes.observationInput}
                               maxLength={10}
                               type="text"
                               value={inputs}
@@ -439,16 +458,21 @@ export default function Emptypage() {
                       : [...Array(10)].map((emptyInput, inputIndex) => (
                           <td key={inputIndex}>
                             <input
+                              style={{
+                                color: "red",
+                              }}
+                              className={classes.observationInput}
                               type="text"
                               value={emptyInput ? emptyInput : ""}
-                              onChange={(event) =>
-                                handleChangeValues(event, index, inputIndex)
-                              }
+                              onChange={(event) => {
+                                handleChangeValues(event, index, inputIndex);
+                              }}
                             />
                           </td>
                         ))}
                     <td>
                       <input
+                        className={classes.observationInput}
                         maxLength={20}
                         type="text"
                         value={ele?.status}
@@ -457,6 +481,7 @@ export default function Emptypage() {
                     </td>
                     <td colSpan={2}>
                       <input
+                        className={classes.observationInput}
                         maxLength={20}
                         type="text"
                         value={ele?.remark}
@@ -466,33 +491,31 @@ export default function Emptypage() {
                   </tr>
                 ))}
               <tr>
-                <th colSpan={18} className={classes.final}>
+                <td colSpan={18} className={classes.final}>
                   <div className={classes.finalStatus}>
                     <p style={{ fontFamily: "var(--fontRegular)" }}>
                       Final Status
                     </p>
-                    <div>
+                    <div className={classes.checkBoxContainer}>
                       <input
+                        className={classes.checkBox}
                         type="checkbox"
                         onClick={() => setisFinalstatus(1)}
                         checked={isFinalStatus == 1 ? true : false}
                       ></input>
-                      <label style={{ fontFamily: "var(--fontRegular)" }}>
-                        Accepted
-                      </label>
+                      <p>Accepted</p>
                     </div>
-                    <div>
+                    <div className={classes.checkBoxContainer}>
                       <input
+                        className={classes.checkBox}
                         type="checkbox"
                         checked={isFinalStatus == 0 ? true : false}
                         onClick={() => setisFinalstatus(0)}
                       ></input>
-                      <label style={{ fontFamily: "var(--fontRegular)" }}>
-                        Rejected
-                      </label>
+                      <p>Rejected</p>
                     </div>
                   </div>
-                </th>
+                </td>
               </tr>
               <tr>
                 <td colSpan={4} style={{ fontFamily: "var(--fontMedium)" }}>
@@ -500,6 +523,7 @@ export default function Emptypage() {
                 </td>
                 <td colSpan={5}>
                   <input
+                    className={classes.observationInput}
                     maxLength={50}
                     type="text"
                     name="checked_by"
@@ -516,6 +540,7 @@ export default function Emptypage() {
                 </td>
                 <td colSpan={5}>
                   <input
+                    className={classes.observationInput}
                     maxLength={50}
                     type="text"
                     name="approved_by"

@@ -9,7 +9,7 @@ import { employeeList } from "../../Services/Services";
 import { getCookie } from "../../Store/Storage/Cookie";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-
+import chagepassword_Icon from "../../Assets/Icons/SvgIcons/password_key.svg";
 function EmployeeList() {
   const [isShowModal, setIsShowModal] = useState({
     status: false,
@@ -30,10 +30,7 @@ function EmployeeList() {
     employeeList(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          toast.success(response?.data?.msg);
           setListOfEmployees(response?.data?.data);
-        } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
         }
       })
       .catch((err) => {
@@ -135,7 +132,7 @@ function EmployeeList() {
       )}
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
-          <thead>
+          <thead className={classes.NormalTable}>
             <tr>
               <th>S.No</th>
               <th>Employee Name</th>
@@ -153,7 +150,7 @@ function EmployeeList() {
                 <td>{emp?.email}</td>
                 <td className={classes.icons}>
                   <img
-                    src={EditIcon}
+                    src={chagepassword_Icon}
                     alt="edit_icon"
                     onClick={() => {
                       setIsShowModal((prev) => {
@@ -165,7 +162,7 @@ function EmployeeList() {
                       });
                     }}
                   />
-                </td>{" "}
+                </td>
               </tr>
             ))}
           </tbody>

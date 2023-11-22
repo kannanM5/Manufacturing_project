@@ -380,9 +380,6 @@ body {
 }
 /* header dropdown*/
 
-tr:nth-child(3n) {
-  background-color: transparent !important;
-}
 .MuiInput-underline:before {
   border-bottom: none !important;
 }
@@ -517,4 +514,7 @@ height: 20px;
   .modalMinMDWidth > div:nth-child(3) > div {
     min-width: 850px;
   }
+}
+.material-icons {
+  color: white !important;
 }

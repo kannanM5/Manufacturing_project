@@ -188,17 +188,17 @@ function PrepareInspectionReport() {
           </FormControl>
         </div>
         <div className="row">
-          <div className="col-lg-3 my-4">
+          <div className="col-lg-4 my-4">
             <CustomButton
-              title="Submit"
+              title="Add report"
               onButtonPress={() => {
                 handleClick("Add");
               }}
             />
           </div>
-          <div className="col-lg-3 my-4">
+          <div className="col-lg-4 my-4">
             <CustomButton
-              title="Edit"
+              title="Edit report"
               onButtonPress={() => {
                 handleClick("Edit");
               }}

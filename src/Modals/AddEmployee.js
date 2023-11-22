@@ -12,7 +12,7 @@ import {
 } from "../Components";
 import { EMAIL_REGEX } from "../Utility/Constants";
 import { userSignUp } from "../Services/Services";
-import { getCatchMsg } from "../Utility/GeneralUtils";
+import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { getCookie } from "../Store/Storage/Cookie";
 
@@ -27,7 +27,6 @@ const validationSchema = Yup.object({
   confirm_email: Yup.string()
     .oneOf([Yup.ref("email")], "Emails must match")
     .required("Confirm email is required"),
-
   password: Yup.string()
     .required("Password is required")
     .trim("Remove leading and trailing spaces")
@@ -37,7 +36,15 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password")], "Passwords must match")
     .trim("Remove leading and trailing spaces")
     .strict(true),
-  userTypeName: Yup.string().required("User type is required"),
+  userTypeName: Yup.string()
+    .required("User type is required")
+    .test("one of", "User type is required", function (value) {
+      const { userTypeName } = this.parent;
+      if (value === "-- None --") {
+        return false;
+      }
+      return true;
+    }),
 });
 function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   const {
@@ -78,6 +85,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   ]);
   const cookieData = getCookie("vt_enterprise_login");
   console.log(cookieData?.data, "cookieData");
+
   const handleSignup = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -97,7 +105,8 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           modalClose();
           listApiCall();
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          // toast.error(response?.data?.msg);
+          getInvalidMsg(response?.data?.msg);
         }
       })
       .catch((err) => {
