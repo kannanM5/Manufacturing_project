@@ -7,7 +7,7 @@ import InstanceBase from "./Routing/InstanceBase";
 function App() {
   const theme = createTheme({
     palette: {
-      primary: { main: "#f25922" },
+      primary: { main: "#0000FF" },
       secondary: { main: "#1a2c41" },
     },
   });

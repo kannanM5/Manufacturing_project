@@ -14,6 +14,7 @@ function PageHeader({
   downloadBtn = false,
   closeIcon = false,
   closeClick,
+  secondBtn = true,
 }) {
   const { pathname } = useLocation();
 
@@ -40,11 +41,7 @@ function PageHeader({
                 boxShadow: "0px 1.89921px 3.79843px rgba(0, 0, 0, 0.06)",
               }}
             />
-            {pathname ===
-              "/Prepareinscepectionreport/incoming_inspection_report" ||
-            pathname === "/Prepareinscepectionreport/final_inspection_report" ||
-            pathname === "/Prepareinscepectionreport/setting_approval_report" ||
-            pathname === "/Prepareinscepectionreport/line_inspection_report" ? (
+            {secondBtn && (
               <div style={{ marginLeft: "23px" }}>
                 <CustomButton
                   onButtonPress={onPressOvertime}
@@ -58,7 +55,7 @@ function PageHeader({
                   }}
                 />
               </div>
-            ) : null}
+            )}
           </div>
         )}
         {downloadBtn && (

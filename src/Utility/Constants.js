@@ -17,7 +17,7 @@ export const muiStyles = makeStyles((theme) => ({
 
   activeTab: {
     "& .MuiTabs-indicator": {
-      // backgroundColor: "rgb(242, 89, 34)",
+      // backgroundColor: "rgb(242, 89, 34) !important",
       width: "50% !important",
       left: "15px !important",
       bottom: "0 !important",
@@ -27,6 +27,9 @@ export const muiStyles = makeStyles((theme) => ({
     "& button": {
       padding: "5px 16px !important",
       minHeight: "0px !important",
+    },
+    "& span": {
+      color: "black !important",
     },
   },
   tabColor: {

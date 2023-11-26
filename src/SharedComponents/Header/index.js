@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { TabContext, TabList } from "@mui/lab";
 import { Tab } from "@mui/material";
 import {
@@ -12,24 +12,14 @@ import {
 import { ArrowDropDownIcon } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import dropdownarrow from "../../Assets/Icons/Svg/dropdownarrow.svg";
-import dropdownUparrow from "../../Assets/Icons/Svg/dropdownUparrow.svg";
 import dash from "../../Assets/Icons/Svg/Dashboard.svg";
-import manage from "../../Assets/Icons/Svg/manage.svg";
-import workorder from "../../Assets/Icons/Svg/workorder.svg";
-import logout2 from "../../Assets/Icons/Svg/logout2.svg";
-import instance from "../../Services/Axios";
-import defaultProfileImg from "../../Assets/Images/Png/dummy.png";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { muiStyles } from "../../Utility/Constants";
-// import { LogoutConfirmationModal } from "../../Modals";
 import { GlobalModal } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
-import GetPrepareReport from "../../Modals/GetPrepareReport";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 import CompanyLogo from "../../Assets/Images/Png/VTLogo.jpg";
 import create_account from "../../Assets/Icons/SvgIcons/create_account.svg";
@@ -83,7 +73,6 @@ export default function Header() {
   const token = useToken();
   const userId = useEmployeeId();
   const userName = useUserName();
-  console.log(token, "userName");
   const { REACT_APP_BASEURL } = process.env;
   const styles = muiStyles();
   const muiStyle = useStyles();
@@ -202,8 +191,8 @@ export default function Header() {
       id: 3,
       name: "Prepare Inspection Report",
       pathname: "Prepareinscepectionreport",
-      naviagationPath: "/Workorder",
-      icon: manage,
+      naviagationPath: "/Prepareinscepectionreport",
+      icon: export_icon,
       privatePermission: true,
       isVisible: loginUserData?.work_orders === 1 ? true : false,
     },

@@ -5,27 +5,22 @@ import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
-  shamir,
 } from "../../Services/Services";
-import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import { CustomButton } from "../../Components";
-import { array } from "yup";
+import { CustomButton, Loader } from "../../Components";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import CustomDatePicker from "../../Components/CustomDatePicker";
 import moment from "moment";
 var CryptoJS = require("crypto-js");
 
 export default function Emptypage() {
-  const getCookieData = getCookie("Testing");
   const token = useToken();
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
-  // console.log(location, "location");
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -35,10 +30,9 @@ export default function Emptypage() {
     const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
 
     const decryptedData = JSON.parse(decryptedText);
-    console.log(decryptedData, "TESTINGGG");
     setUrlValues(decryptedData);
   }, [location.search]);
-
+  console.log(urlValues, "URLVALUES");
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -48,6 +42,7 @@ export default function Emptypage() {
       }
     }
   }, [urlValues]);
+
   const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
@@ -69,9 +64,7 @@ export default function Emptypage() {
       tableHeadDataApi: "",
     },
   });
-  console.log(values, "VALUES");
-  // const getprocess = values?.datas.map((ele) => ele?.process);
-  // console.log(getprocess, "TOKENs");
+
   const tableHeadData = [
     {
       id: 1,
@@ -104,25 +97,33 @@ export default function Emptypage() {
   ];
 
   const handleEditReport = () => {
+    setloader(true);
     let formData = new FormData();
     formData.append("token", token);
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("user_id", userId);
-    formData.append("report_type", 1);
-    editInspectionReportList(formData).then((response) => {
-      setReportData(response?.data?.data);
-      console.log(response, "RES");
-    });
+    formData.append("report_type", urlValues?.pageStatus);
+    editInspectionReportList(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          setReportData(response?.data?.data);
+          toast.success(response?.data?.msg);
+        } else if (response?.data?.status === 0) {
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
-
-  // useEffect(() => {
-  //   if (token) handleGetProductsList();
-  // }, [token]);
-
-  // useEffect(() => {
-  //   if (urlValues) handleEditReport();
-  // }, [urlValues]);
 
   useEffect(() => {
     if (reportData) {
@@ -142,7 +143,6 @@ export default function Emptypage() {
           };
         }
       });
-      console.log(processingData, "processingData");
       setValues({
         ...values,
         process: getProcess[0],
@@ -160,14 +160,16 @@ export default function Emptypage() {
       });
     }
   }, [reportData]);
-  console.log(values, "VALUES");
+
   const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
     formData.append("token", token);
     formData.append("user_id", userId);
-    formData.append("part_no", "ABC123");
-    formData.append("process", "process1");
+    formData.append("part_no", urlValues?.part_no);
+    formData.append("process", urlValues?.process);
+    formData.append("report_type", urlValues?.pageStatus);
+    formData.append("newTab", 1);
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -185,18 +187,30 @@ export default function Emptypage() {
       });
   };
 
-  const handleAddIncomingReport = (data) => {
+  const handleAddIncomingReport = (data, saveStatus) => {
     setloader(true);
+    const emptyObserveData = [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
     const observeData = [...data?.datas];
-    console.log(data, "observeData");
     const sendData = observeData.map((ele) => {
       return {
         process_id: ele?.process_id,
-        status: ele?.status,
-        remarks: ele?.remark,
-        observationData: ele?.observation.map((observe) =>
-          observe ? observe : null
-        ),
+        status: ele?.status ? ele?.status : null,
+        remarks: ele?.remark ? ele?.remark : null,
+        observationData:
+          ele?.observation == ""
+            ? emptyObserveData
+            : ele?.observation.map((observe) => (observe ? observe : null)),
       };
     });
     const finalData = {
@@ -210,15 +224,22 @@ export default function Emptypage() {
       supplier_name: data?.supplier_name,
       checked_by: data?.checked_by,
       approved_by: data?.approved_by,
-      final_status: isFinalStatus.toString(),
-      report_type: 1,
+      final_status: isFinalStatus
+        ? isFinalStatus.toString()
+        : isFinalStatus.toString(),
+      report_type: urlValues?.pageStatus,
+      save: saveStatus,
     };
     addInspectionReportList(finalData)
       .then((res) => {
         if (res?.data?.status === 1) {
           toast.success(res?.data?.msg);
         } else if (res?.data?.status === 0) {
-          getInvalidMsg(res?.data?.msg);
+          if (typeof res?.data?.msg === "object") {
+            getInvalidMsg(res?.data?.msg);
+          } else {
+            toast.error(res?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -247,6 +268,20 @@ export default function Emptypage() {
     });
     setFieldValue("datas", newData);
   };
+  const getColor = (index, inputIndex) => {
+    const tempData = [...values.datas];
+
+    // const getValue = tempData
+    //   .map((ele) => ele[index])
+    //   .filter((filterValue) => filterValue[inputIndex]);
+    // console.log(tempData[3], "GETVALUEEE");
+    // if (parseInt(emptyInput) > 10) {
+    //   return "red";
+    // } else {
+    //   return "black";
+    // }
+  };
+
   const handleStatusChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].status = event.target.value;
@@ -257,6 +292,7 @@ export default function Emptypage() {
       },
     });
   };
+
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event.target.value;
@@ -267,19 +303,17 @@ export default function Emptypage() {
       },
     });
   };
-  const getColor = (event) => {
-    if (event?.target?.value > 10) {
-      return "red";
-    } else {
-      return "green";
-    }
-  };
+
   return (
     <div>
+      {loader ? <Loader /> : null}
       <PageHeader
         Btntitle={"Save"}
         BtntitleOne={"Finish"}
-        // modal={handleclick}
+        modal={() => {
+          handleAddIncomingReport(values, 0);
+        }}
+        onPressOvertime={() => handleAddIncomingReport(values, 1)}
         heading={"Incoming Inspection Report"}
       />
       <div className={classes.reportInsepection}>
@@ -458,9 +492,9 @@ export default function Emptypage() {
                       : [...Array(10)].map((emptyInput, inputIndex) => (
                           <td key={inputIndex}>
                             <input
-                              style={{
-                                color: "red",
-                              }}
+                              // style={{
+                              //   color: getColor(index, inputIndex),
+                              // }}
                               className={classes.observationInput}
                               type="text"
                               value={emptyInput ? emptyInput : ""}
@@ -493,9 +527,7 @@ export default function Emptypage() {
               <tr>
                 <td colSpan={18} className={classes.final}>
                   <div className={classes.finalStatus}>
-                    <p style={{ fontFamily: "var(--fontRegular)" }}>
-                      Final Status
-                    </p>
+                    <p>Final Status</p>
                     <div className={classes.checkBoxContainer}>
                       <input
                         className={classes.checkBox}
@@ -518,9 +550,7 @@ export default function Emptypage() {
                 </td>
               </tr>
               <tr>
-                <td colSpan={4} style={{ fontFamily: "var(--fontMedium)" }}>
-                  Checked By
-                </td>
+                <td colSpan={4}>Checked By</td>
                 <td colSpan={5}>
                   <input
                     className={classes.observationInput}
@@ -535,9 +565,7 @@ export default function Emptypage() {
                     }}
                   />
                 </td>
-                <td colSpan={4} style={{ fontFamily: "var(--fontMedium)" }}>
-                  Approved By
-                </td>
+                <td colSpan={4}>Approved By</td>
                 <td colSpan={5}>
                   <input
                     className={classes.observationInput}
@@ -557,10 +585,6 @@ export default function Emptypage() {
           </table>
         </div>
       </div>
-      <CustomButton
-        title="send"
-        onButtonPress={() => handleAddIncomingReport(values)}
-      />
     </div>
   );
 }

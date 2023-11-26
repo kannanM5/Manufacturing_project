@@ -123,7 +123,7 @@ function InspectionCriteria() {
             <div className="col-lg-3 col-md-6">
               <TextInputBox
                 title="Part No"
-                placeHolder="Enter Part No"
+                placeHolder="Enter part no"
                 value={values.part_no}
                 onChangeText={handleChange("part_no")}
                 name="part_no"
@@ -153,7 +153,7 @@ function InspectionCriteria() {
             <div className="col-lg-3 col-md-6">
               <TextInputBox
                 title="Process"
-                placeHolder="Enter Process"
+                placeHolder="Enter process"
                 value={values.process}
                 onChangeText={handleChange("process")}
                 name="process"
@@ -204,46 +204,48 @@ function InspectionCriteria() {
             </div>
           </div>
 
-          <div className={`table-responsive ${classes.Dashboard}`}>
-            <table className={classes.listOfTable}>
-              <thead className={classes.NormalTable}>
-                <tr>
-                  <th>S.No</th>
-                  <th>Characteristics</th>
-                  <th>Specifications</th>
-                  <th>Units</th>
-                  <th>Method Of Check</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {listInSpectionCriteria?.items.map((products, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{products?.characteristics}</td>
-                    <td>{products?.specification}</td>
-                    <td>{products?.units}</td>
-                    <td>{products?.method_of_check}</td>
-                    <td>
-                      <img
-                        src={EditIcon}
-                        alt="edit_icon"
-                        style={{ width: 20, height: 20, cursor: "pointer" }}
-                        onClick={() => {
-                          setIsShowModal((prev) => {
-                            return {
-                              ...prev,
-                              data: products,
-                              status: true,
-                            };
-                          });
-                        }}
-                      />
-                    </td>
+          <div style={{ margin: "20px 0" }}>
+            <div className={`table-responsive ${classes.Dashboard}`}>
+              <table className={classes.listOfTable}>
+                <thead className={classes.NormalTable}>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Characteristics</th>
+                    <th>Specifications</th>
+                    <th>Units</th>
+                    <th>Method Of Check</th>
+                    <th>Action</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {listInSpectionCriteria?.items.map((products, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{products?.characteristics}</td>
+                      <td>{products?.specification}</td>
+                      <td>{products?.units}</td>
+                      <td>{products?.method_of_check}</td>
+                      <td>
+                        <img
+                          src={EditIcon}
+                          alt="edit_icon"
+                          style={{ width: 20, height: 20, cursor: "pointer" }}
+                          onClick={() => {
+                            setIsShowModal((prev) => {
+                              return {
+                                ...prev,
+                                data: products,
+                                status: true,
+                              };
+                            });
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

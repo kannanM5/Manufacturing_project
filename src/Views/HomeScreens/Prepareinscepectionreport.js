@@ -10,6 +10,9 @@ import * as Yup from "yup";
 
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { ALPHA_NUM } from "../../Utility/Constants";
+import { getInspectionReportList } from "../../Services/Services";
+import toast from "react-hot-toast";
+import { getCatchMsg } from "../../Utility/GeneralUtils";
 const validationSchema = Yup.object({
   part_no: Yup.string()
     .required("Part number is required")
@@ -35,6 +38,7 @@ function PrepareInspectionReport() {
 
   const navigate = useNavigate();
   const muiclass = useStyles();
+  const [loader, setloader] = useState(false);
   const [dropdownName, setDropDownName] = useState(1);
   const [first, setfirst] = useState("kannan");
   const {
@@ -51,13 +55,13 @@ function PrepareInspectionReport() {
     initialValues: {
       part_no: "",
       process: "",
-      pageStatus: dropdownName,
       buttonStatus: "",
       token: token,
       user_id: userId,
     },
     validationSchema: validationSchema,
   });
+
   const dropDownItem = [
     {
       id: 1,
@@ -95,10 +99,34 @@ function PrepareInspectionReport() {
       }
     }
   };
-
+  const handleGetProductsList = (handleStatus) => {
+    setloader(true);
+    const formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("part_no", values?.part_no);
+    formData.append("process", values?.process);
+    formData.append("report_type", dropdownName);
+    formData.append("newTab", 0);
+    getInspectionReportList(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          handleClick(handleStatus);
+          toast.success(response?.data?.msg);
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
   const sendData = () => {
     var encrypted = CryptoJS.AES.encrypt(
-      JSON.stringify(values),
+      JSON.stringify({ ...values, pageStatus: dropdownName }),
       "data"
     ).toString();
 
@@ -192,7 +220,8 @@ function PrepareInspectionReport() {
             <CustomButton
               title="Add report"
               onButtonPress={() => {
-                handleClick("Add");
+                handleGetProductsList("Add");
+                // handleClick("Add");
               }}
             />
           </div>

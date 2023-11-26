@@ -1,12 +1,10 @@
 /* dashborad */
 .DubpilcateDashboard {
   display: flex;
-  /* height: calc(100vh - 30px); */
   justify-content: center;
   align-items: center;
 }
 .DubpilcateDashboard p {
-  /* font-family: var(--fontMedium); */
   font-size: var(--mdText);
 }
 table .icons img {
@@ -54,10 +52,6 @@ table .icons img {
 .listOfTable tbody tr:nth-child(even) {
   background-color: rgb(192, 196, 187);
 }
-/* prepare insepection report  */
-.reportInsepection .Dashboard td {
-  /* border: 0.5px solid black; */
-}
 .reportInsepection .Dashboard table {
   border-collapse: collapse;
 }
@@ -70,13 +64,13 @@ table .icons img {
 }
 .Dashboard .heading {
   font-family: var(--fontBold);
+  font-size: var(--textMd);
 }
 .Dashboard table {
   overflow: hidden;
-  margin-top: 20px !important;
+  margin-top: 0px !important;
   margin: auto;
   width: 100%;
-  /* border-collapse: collapse; */
 }
 .Dashboard tbody td {
   text-align: center;
@@ -89,24 +83,19 @@ table .icons img {
   height: 35px;
   padding-left: 10px;
 }
-/* .Dashboard .secondRowThirdColumn {
-  background-color: red;
-  width: 300px;
-} */
 .Dashboard .secondHead {
   text-align: center;
 }
 .devicetable td input {
-  /* padding-left: 10px; */
   border: none;
   outline: unset;
   background-color: transparent;
   width: 100%;
   height: 20px;
-  /* padding: 10px; */
 }
 .Dashboard .observationInput {
-  padding: 0px 10px;
+  padding-left: 10px;
+  height: -webkit-fill-available;
 }
 .Dashboard .checkBoxContainer {
   gap: 10px;
@@ -148,7 +137,7 @@ table .icons img {
 }
 .Dashboard .CompanyName {
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 .Dashboard table thead th input {
   width: 100%;
@@ -178,6 +167,16 @@ table .icons img {
   line-height: 23px !important;
   letter-spacing: 0em !important;
   text-align: left !important;
+}
+
+th {
+  font-family: var(--fontBold);
+  font-size: var(--textXs);
+}
+
+td {
+  font-size: var(--textXs);
+  font-family: var(--fontRegular);
 }
 
 .PrepareInspectionReport {
