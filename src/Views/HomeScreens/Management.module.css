@@ -52,11 +52,15 @@ table .icons img {
 .listOfTable tbody tr:nth-child(even) {
   background-color: rgb(192, 196, 187);
 }
+.reportInsepection {
+  width: 97%;
+  margin: auto;
+}
 .reportInsepection .Dashboard table {
   border-collapse: collapse;
 }
 .Dashboard {
-  width: 97%;
+  width: 100%;
   margin: 5px auto 20px auto;
 }
 .Dashboard .NormalTable th {
@@ -86,7 +90,8 @@ table .icons img {
 .Dashboard .secondHead {
   text-align: center;
 }
-.devicetable td input {
+.devicetable td input,
+.reportInsepection td input {
   border: none;
   outline: unset;
   background-color: transparent;
@@ -187,22 +192,58 @@ td {
   box-shadow: var(--shadow);
   border: var(--inputBorder);
 }
-@media (max-width: 992px) {
-  .devicetable {
-    width: 1030px !important;
-    overflow-y: auto !important;
+
+/* export page  */
+.serachOptionConatiner {
+  /* border: var(--inputBorder); */
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: var(--shadow);
+}
+@media (max-width: 1200px) {
+  .PrepareInspectionReport {
+    width: 40%;
+  }
+  .reportInsepection table {
+    min-width: 1500px;
+  }
+  .listOfTable {
+    width: 1000px;
   }
 }
-@media (max-width: 767px) {
-  .devicetable {
+@media (max-width: 992px) {
+  .listOfTable {
     width: 1030px !important;
-    overflow-y: auto !important;
+  }
+  .PrepareInspectionReport {
+    width: 50%;
+  }
+  .reportInsepection table {
+    min-width: 1500px;
+  }
+}
+@media (max-width: 765px) {
+  .listOfTable {
+    width: 1030px !important;
+  }
+  .PrepareInspectionReport {
+    width: 70%;
+  }
+  .reportInsepection table {
+    width: 1500px;
   }
 }
 @media (max-width: 575px) {
-  .devicetable {
+  .listOfTable {
     width: 1100px !important;
-    overflow-y: auto !important;
+  }
+  .PrepareInspectionReport {
+    width: 100%;
+  }
+  .reportInsepection table {
+    width: 1500px;
   }
 }
 

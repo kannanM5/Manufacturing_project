@@ -49,6 +49,7 @@ export default function Emptypage() {
   const [reportData, setReportData] = useState(null);
   const { values, handleChange, setFieldValue, setValues } = useFormik({
     initialValues: {
+      process_id: "",
       product_id: "",
       part_no: "",
       supplier_name: "",
@@ -157,6 +158,7 @@ export default function Emptypage() {
           : values?.invoice_date,
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
+        process_id: reportData?.productData?.process_id,
       });
     }
   }, [reportData]);
@@ -204,9 +206,9 @@ export default function Emptypage() {
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        process_id: ele?.process_id,
+        process_details_id: ele?.process_details_id,
         status: ele?.status ? ele?.status : null,
-        remarks: ele?.remark ? ele?.remark : null,
+        remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
             ? emptyObserveData
@@ -216,6 +218,7 @@ export default function Emptypage() {
     const finalData = {
       user_id: userId,
       token: token,
+      process_id: data?.process_id,
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
       invoice_date: data?.invoice_date,
@@ -303,7 +306,7 @@ export default function Emptypage() {
       },
     });
   };
-
+  console.log(token, "CURRENTTOKEN");
   return (
     <div>
       {loader ? <Loader /> : null}
@@ -311,14 +314,16 @@ export default function Emptypage() {
         Btntitle={"Save"}
         BtntitleOne={"Finish"}
         modal={() => {
+          //save
           handleAddIncomingReport(values, 0);
         }}
+        //submit
         onPressOvertime={() => handleAddIncomingReport(values, 1)}
         heading={"Incoming Inspection Report"}
       />
       <div className={classes.reportInsepection}>
         <div className={`table-responsive ${classes.Dashboard}`}>
-          <table className={classes.devicetable}>
+          <table>
             <thead>
               <tr>
                 <th colSpan={18} className={classes.CompanyName}>

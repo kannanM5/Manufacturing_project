@@ -304,7 +304,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           />
         </div>
       </div>
-      <div className="col-lg-2 col-md-2 my-4">
+      <div className="col-lg-2 col-md-2 col-6 my-4">
         <CustomButton title="Submit" onButtonPress={handleSubmit} />
       </div>
     </>

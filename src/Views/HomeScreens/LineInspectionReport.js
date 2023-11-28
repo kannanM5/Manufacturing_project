@@ -13,6 +13,7 @@ import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import moment from "moment";
+import CustomDatePicker from "../../Components/CustomDatePicker";
 var CryptoJS = require("crypto-js");
 
 function LineInspectionReport() {
@@ -25,15 +26,20 @@ function LineInspectionReport() {
   const [reportData, setReportData] = useState(null);
   const { values, handleChange, setFieldValue, setValues } = useFormik({
     initialValues: {
+      process_id: "",
       product_id: "",
       part_no: "",
+      report_shift: "",
+      operator_name: "",
       supplier_name: "",
       report_status: "",
       checked_by: "",
       approved_by: "",
       process: "",
       invoice_no: "",
-      invoice_date: moment(new Date()).format("YYYY-MM-DD"),
+      inspector_name: "",
+      report_header_status: Array(8).fill(null),
+      report_header_date: moment(new Date()).format("YYYY-MM-DD"),
       final_status: isFinalStatus,
       quantity: "",
       datas: "",
@@ -46,21 +52,29 @@ function LineInspectionReport() {
       id: 1,
       left: "M/C No:",
       right: "Operator Name:",
+      leftData: values?.mvc_no,
+      rightData: values?.operator_name,
     },
     {
       id: 2,
       left: "Part No:",
       right: "Date:",
+      leftData: values?.tableHeadDataApi?.part_no,
+      rightData: values?.report_header_date,
     },
     {
       id: "3",
       left: "Part Name:",
       right: "Shift:",
+      leftData: values?.tableHeadDataApi?.part_name,
+      rightData: values?.report_shift,
     },
     {
       id: "4",
       left: "Process:",
       right: "Inspector Name:",
+      leftData: values?.process,
+      rightData: values?.inspector_name,
     },
   ];
 
@@ -139,11 +153,12 @@ function LineInspectionReport() {
         supplier_name: reportData?.productData?.supplier_name,
         checked_by: reportData?.productData?.checked_by,
         approved_by: reportData?.productData?.approved_by,
-        invoice_date: reportData?.productData?.invoice_date
-          ? reportData?.productData?.invoice_date
-          : values?.invoice_date,
+        report_header_date: reportData?.productData?.report_header_date
+          ? reportData?.productData?.report_header_date
+          : values?.report_header_date,
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
+        process_id: reportData?.productData?.process_id,
       });
     }
   }, [reportData]);
@@ -156,6 +171,7 @@ function LineInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("report_type", urlValues?.pageStatus);
+    formData.append("newTab", 1);
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -179,7 +195,7 @@ function LineInspectionReport() {
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        process_id: ele?.process_id,
+        process_details_id: ele?.process_details_id,
         last_half: ele?.last_half ? ele?.last_half : null,
         first_half: ele?.first_half ? ele?.first_half : null,
         remark: ele?.remark ? ele?.remark : null,
@@ -192,14 +208,18 @@ function LineInspectionReport() {
     const finalData = {
       user_id: userId,
       token: token,
+      mvc_no: data?.mvc_no,
+      process_id: data?.process_id,
+      operator_name: data?.operator_name,
       product_id: data?.product_id,
+      report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      invoice_date: data?.invoice_date,
-      quantity: data?.quantity,
+      report_header_date: data?.report_header_date,
       observationData: sendData,
-      supplier_name: data?.supplier_name,
+      report_header_status: data?.report_header_status,
       checked_by: data?.checked_by,
       approved_by: data?.approved_by,
+      inspector_name: data?.inspector_name,
       final_status: isFinalStatus
         ? isFinalStatus.toString()
         : isFinalStatus.toString(),
@@ -246,7 +266,7 @@ function LineInspectionReport() {
   };
   const handleFirstOfChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].last_half = event.target.value;
+    updatedData[rowIndex].first_half = event.target.value;
     handleChange({
       target: {
         name: "datas",
@@ -257,7 +277,7 @@ function LineInspectionReport() {
 
   const handleLastOfChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].first_half = event.target.value;
+    updatedData[rowIndex].last_half = event.target.value;
     handleChange({
       target: {
         name: "datas",
@@ -275,6 +295,11 @@ function LineInspectionReport() {
       },
     });
   };
+  const handleChangeStatus = (event, index) => {
+    const newData = [...values?.report_header_status];
+    newData[index] = event.target?.value;
+    setFieldValue("report_header_status", newData);
+  };
   return (
     <>
       <div>
@@ -289,7 +314,7 @@ function LineInspectionReport() {
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
-            <table className={classes.devicetable}>
+            <table>
               <thead>
                 <tr>
                   <th colSpan={16} className={classes.CompanyName}>
@@ -330,9 +355,82 @@ function LineInspectionReport() {
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
-                    <th colSpan={10}></th>
+                    <th colSpan={10}>
+                      {index === 0 ? (
+                        <input
+                          maxLength={50}
+                          type="text"
+                          value={head?.leftData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChange("mvc_no")(alphabeticText);
+                          }}
+                        />
+                      ) : (
+                        head?.leftData
+                      )}
+                    </th>
                     <th colSpan={2}>{head?.right}</th>
-                    <th colSpan={4}></th>
+                    <th colSpan={4}>
+                      {index === 0 ? (
+                        <input
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChange("operator_name")(alphabeticText);
+                          }}
+                        />
+                      ) : index === 1 ? (
+                        <CustomDatePicker
+                          borderNone={false}
+                          selectedDate={values?.report_header_date}
+                          onSelectDate={(val) => {
+                            setFieldValue(
+                              "report_header_date",
+                              moment(val).format("YYYY-MM-DD")
+                            );
+                          }}
+                        />
+                      ) : index === 2 ? (
+                        <input
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9. ]/g,
+                              ""
+                            );
+                            handleChange("report_shift")(alphabeticText);
+                          }}
+                        />
+                      ) : (
+                        <input
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9. ]/g,
+                              ""
+                            );
+                            handleChange("inspector_name")(alphabeticText);
+                          }}
+                        />
+                      )}
+                    </th>
                   </tr>
                 ))}
                 <tr className={classes.secondHead}>
@@ -450,14 +548,18 @@ function LineInspectionReport() {
                   <td></td>
                   <td></td>
                   <td colSpan={2}>Status</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  {values?.report_header_status &&
+                    values?.report_header_status.map((ele, index) => (
+                      <td>
+                        <input
+                          className={classes.observationInput}
+                          maxLength={10}
+                          type="text"
+                          value={ele}
+                          onChange={(event) => handleChangeStatus(event, index)}
+                        />
+                      </td>
+                    ))}
                   <td></td>
                   <td colSpan={1}></td>
                 </tr>

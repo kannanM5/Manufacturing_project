@@ -155,6 +155,7 @@
   padding: 0px 5px 0px 10px;
 }
 .menu_content {
+  align-items: center;
   display: flex;
   padding: 10px 3px;
   margin-bottom: 5px;
@@ -176,7 +177,9 @@
   padding-top: 10px !important;
   padding-bottom: 10px !important;
 }
-
+.menu h4 {
+  margin-bottom: 0 !important;
+}
 @media (min-width: 992px) {
   .header .child2 {
     margin-right: 0;
@@ -196,6 +199,7 @@
     height: 50px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     align-items: center;
     width: 95%;
     text-align: center;
@@ -229,6 +233,7 @@
     display: none;
   }
   .menu {
+    align-items: center;
     height: 50px;
     display: flex;
     justify-content: space-between;

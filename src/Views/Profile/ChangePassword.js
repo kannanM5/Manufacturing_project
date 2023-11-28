@@ -108,7 +108,7 @@ function ChangePassword() {
         <div className="container-fluid">
           <div className={classes.changepasswordcontent}>
             <div className="row">
-              <div className="col-lg-6 col-md-6 col-12 mb-3">
+              <div className="col-lg-6 col-md-5 col-12 mb-3">
                 <TextInputBox
                   requiredText="*"
                   isSecure={true}
@@ -140,7 +140,7 @@ function ChangePassword() {
                   }}
                 />
               </div>
-              <div className="col-lg-6 col-md-6 col-12 mb-3">
+              <div className="col-lg-6 col-md-5 col-12 mb-3">
                 <TextInputBox
                   requiredText="*"
                   isSecure={true}
@@ -172,7 +172,7 @@ function ChangePassword() {
                   }
                 />
               </div>
-              <div className="col-lg-6 col-md-6 col-12 mb-3">
+              <div className="col-lg-6 col-md-5 col-12 mb-3">
                 <TextInputBox
                   requiredText="*"
                   isSecure={true}

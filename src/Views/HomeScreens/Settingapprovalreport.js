@@ -28,6 +28,7 @@ function SettingInspectionReport() {
   const { values, handleChange, setFieldValue, setValues } = useFormik({
     initialValues: {
       product_id: "",
+      process_id: "",
       mvc_no: "",
       setter_name: "",
       part_no: "",
@@ -147,6 +148,7 @@ function SettingInspectionReport() {
       setValues({
         ...values,
         process: getProcess[0],
+        process_id: reportData?.productData?.process_id,
         product_id: reportData?.productData?.product_id,
         datas: processingData,
         tableHeadDataApi: reportData?.productData,
@@ -167,6 +169,7 @@ function SettingInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("report_type", urlValues?.pageStatus);
+    formData.append("newTab", 1);
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -190,9 +193,9 @@ function SettingInspectionReport() {
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        process_id: ele?.process_id,
+        process_details_id: ele?.process_details_id,
         status: ele?.status ? ele?.status : null,
-        remarks: ele?.remark ? ele?.remark : null,
+        remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
             ? emptyObserveData
@@ -205,6 +208,7 @@ function SettingInspectionReport() {
       token: token,
       product_id: data?.product_id,
       mvc_no: data?.mvc_no,
+      process_id: data?.process_id,
       setter_name: data?.setter_name,
       report_header_date: data?.report_header_date,
       report_shift: data?.report_shift,
@@ -238,7 +242,7 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
-
+  console.log(token, "CURRENTTOKEN");
   const handleChangeValues = (event, index, inputIndex) => {
     const tempData = [...values.datas];
     const newData = tempData.map((ele, dataIndex) => {
@@ -286,7 +290,7 @@ function SettingInspectionReport() {
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
-            <table className={classes.devicetable}>
+            <table>
               <thead>
                 <tr>
                   <th colSpan={18} className={classes.CompanyName}>
@@ -380,7 +384,10 @@ function SettingInspectionReport() {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(/[^0-9]/g, "");
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9. ]/g,
+                              ""
+                            );
                             handleChange("report_shift")(alphabeticText);
                           }}
                         />
@@ -469,7 +476,7 @@ function SettingInspectionReport() {
                               />
                             </td>
                           ))}
-                      <td colSpan={1}>
+                      <td colSpan={10}>
                         <input
                           className={classes.observationInput}
                           maxLength={20}

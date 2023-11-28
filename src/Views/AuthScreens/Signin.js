@@ -12,11 +12,11 @@ import {
   handleStoreUserToken,
 } from "../../Store/Reducers/LoginReducer";
 import img from "../../Assets/Images/Svg/loginimg.svg";
-// import img from "../../Assets/Icons/SvgIcons/bolts_icon.svg";
 import { setCookie } from "../../Store/Storage/Cookie";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import classes from "./AuthScreens.module.css";
 import { EMAIL_REGEX } from "../../Utility/Constants";
+import { useToken } from "../../Utility/StoreData";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -26,10 +26,10 @@ const validationSchema = Yup.object({
 });
 
 function Signin() {
+  const token = useToken();
   const { REACT_APP_SALT_KEY } = process.env;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sha1 = require("sha1");
   const [loader, setloader] = useState(false);
   const {
     handleSubmit,
@@ -51,6 +51,7 @@ function Signin() {
       handleLogin(values);
     },
   });
+  console.log(token, "CURRENTTOKEN");
   const handleLogin = (data) => {
     setloader(true);
     let formData = new FormData();

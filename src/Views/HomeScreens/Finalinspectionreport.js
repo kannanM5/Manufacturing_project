@@ -27,10 +27,12 @@ function FinalInspectionReport() {
   const [urlValues, setUrlValues] = useState();
   const { values, handleChange, setFieldValue, setValues } = useFormik({
     initialValues: {
+      process_id: "",
       product_id: "",
       part_no: "",
       supplier_name: "",
       report_status: "",
+      customer: "",
       checked_by: "",
       approved_by: "",
       process: "",
@@ -84,6 +86,7 @@ function FinalInspectionReport() {
           : values?.invoice_date,
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
+        process_id: reportData?.productData?.process_id,
       });
     }
   }, [reportData]);
@@ -132,6 +135,7 @@ function FinalInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("report_type", urlValues?.pageStatus);
+    formData.append("newTab", 1);
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -165,9 +169,9 @@ function FinalInspectionReport() {
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        process_id: ele?.process_id,
+        process_details_id: ele?.process_details_id,
         status: ele?.status ? ele?.status : null,
-        remarks: ele?.remark ? ele?.remark : null,
+        remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
             ? emptyObserveData
@@ -178,11 +182,12 @@ function FinalInspectionReport() {
       user_id: userId,
       token: token,
       product_id: data?.product_id,
+      process_id: data?.process_id,
       invoice_no: data?.invoice_no,
       invoice_date: data?.invoice_date,
       quantity: data?.quantity,
       observationData: sendData,
-      customer: "KANNAN",
+      customer: data?.customer,
       address: "CHENNAI",
       supplier_name: "V.T. ENTERPRISE",
       checked_by: data?.checked_by,
@@ -259,7 +264,7 @@ function FinalInspectionReport() {
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
-            <table className={classes.devicetable}>
+            <table>
               <thead>
                 <tr>
                   <td colSpan={15} rowSpan={2}>
@@ -302,14 +307,14 @@ function FinalInspectionReport() {
                     <input
                       maxLength={20}
                       type="text"
-                      value={values?.invoice_no}
+                      value={values?.customer}
                       onChange={(event) => {
                         const text = event.target.value;
                         const alphabeticText = text.replace(
                           /[^A-Za-z0-9 ]/g,
                           ""
                         );
-                        handleChange("invoice_no")(alphabeticText);
+                        handleChange("customer")(alphabeticText);
                       }}
                     />
                   </th>
@@ -320,7 +325,7 @@ function FinalInspectionReport() {
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Part No:</th>
-                  <th colSpan={10}></th>
+                  <th colSpan={10}>{values?.tableHeadDataApi?.part_no}</th>
                   <th colSpan={2}>Inv No:</th>
                   <th colSpan={5}>
                     <input
@@ -340,7 +345,9 @@ function FinalInspectionReport() {
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Drg Issue No:</th>
-                  <th colSpan={10}></th>
+                  <th colSpan={10}>
+                    {values?.tableHeadDataApi?.drawing_issue_no}
+                  </th>
                   <th colSpan={2}>Inv Date:</th>
                   <th colSpan={5}>
                     <CustomDatePicker
@@ -357,7 +364,7 @@ function FinalInspectionReport() {
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Part Name:</th>
-                  <th colSpan={10}></th>
+                  <th colSpan={10}>{values?.tableHeadDataApi?.part_name}</th>
                   <th colSpan={2}>Quantity:</th>
                   <th colSpan={5}>
                     <input

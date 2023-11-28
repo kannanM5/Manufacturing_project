@@ -34,8 +34,7 @@ function CustomDropDown({
     <>
       <div className={classes.dropdown}>
         <p className={classes.txt}>
-          {title}
-          <span className={classes.star}>{requiredText}</span>
+          {title} <span className={classes.star}>{requiredText}</span>
         </p>
         <div className={classes.dropdown_conatiner}>
           <div

@@ -4,7 +4,7 @@ import { FormControl, MenuItem, Select } from "@mui/material";
 import { makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import classes from "./Management.module.css";
-import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
+import { CustomButton, TextInputBox } from "../../Components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -13,7 +13,6 @@ import { ALPHA_NUM } from "../../Utility/Constants";
 import { getInspectionReportList } from "../../Services/Services";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 const validationSchema = Yup.object({
   part_no: Yup.string()
     .required("Part number is required")
@@ -36,7 +35,7 @@ var CryptoJS = require("crypto-js");
 function PrepareInspectionReport() {
   const token = useToken();
   const userId = useEmployeeId();
-  const [isShowModal, setIsShowModal] = useState(false);
+
   const navigate = useNavigate();
   const muiclass = useStyles();
   const [loader, setloader] = useState(false);
@@ -86,11 +85,42 @@ function PrepareInspectionReport() {
     },
   ];
 
+  const sendData = () => {
+    var encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify({ ...values, pageStatus: dropdownName }),
+      "data"
+    ).toString();
+
+    return encrypted;
+  };
+
+  const handleNewTapOpen = () => {
+    const getDetails = dropDownItem.find((ele) => ele.id === dropdownName);
+    if (getDetails) {
+      const encryptedData = sendData();
+      const newTab = window.open(getDetails.path, "_blank");
+      if (newTab) {
+        newTab.location.href = `${getDetails.path}?data=${encodeURIComponent(
+          encryptedData
+        )}`;
+      }
+    }
+  };
+
+  const setData = {
+    local_Process: values.process,
+    local_Part_No: values.part_no,
+    local_Report_Type: dropdownName,
+    URL: handleNewTapOpen(),
+  };
+  console.log(setData, "SETDATA");
+
   const getAndSetLoaclStorageDetails = () => {
     const setData = {
       local_Process: values.process,
       local_Part_No: values.part_no,
       local_Report_Type: dropdownName,
+      URL: handleNewTapOpen(),
     };
 
     const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
@@ -106,26 +136,15 @@ function PrepareInspectionReport() {
       return setData;
     }
   };
-  console.log(token, "CURRENTTOKEN");
   const handleClick = (data) => {
     if (data) {
       setFieldValue("buttonStatus", data);
     }
-    // getAndSetLoaclStorageDetails();
-    const getDetails = dropDownItem.find((ele) => ele.id === dropdownName);
-    if (getDetails) {
-      const encryptedData = sendData();
-      const newTab = window.open(getDetails.path, "_blank");
-      if (newTab) {
-        newTab.location.href = `${getDetails.path}?data=${encodeURIComponent(
-          encryptedData
-        )}`;
-      }
-    }
-  };
-  const getReportType = () => {
-    const getDetails = dropDownItem.find((ele) => ele.id)?.name;
-    return getDetails;
+    localStorage.setItem(
+      "ReportTypes",
+      JSON.stringify(getAndSetLoaclStorageDetails())
+    );
+    handleNewTapOpen();
   };
   const handleGetProductsList = (handleStatus) => {
     setloader(true);
@@ -143,8 +162,6 @@ function PrepareInspectionReport() {
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
-        } else if (response.data.status === 2) {
-          setIsShowModal(true);
         }
       })
       .catch((err) => {
@@ -154,37 +171,12 @@ function PrepareInspectionReport() {
         setloader(false);
       });
   };
-  const sendData = () => {
-    var encrypted = CryptoJS.AES.encrypt(
-      JSON.stringify({ ...values, pageStatus: dropdownName }),
-      "data"
-    ).toString();
 
-    return encrypted;
-  };
-  useEffect(() => {
-    resetForm();
-  }, []);
+  // useEffect(() => {
+  //   resetForm();
+  // }, []);
   return (
     <>
-      <GlobalModal
-        size="md"
-        // ModalStyle="100px"
-        isVisible={isShowModal}
-        setIsVisible={() => setIsShowModal(false)}
-      >
-        <LogoutConfirmationModal
-          msg={`${getReportType()} is already saved for this ${
-            values?.part_no
-          } and ${values?.process}. Please submit that first.`}
-          positiveButtonText="Go to Saved Data"
-          onPositiveButtonPressed={() => {
-            navigate("/export_page");
-            setIsShowModal(false);
-          }}
-          onNegativeButtonPressed={() => setIsShowModal(false)}
-        />
-      </GlobalModal>
       <PageHeader BtnTrue={true} heading={"Prepare Inspection Report"} />
       <div className={classes.PrepareInspectionReport}>
         <div className="row">
@@ -264,7 +256,7 @@ function PrepareInspectionReport() {
           </FormControl>
         </div>
         <div className="row">
-          <div className="col-lg-4 col-6 my-4">
+          <div className="col-lg-4 my-4">
             <CustomButton
               title="Add report"
               onButtonPress={() => {
@@ -273,7 +265,7 @@ function PrepareInspectionReport() {
               }}
             />
           </div>
-          <div className="col-lg-4 col-6 my-4">
+          <div className="col-lg-4 my-4">
             <CustomButton
               title="Edit report"
               onButtonPress={() => {

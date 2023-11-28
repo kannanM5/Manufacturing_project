@@ -46,6 +46,7 @@ function EmployeeList() {
   return (
     <>
       <PageHeader
+        secondBtn={false}
         heading={"Employee List"}
         Btntitle={"Add Employee"}
         modal={() => {

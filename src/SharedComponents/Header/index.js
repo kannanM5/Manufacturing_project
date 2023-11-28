@@ -17,6 +17,7 @@ import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { muiStyles } from "../../Utility/Constants";
 import { GlobalModal } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
+import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
 import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
@@ -192,7 +193,7 @@ export default function Header() {
       name: "Prepare Inspection Report",
       pathname: "Prepareinscepectionreport",
       naviagationPath: "/Prepareinscepectionreport",
-      icon: export_icon,
+      icon: prepare_report_icon,
       privatePermission: true,
       isVisible: loginUserData?.work_orders === 1 ? true : false,
     },
@@ -325,7 +326,7 @@ export default function Header() {
             <img src={menuIcon} alt="menuIcon" />
           </div>
           <div className={classes.sideMenuLogo}>
-            <img src={CompanyLogo} alt="logo" />
+            {/* <img src={CompanyLogo} alt="logo" /> */}
             <h4
               style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
             >
@@ -339,7 +340,7 @@ export default function Header() {
               onClose={toggleShow}
             >
               <div className={classes.child3}>
-                <p>User Name</p>
+                <p>{userName}</p>
                 <button onClick={toggleShow} className="btn-close" />
               </div>
 
@@ -361,26 +362,17 @@ export default function Header() {
                             navigate(ele?.naviagationPath);
                           }
                         }}
-                        // onClick={() => {
-                        //   if (ele.id === 3) {
-                        //     setmanagementActive(!managementActive);
-                        //     setreportActive(false);
-                        //   } else if (ele?.id === 4) {
-                        //     setmanagementActive(false);
-                        //     setreportActive((pre) => !pre);
-                        //   } else {
-                        //     setmanagementActive(false);
-                        //     setreportActive(false);
-                        //     if (ele?.naviagationPath) {
-                        //       navigate(ele?.naviagationPath);
-                        //     }
-                        //     toggleShow();
-                        //   }
-                        // }}
                       >
                         <div className={classes.sideMenu}>
                           <div className={classes.menu_content}>
-                            <img fill="white" src={ele?.icon} alt="icons"></img>
+                            <img
+                              style={{
+                                width: "20px",
+                                height: "20px",
+                              }}
+                              src={ele?.icon}
+                              alt="icons"
+                            ></img>
                             <p
                               onClick={() =>
                                 ele.name == "Logout" &&

@@ -46,7 +46,7 @@ function ListOfProducts() {
   });
 
   useEffect(() => {
-    if (token) handleGetProductsList();
+    // if (token) handleGetProductsList();
   }, [token]);
 
   const handleGetProductsList = (page = 1) => {
@@ -74,6 +74,7 @@ function ListOfProducts() {
     <>
       {loader ? <Loader /> : null}
       <PageHeader
+        secondBtn={false}
         Btntitle={"Add Product"}
         modal={() => {
           setIsShowModal((prev) => {
@@ -122,7 +123,6 @@ function ListOfProducts() {
           />
         </GlobalModal>
       )}
-
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>
@@ -166,7 +166,6 @@ function ListOfProducts() {
           </tbody>
         </table>
       </div>
-
       {listOfProducts?.items?.length ? (
         <CustomPagination
           page={page}
