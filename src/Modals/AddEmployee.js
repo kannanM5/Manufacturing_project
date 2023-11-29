@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import { EMAIL_REGEX } from "../Utility/Constants";
 import { userSignUp } from "../Services/Services";
@@ -30,15 +29,7 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password")], "Passwords must match")
     .trim("Remove leading and trailing spaces")
     .strict(true),
-  userTypeName: Yup.string()
-    .required("User type is required")
-    .test("one of", "User type is required", function (value) {
-      const { userTypeName } = this.parent;
-      if (value === "-- None --") {
-        return false;
-      }
-      return true;
-    }),
+  userTypeName: Yup.string().required("User type is required"),
 });
 function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   const {

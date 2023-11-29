@@ -16,11 +16,6 @@ export default function Commondate({
   requiredText,
   borderNone = true,
 }) {
-  const disableFutureDt = (date) => {
-    if (isFuture) {
-      return date.isAfter(new Date());
-    }
-  };
   const disableDates = (date) => {
     // Disable dates before the selected "from date"
     if (fromDateValue) {

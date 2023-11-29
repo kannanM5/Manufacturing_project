@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
     }),
 });
 function Export() {
-  const [dropdownName, setDropDownName] = useState(1);
+  // const [dropdownName, setDropDownName] = useState(1);
   const dropdownItem = [
     {
       key: 1,
@@ -40,7 +40,7 @@ function Export() {
     },
   ];
   const {
-    handleSubmit,
+    // handleSubmit,
     handleChange,
     setFieldValue,
     values,

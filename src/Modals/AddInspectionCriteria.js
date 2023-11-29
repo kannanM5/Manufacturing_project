@@ -36,14 +36,11 @@ function AddInspectionCriteria({
   const {
     handleSubmit,
     handleChange,
-    setFieldValue,
     values,
     errors,
     touched,
-    resetForm,
     setFieldError,
     setFieldTouched,
-    setValues,
   } = useFormik({
     initialValues: {
       id: editData?.id,

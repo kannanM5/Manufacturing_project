@@ -5,7 +5,6 @@ import classes from "./Management.module.css";
 import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { ALPHA_NUM } from "../../Utility/Constants";
 import { getInspectionReportList } from "../../Services/Services";
@@ -13,6 +12,7 @@ import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 import CustomDropDown from "../../Components/CustomDropDown";
+
 const validationSchema = Yup.object({
   part_no: Yup.string()
     .required("Part number is required")

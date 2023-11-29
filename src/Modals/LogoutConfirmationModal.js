@@ -1,5 +1,4 @@
 import React from "react";
-
 import confirm_delete from "../Assets/Icons/Svg/confirmDelete.svg";
 import { CustomButton } from "../Components";
 import classes from "./Modal.module.css";
