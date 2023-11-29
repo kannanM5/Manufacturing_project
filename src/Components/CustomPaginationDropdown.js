@@ -1,35 +1,7 @@
-import {
-  FormControl,
-  makeStyles,
-  MenuItem,
-  Select,
-  Typography,
-} from "@material-ui/core";
+import { Select, Typography } from "antd";
 import classes from "./CustomStyle.module.css";
+import MenuItem from "antd/es/menu/MenuItem";
 
-const useStyles = makeStyles((theme) => ({
-  itemperpage: {
-    marginTop: "3px",
-  },
-  background: {
-    backgroundColor: "transparent",
-  },
-  showingtext: {
-    marginTop: "25px",
-    marginLeft: "30px",
-  },
-  pageSelect: {
-    height: "38px !important",
-    borderRadius: "4px",
-    "&:hover": {
-      height: "38px !important",
-      borderRadius: "4px",
-    },
-    "&>div": {
-      background: "none !important",
-    },
-  },
-}));
 export default function CustomPaginationDropdown({
   itemperpage,
   totalData,
@@ -37,7 +9,6 @@ export default function CustomPaginationDropdown({
   value = 10,
   dashboard = false,
 }) {
-  const styles = useStyles();
   return (
     <div className={classes.paginationsizedropdown}>
       {totalData?.items?.length > 0 || totalData?.machines?.length > 0 ? (
@@ -72,30 +43,25 @@ export default function CustomPaginationDropdown({
           <div className={classes.dropdowndisplay}>
             <p>{title} Per Page : </p>
             {dashboard ? (
-              <FormControl>
-                <Select
-                  value={value}
-                  className={styles?.pageSelect}
-                  onChange={itemperpage}
-                >
-                  <MenuItem value={6}>6</MenuItem>
-                  <MenuItem value={12}>12</MenuItem>
-                </Select>
-              </FormControl>
+              // <FormControl>
+              <Select value={value} onChange={itemperpage}>
+                <MenuItem value={6}>6</MenuItem>
+                <MenuItem value={12}>12</MenuItem>
+              </Select>
             ) : (
-              <FormControl>
-                <Select
-                  value={value}
-                  className={styles?.pageSelect}
-                  defaultValue={10}
-                  id="demo-simple-select"
-                  onChange={(e) => itemperpage(e)}
-                >
-                  <MenuItem value={10}>10</MenuItem>
-                  <MenuItem value={25}>25</MenuItem>
-                  <MenuItem value={50}>50</MenuItem>
-                </Select>
-              </FormControl>
+              // </FormControl>
+              // <FormControl>
+              <Select
+                value={value}
+                defaultValue={10}
+                id="demo-simple-select"
+                onChange={(e) => itemperpage(e)}
+              >
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={25}>25</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+              </Select>
+              // </FormControl>
             )}
           </div>
         </div>

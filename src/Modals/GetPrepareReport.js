@@ -1,23 +1,11 @@
 import React, { useState } from "react";
 import classes from "./Modal.module.css";
 import close from "../Assets/Icons/Svg/close.svg";
-import { TextIncreaseSharp } from "@mui/icons-material";
 import { CustomButton, TextInputBox } from "../Components";
-import { FormControl, MenuItem, Select } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 
-const useStyles = makeStyles(() => ({
-  Select: {
-    "&>div": {
-      background: "none !important",
-      borderRadius: "8px !important",
-    },
-  },
-}));
 function GetPrepareReport({ onClose, heading, modalClose }) {
   const navigate = useNavigate();
-  const muiclass = useStyles();
   const [dropdownName, setDropDownName] = useState(1);
   const dropDownItem = [
     {

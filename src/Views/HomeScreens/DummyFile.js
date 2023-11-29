@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { FormControl, MenuItem, Select } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import classes from "./Management.module.css";
 import { CustomButton, TextInputBox } from "../../Components";
@@ -13,6 +11,8 @@ import { ALPHA_NUM } from "../../Utility/Constants";
 import { getInspectionReportList } from "../../Services/Services";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { Select } from "antd";
+import MenuItem from "antd/es/menu/MenuItem";
 const validationSchema = Yup.object({
   part_no: Yup.string()
     .required("Part number is required")
@@ -37,7 +37,6 @@ function PrepareInspectionReport() {
   const userId = useEmployeeId();
 
   const navigate = useNavigate();
-  const muiclass = useStyles();
   const [loader, setloader] = useState(false);
   const [dropdownName, setDropDownName] = useState(1);
   const [first, setfirst] = useState("kannan");
@@ -237,23 +236,22 @@ function PrepareInspectionReport() {
         </div>
         <div className="col-lg-12 mt-3">
           <p className={classes.selectHead}>Select Report Type</p>
-          <FormControl fullWidth={true}>
-            <Select
-              className={muiclass?.Select}
-              value={dropdownName}
-              onChange={(e) => {
-                setDropDownName(e.target.value);
-              }}
-            >
-              {dropDownItem.map((items, index) => {
-                return (
-                  <MenuItem key={index} value={items.id}>
-                    {items.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
+          {/* <FormControl fullWidth={true}> */}
+          <Select
+            value={dropdownName}
+            onChange={(e) => {
+              setDropDownName(e.target.value);
+            }}
+          >
+            {dropDownItem.map((items, index) => {
+              return (
+                <MenuItem key={index} value={items.id}>
+                  {items.name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+          {/* </FormControl> */}
         </div>
         <div className="row">
           <div className="col-lg-4 my-4">

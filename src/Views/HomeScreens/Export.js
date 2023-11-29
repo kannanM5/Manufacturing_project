@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { CustomButton, CustomDropDown, TextInputBox } from "../../Components";
+import { CustomButton, TextInputBox } from "../../Components";
 import classes from "./Management.module.css";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import CustomDatePicker from "../../Components/CustomDatePicker";
 import moment from "moment";
+import Commondate from "../../Components/Commondate";
+import dayjs from "dayjs";
+import CustomDropDown from "../../Components/CustomDropDown";
 
 const validationSchema = Yup.object({
   reportType: Yup.string()
@@ -20,24 +22,24 @@ const validationSchema = Yup.object({
 });
 function Export() {
   const [dropdownName, setDropDownName] = useState(1);
-  const [dropdownItem, setdropdownItem] = useState([
+  const dropdownItem = [
     {
-      id: 1,
-      name: "Incoming Inspection Report",
+      key: 1,
+      label: "Incoming Inspection Report",
     },
     {
       id: 2,
-      name: "Setting Approval Report",
+      label: "Setting Approval Report",
     },
     {
-      id: 3,
-      name: "Line Inspection Report",
+      key: 3,
+      label: "Line Inspection Report",
     },
     {
-      id: 4,
-      name: "Final Inspection Report",
+      key: 4,
+      label: "Final Inspection Report",
     },
-  ]);
+  ];
   const {
     handleSubmit,
     handleChange,
@@ -50,7 +52,7 @@ function Export() {
   } = useFormik({
     initialValues: {
       reportType: "",
-      date: "",
+      date: new Date(),
       part_no: "",
       process: "",
       customer: "",
@@ -68,15 +70,17 @@ function Export() {
           <div className="row">
             <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
               <CustomDropDown
-                editName={values?.reportType}
-                title="Report Type"
-                items={dropdownItem}
-                anotherFieldName={"id"}
-                fieldName={"name"}
-                requiredText={"*"}
-                onSelectedItem={(val, value) => {
-                  setFieldValue("reportType", value?.label);
-                  // setFieldValue("type", value?.id);
+                placeholderText={"report type"}
+                requiredText="*"
+                items={[...dropdownItem]}
+                value={
+                  [...dropdownItem].find(
+                    (ele) => ele.key === parseInt(values.reportType)
+                  )?.label
+                }
+                title="Select Report Type"
+                onSelect={(val) => {
+                  setFieldValue("reportType", val);
                 }}
                 errorText={
                   errors?.reportType && touched?.reportType
@@ -86,13 +90,16 @@ function Export() {
               />
             </div>
             <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
-              <CustomDatePicker
+              <Commondate
                 title="Date"
-                required="*"
-                selectedDate={values?.date}
-                onSelectDate={(val) => {
-                  setFieldValue("date", moment(val).format("YYYY-MM-DD"));
+                // placeholder="Select date"
+                onChange={(value) => {
+                  setFieldValue("date", value);
                 }}
+                value={dayjs(values?.date).format("YYYY-MM-DD")}
+                // errorText={
+                //   errors?.to_date && touched?.to_date ? errors?.to_date : ""
+                // }
               />
             </div>
             <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">

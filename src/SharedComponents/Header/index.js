@@ -1,20 +1,8 @@
 import React, { useState } from "react";
-import { TabContext, TabList } from "@mui/lab";
-import { Tab } from "@mui/material";
-import {
-  Drawer,
-  Grid,
-  Menu,
-  MenuItem,
-  Theme,
-  makeStyles,
-} from "@material-ui/core";
-import { ArrowDropDownIcon } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import dash from "../../Assets/Icons/Svg/Dashboard.svg";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
-import { muiStyles } from "../../Utility/Constants";
 import { GlobalModal } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
@@ -29,54 +17,15 @@ import logout from "../../Assets/Icons/SvgIcons/logout.svg";
 import { useEmployeeId, useToken, useUserName } from "../../Utility/StoreData";
 import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
+import { Drawer, Menu, Tabs } from "antd";
+import TabPane from "antd/es/tabs/TabPane";
+import MenuItem from "antd/es/menu/MenuItem";
 
-const useStyles = makeStyles((theme) => ({
-  DropdownArrow: {
-    "& .dropdown-toggle::after": {
-      display: "none",
-    },
-    "&>div": {
-      padding: "1px 0px",
-    },
-  },
-  Drawer: {
-    "&>div:nth-child(3)": {
-      backgroundColor: "var(--menuBg) !important",
-      color: "#fff !important",
-      padding: "15px 12px",
-      minWidth: "265px",
-    },
-  },
-  Menu: {
-    "&>div:nth-child(3)": {
-      top: "65px !important",
-      left: "0 !important",
-      right: "37px",
-      width: "200px",
-      marginLeft: "auto",
-      border: "1px solid #0000003d",
-    },
-    "& ul": {
-      padding: "0px !important",
-    },
-  },
-  menuList: {
-    paddingTop: "8px !important",
-    paddingBottom: "8px !important",
-    paddingRight: "0px !important",
-  },
-
-  MuiListItemgutters: {
-    paddingRight: "0px !important",
-  },
-}));
 export default function Header() {
   const token = useToken();
   const userId = useEmployeeId();
   const userName = useUserName();
   const { REACT_APP_BASEURL } = process.env;
-  const styles = muiStyles();
-  const muiStyle = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -165,6 +114,12 @@ export default function Header() {
       name: "Prepare Inspection Report",
       naviagationPath: "/Prepareinscepectionreport",
     },
+
+    {
+      id: 5,
+      name: "Saved Logs",
+      naviagationPath: "/saved_logs",
+    },
     {
       id: 4,
       name: "Export",
@@ -250,7 +205,10 @@ export default function Header() {
       "mconnect_user_data" + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
     navigate("/");
   };
-
+  const handleNavigateTabs = (data) => {
+    const getPath = menuData.find((ele) => ele?.id == data)?.naviagationPath;
+    navigate(getPath);
+  };
   return (
     <>
       {/* {isShowModal?.status && (
@@ -289,8 +247,9 @@ export default function Header() {
         </GlobalModal>
       )} */}
       <GlobalModal
-        isVisible={deleteModal.modal}
-        setIsVisible={() => {
+        CustomWidth={500}
+        isOpen={deleteModal.modal}
+        onCancel={() => {
           setdeleteModal((prev) => {
             return {
               ...prev,
@@ -334,11 +293,7 @@ export default function Header() {
             </h4>
           </div>
           <div className={classes.offcanvas}>
-            <Drawer
-              className={muiStyle.Drawer}
-              open={show}
-              onClose={toggleShow}
-            >
+            <Drawer open={show} onClose={toggleShow}>
               <div className={classes.child3}>
                 <p>{userName}</p>
                 <button onClick={toggleShow} className="btn-close" />
@@ -434,7 +389,21 @@ export default function Header() {
             </h4>
           </div>
           <div className={classes.child2}>
-            {menuData.map((ele, i) => {
+            <Tabs
+              activeKey={menuData
+                .find((ele) => ele?.naviagationPath === pathname)
+                ?.id.toString()}
+              defaultActiveKey={menuData
+                .find((ele) => ele?.naviagationPath === pathname)
+                ?.id.toString()}
+              onChange={(value) => handleNavigateTabs(value)}
+              tabBarStyle={{ marginBottom: 0 }}
+            >
+              {menuData.map((item) => (
+                <TabPane tab={item?.name} key={item.id} />
+              ))}
+            </Tabs>
+            {/* {menuData.map((ele, i) => {
               return (
                 <TabContext value={pathname} key={i}>
                   <div className={"headerTab"}>
@@ -469,10 +438,10 @@ export default function Header() {
                   </div>
                 </TabContext>
               );
-            })}
+            })} */}
           </div>
           <div>
-            <Grid
+            <div
               onClick={() => {
                 setArrow((pre) => !pre);
               }}
@@ -489,18 +458,17 @@ export default function Header() {
                 <div className={classes.nameContainer}>
                   <p className={classes.user_name}>User Name : {userName}</p>
                 </div>
-                <ArrowDropDownIcon
+                {/* <ArrowDropDownIcon
                   style={{
                     transition: "0.3s",
                     transform: `rotate(${Arrow ? 180 : 0}deg)`,
                     marginTop: "2px",
                     fill: "black",
                   }}
-                />
+                /> */}
               </div>
               {Arrow && (
                 <Menu
-                  className={muiStyle.Menu}
                   open={Arrow}
                   style={{
                     marginTop: "1px",
@@ -521,7 +489,6 @@ export default function Header() {
                             navigate(ele?.pathname);
                           }
                         }}
-                        className={muiStyle.menuList}
                         style={{
                           width: "100%",
                           display: "flex",
@@ -541,7 +508,8 @@ export default function Header() {
                   ))}
                 </Menu>
               )}
-            </Grid>
+              {/* i chnage in grid under div*/}
+            </div>
           </div>
         </div>
       </div>

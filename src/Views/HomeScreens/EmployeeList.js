@@ -10,6 +10,7 @@ import { getCookie } from "../../Store/Storage/Cookie";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import chagepassword_Icon from "../../Assets/Icons/SvgIcons/password_key.svg";
+import { AutoComplete } from "antd";
 function EmployeeList() {
   const [isShowModal, setIsShowModal] = useState({
     status: false,
@@ -17,7 +18,16 @@ function EmployeeList() {
     id: "",
   });
   const [listOfEmployees, setListOfEmployees] = useState();
-
+  const userType = [
+    {
+      value: "1",
+      label: "Admin",
+    },
+    {
+      value: "2",
+      label: "Line Inspector",
+    },
+  ];
   const cookieData = getCookie("vt_enterprise_login");
 
   const handleGetEmployeeList = (page = 1) => {
@@ -59,78 +69,55 @@ function EmployeeList() {
           });
         }}
       />
-      {isShowModal?.status && (
-        <GlobalModal
-          size="lg"
-          ModalStyle="modalMDMinWidth"
-          isVisible={isShowModal.status}
-          setIsVisible={() => {
+      <GlobalModal
+        title={"Add Employee"}
+        isOpen={isShowModal.status}
+        onCancel={() => {
+          setIsShowModal((prev) => {
+            return {
+              ...prev,
+              status: false,
+            };
+          });
+        }}
+      >
+        <AddEmployee
+          listApiCall={handleGetEmployeeList}
+          modalClose={() => {
             setIsShowModal((prev) => {
               return {
                 ...prev,
-                status: true,
+                status: false,
               };
             });
           }}
-        >
-          <AddEmployee
-            listApiCall={handleGetEmployeeList}
-            heading={"Add Employee"}
-            onClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-            modalClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-          />
-        </GlobalModal>
-      )}
-      {isShowModal?.changePasswordStatus && (
-        <GlobalModal
-          size="lg"
-          ModalStyle="modalMDMaxWidth"
-          isVisible={isShowModal.changePasswordStatus}
-          setIsVisible={() => {
+        />
+      </GlobalModal>
+      <GlobalModal
+        CustomWidth={500}
+        title={"Change Password"}
+        isOpen={isShowModal.changePasswordStatus}
+        onCancel={() => {
+          setIsShowModal((prev) => {
+            return {
+              ...prev,
+              changePasswordStatus: false,
+            };
+          });
+        }}
+      >
+        <EmployeeChangePassword
+          employeeId={isShowModal?.id}
+          modalClose={() => {
             setIsShowModal((prev) => {
               return {
                 ...prev,
-                changePasswordStatus: true,
+                changePasswordStatus: false,
               };
             });
           }}
-        >
-          <EmployeeChangePassword
-            employeeId={isShowModal?.id}
-            heading={"Change Password"}
-            onClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  changePasswordStatus: false,
-                };
-              });
-            }}
-            modalClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  changePasswordStatus: false,
-                };
-              });
-            }}
-          />
-        </GlobalModal>
-      )}
+        />
+      </GlobalModal>
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>

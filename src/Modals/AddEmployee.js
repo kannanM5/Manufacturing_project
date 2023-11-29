@@ -4,17 +4,14 @@ import close from "../Assets/Icons/Svg/close.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import {
-  CustomButton,
-  CustomDropDown,
-  Loader,
-  TextInputBox,
-} from "../Components";
+import { CustomButton, Loader, TextInputBox } from "../Components";
 import { EMAIL_REGEX } from "../Utility/Constants";
 import { userSignUp } from "../Services/Services";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { getCookie } from "../Store/Storage/Cookie";
+import CustomDropDown from "../Components/CustomDropDown";
+import { AutoComplete } from "antd";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -73,16 +70,17 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
     },
   });
   const [loader, setloader] = useState(false);
-  const [userType, setUserType] = useState([
+  const userType = [
     {
-      id: 1,
-      name: "Admin",
+      key: 1,
+      label: "Admin",
     },
     {
-      id: 2,
-      name: "Line Inspector",
+      key: 2,
+      label: "Line Inspector",
     },
-  ]);
+  ];
+
   const cookieData = getCookie("vt_enterprise_login");
   console.log(cookieData?.data, "cookieData");
 
@@ -120,7 +118,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   return (
     <>
       {loader ? <Loader /> : null}
-      <div className={classes.popup}>
+      {/* <div className={classes.popup}>
         <div className={classes.popup_head}>
           <div className={classes.popup_head_left}>
             <div className={classes.line}></div>
@@ -135,7 +133,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           alt="close"
           onClick={onClose}
         />
-      </div>
+      </div> */}
       <div className="row mt-4">
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3 ">
           <TextInputBox
@@ -285,7 +283,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           ></TextInputBox>
         </div>
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
-          <CustomDropDown
+          {/* <CustomDropDown
             editName={values?.userTypeName}
             title="User Type"
             items={userType}
@@ -301,6 +299,20 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
                 ? errors?.userTypeName
                 : ""
             }
+          /> */}
+
+          <CustomDropDown
+            placeholderText={"user type"}
+            requiredText="*"
+            items={[...userType]}
+            value={
+              [...userType].find((ele) => ele.key === parseInt(values.type))
+                ?.label
+            }
+            title="User Type"
+            onSelect={(val) => {
+              setFieldValue("type", val);
+            }}
           />
         </div>
       </div>

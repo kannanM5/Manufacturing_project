@@ -1,37 +1,37 @@
-import { Dialog, DialogContent, makeStyles } from "@material-ui/core";
+import React from "react";
+import { Modal } from "antd";
+import classes from "../Components/CustomStyle.module.css";
 
-const useStyles = makeStyles((theme) => ({
-  GlobalModal: {
-    "&>div": {
-      height: "100vh",
-      backgroundColor: "red",
-      display: "flex",
-      margin: "auto",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-  },
-}));
-export default function GlobalModal({
-  isVisible = false,
-  setIsVisible,
+function GlobalModal({
+  title,
+  isOpen,
+  onCancel,
   children,
-  size = "md",
-  customStyle,
-  ModalStyle,
+  CustomWidth = 1000,
 }) {
-  const classes = useStyles();
   return (
-    <Dialog
-      open={isVisible}
-      maxWidth={size}
-      onClose={() => {
-        if (setIsVisible) setIsVisible(false);
-      }}
-      style={customStyle}
-      className={`${ModalStyle} globalModal` || "globalModal"}
-    >
-      <DialogContent style={customStyle}>{children}</DialogContent>
-    </Dialog>
+    <div>
+      <Modal
+        destroyOnClose
+        title={
+          <div className={classes.popup_head_left}>
+            {title && <div className={classes.line}></div>}
+            <div>
+              <p className={classes.Heading}>{title}</p>
+            </div>
+          </div>
+        }
+        open={isOpen}
+        onCancel={onCancel}
+        centered
+        footer={null}
+        width={CustomWidth}
+      >
+        {title && <div className={classes.ModalLine}></div>}
+        <div className={classes.container}>{children}</div>
+      </Modal>
+    </div>
   );
 }
+
+export default GlobalModal;

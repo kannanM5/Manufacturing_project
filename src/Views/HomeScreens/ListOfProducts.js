@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import { useState } from "react";
-import { CustomPagination, GlobalModal, Loader } from "../../Components";
+import { GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import {
   useEmployeeId,
@@ -46,7 +46,7 @@ function ListOfProducts() {
   });
 
   useEffect(() => {
-    // if (token) handleGetProductsList();
+    if (token) handleGetProductsList();
   }, [token]);
 
   const handleGetProductsList = (page = 1) => {
@@ -87,42 +87,31 @@ function ListOfProducts() {
         }}
         heading={"List Of Products"}
       />
-      {isShowModal?.status && (
-        <GlobalModal
-          size="lg"
-          ModalStyle="modalMDMaxWidth"
-          isVisible={isShowModal.status}
-          setIsVisible={() => {
+      <GlobalModal
+        title={`${isShowModal.data ? "Edit" : "Add"} Product`}
+        isOpen={isShowModal.status}
+        onCancel={() => {
+          setIsShowModal((prev) => {
+            return {
+              ...prev,
+              status: false,
+            };
+          });
+        }}
+      >
+        <AddProducts
+          listApiCall={handleGetProductsList}
+          editData={isShowModal?.data}
+          modalClose={() => {
             setIsShowModal((prev) => {
               return {
                 ...prev,
-                status: true,
+                status: false,
               };
             });
           }}
-        >
-          <AddProducts
-            listApiCall={handleGetProductsList}
-            editData={isShowModal?.data}
-            onClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-            modalClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-          />
-        </GlobalModal>
-      )}
+        />
+      </GlobalModal>
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>
@@ -166,7 +155,7 @@ function ListOfProducts() {
           </tbody>
         </table>
       </div>
-      {listOfProducts?.items?.length ? (
+      {/* {listOfProducts?.items?.length ? (
         <CustomPagination
           page={page}
           pageCount={listOfProducts?.total_page}
@@ -175,7 +164,7 @@ function ListOfProducts() {
             handleGetProductsList(selected);
           }}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 }

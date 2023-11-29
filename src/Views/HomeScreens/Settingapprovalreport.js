@@ -13,8 +13,9 @@ import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import moment from "moment";
-import CustomDatePicker from "../../Components/CustomDatePicker";
 import { CustomButton } from "../../Components";
+import Commondate from "../../Components/Commondate";
+import dayjs from "dayjs";
 var CryptoJS = require("crypto-js");
 
 function SettingInspectionReport() {
@@ -35,7 +36,7 @@ function SettingInspectionReport() {
       part_name: "",
       process: "",
       setter_name: "",
-      report_header_date: moment(new Date()).format("YYYY-MM-DD"),
+      report_header_date: new Date(),
       report_shift: "",
       inspector_name: "",
       report_header_status: Array(5).fill(null),
@@ -367,15 +368,14 @@ function SettingInspectionReport() {
                           }}
                         />
                       ) : index === 1 ? (
-                        <CustomDatePicker
+                        <Commondate
                           borderNone={false}
-                          selectedDate={values?.report_header_date}
-                          onSelectDate={(val) => {
-                            setFieldValue(
-                              "report_header_date",
-                              moment(val).format("YYYY-MM-DD")
-                            );
+                          onChange={(value) => {
+                            setFieldValue("report_header_date", value);
                           }}
+                          value={dayjs(values?.report_header_date).format(
+                            "YYYY-MM-DD"
+                          )}
                         />
                       ) : index === 2 ? (
                         <input

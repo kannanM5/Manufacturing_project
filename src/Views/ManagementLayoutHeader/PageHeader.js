@@ -1,6 +1,4 @@
 import { useLocation } from "react-router-dom";
-import { Button } from "@material-ui/core";
-import { Close, DownloadOutlined } from "@mui/icons-material";
 import { CustomButton } from "../../Components";
 import classes from "./PageHeader.module.css";
 
@@ -25,9 +23,9 @@ function PageHeader({
           <div className={classes.line}></div>
           <div className={classes.heading}>{heading}</div>
         </div>
-        {closeIcon ? (
+        {/* {closeIcon ? (
           <Close style={{ cursor: "pointer" }} onClick={closeClick} />
-        ) : null}
+        ) : null} */}
         {BtnTrue ? null : (
           <div className={classes.header_right}>
             <CustomButton
@@ -57,11 +55,6 @@ function PageHeader({
               </div>
             )}
           </div>
-        )}
-        {downloadBtn && (
-          <Button className={classes.downloadBtn}>
-            <DownloadOutlined /> Download
-          </Button>
         )}
       </div>
     </div>

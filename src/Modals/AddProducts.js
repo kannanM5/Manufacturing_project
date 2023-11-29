@@ -136,10 +136,6 @@ function AddProducts({
   return (
     <>
       {loader ? <Loader /> : null}
-      <ModalsHeader
-        heading={`${editData ? "Edit" : "Add"} Product`}
-        onClose={onClose}
-      />
       <div className={classes.listOfProducts}>
         <div className="row">
           <div className="col-xl-6 col-md-6 form-group mb-3 col-lg-6 ">

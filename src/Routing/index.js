@@ -15,7 +15,7 @@ import ChangePassword from "../Views/Profile/ChangePassword";
 import EmployeeList from "../Views/HomeScreens/EmployeeList";
 import { DashboardPrivateRoute } from "../Views/AuthScreens/PrivateRoute";
 import Dashboard from "../Views/HomeScreens/Dashboard";
-
+import SavedData from "../Views/HomeScreens/SavedData";
 export const Indexroute = [
   {
     element: <AuthLayout />,
@@ -113,6 +113,16 @@ export const Indexroute = [
           {
             index: true,
             element: <EmployeeList />,
+          },
+        ],
+      },
+      {
+        path: "saved_logs",
+        element: <DashboardLayout />,
+        children: [
+          {
+            index: true,
+            element: <SavedData />,
           },
         ],
       },

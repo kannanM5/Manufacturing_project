@@ -13,8 +13,9 @@ import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
 import { CustomButton, Loader } from "../../Components";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
-import CustomDatePicker from "../../Components/CustomDatePicker";
 import moment from "moment";
+import dayjs from "dayjs";
+import Commondate from "../../Components/Commondate";
 var CryptoJS = require("crypto-js");
 
 export default function Emptypage() {
@@ -58,7 +59,7 @@ export default function Emptypage() {
       approved_by: "",
       process: "",
       invoice_no: "",
-      invoice_date: moment(new Date()).format("YYYY-MM-DD"),
+      invoice_date: new Date(),
       final_status: isFinalStatus,
       quantity: "",
       datas: "",
@@ -404,15 +405,12 @@ export default function Emptypage() {
                         }}
                       />
                     ) : index === 2 ? (
-                      <CustomDatePicker
+                      <Commondate
                         borderNone={false}
-                        selectedDate={values?.invoice_date}
-                        onSelectDate={(val) => {
-                          setFieldValue(
-                            "invoice_date",
-                            moment(val).format("YYYY-MM-DD")
-                          );
+                        onChange={(value) => {
+                          setFieldValue("invoice_date", value);
                         }}
+                        value={dayjs(values?.invoice_date).format("YYYY-MM-DD")}
                       />
                     ) : (
                       <input

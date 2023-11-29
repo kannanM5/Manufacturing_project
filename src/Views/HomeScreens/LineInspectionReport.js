@@ -13,7 +13,8 @@ import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import moment from "moment";
-import CustomDatePicker from "../../Components/CustomDatePicker";
+import Commondate from "../../Components/Commondate";
+import dayjs from "dayjs";
 var CryptoJS = require("crypto-js");
 
 function LineInspectionReport() {
@@ -39,7 +40,7 @@ function LineInspectionReport() {
       invoice_no: "",
       inspector_name: "",
       report_header_status: Array(8).fill(null),
-      report_header_date: moment(new Date()).format("YYYY-MM-DD"),
+      report_header_date: new Date(),
       final_status: isFinalStatus,
       quantity: "",
       datas: "",
@@ -391,15 +392,14 @@ function LineInspectionReport() {
                           }}
                         />
                       ) : index === 1 ? (
-                        <CustomDatePicker
+                        <Commondate
                           borderNone={false}
-                          selectedDate={values?.report_header_date}
-                          onSelectDate={(val) => {
-                            setFieldValue(
-                              "report_header_date",
-                              moment(val).format("YYYY-MM-DD")
-                            );
+                          onChange={(value) => {
+                            setFieldValue("report_header_date", value);
                           }}
+                          value={dayjs(values?.report_header_date).format(
+                            "YYYY-MM-DD"
+                          )}
                         />
                       ) : index === 2 ? (
                         <input

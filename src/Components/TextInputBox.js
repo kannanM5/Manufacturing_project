@@ -1,6 +1,5 @@
 import { useState } from "react";
 import invisible from "../Assets/Icons/Svg/invisibleicon.svg";
-import { muiStyles } from "../Utility/Constants";
 import visible from "../Assets/Icons/Svg/visibleicon.svg";
 import classes from "./CustomStyle.module.css";
 import CustomButton from "./CustomButton";
@@ -18,15 +17,14 @@ export default function InputBox({
   disabled = false,
   titleStyle,
   isSecure = false,
-  infotxt = null,
   inputBoxStyle,
   noneBorder,
   cursor,
   verify = false,
   verifyBtn,
   readOnly,
+  handleKeyPress,
 }) {
-  const styles = muiStyles();
   const [secure, setsecure] = useState(false);
 
   const getSecureText = () => {
@@ -39,11 +37,7 @@ export default function InputBox({
         {title} <span className={classes.star}>{requiredText}</span>
       </p>
       <div
-        className={
-          noneBorder
-            ? `${classes.inputBox} ${styles.borderNone}`
-            : classes.inputBox
-        }
+        className={noneBorder ? `${classes.inputBox}` : classes.inputBox}
         style={{
           opacity: disabled ? "0.5" : "",
 
@@ -62,6 +56,7 @@ export default function InputBox({
               onChangeText(e.target.value);
             }
           }}
+          onKeyPress={handleKeyPress}
           placeholder={placeHolder}
           style={{
             width: isSecure || verify ? "87%" : "100%",
@@ -94,12 +89,6 @@ export default function InputBox({
           </div>
         ) : null}
       </div>
-      {infotxt ? (
-        <p className={classes.infotext}>
-          <span className="material-symbols-outlined">info</span>
-          {infotxt}
-        </p>
-      ) : null}
       {errorText ? (
         <p className={classes.errorTxt}>{errorText.toString()}</p>
       ) : null}

@@ -127,22 +127,6 @@ function AddInspectionCriteria({
   };
   return (
     <div>
-      <div className={classes.popup}>
-        <div className={classes.popup_head}>
-          <div className={classes.popup_head_left}>
-            <div className={classes.line}></div>
-            <div>
-              <p className={classes.Heading}>{heading}</p>
-            </div>
-          </div>
-        </div>
-        <img
-          className={classes.close}
-          src={close}
-          alt="close"
-          onClick={onClose}
-        />
-      </div>
       <div className={classes.Container}>
         <div className="row">
           <div className="col-lg-6 mb-3 ">
@@ -277,7 +261,7 @@ function AddInspectionCriteria({
           <div className="col-lg-2 col-md-6 my-2">
             <CustomButton
               title="Cancel"
-              onButtonPress={onClose}
+              onButtonPress={modalClose}
               customButtonStyle={{
                 backgroundColor: "var(--tableHeadBg)",
               }}

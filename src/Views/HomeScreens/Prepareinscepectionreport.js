@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { FormControl, MenuItem, Select } from "@mui/material";
-import { makeStyles } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import classes from "./Management.module.css";
 import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
@@ -14,6 +12,7 @@ import { getInspectionReportList } from "../../Services/Services";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
+import CustomDropDown from "../../Components/CustomDropDown";
 const validationSchema = Yup.object({
   part_no: Yup.string()
     .required("Part number is required")
@@ -22,14 +21,6 @@ const validationSchema = Yup.object({
     .matches(ALPHA_NUM, "Enter valid Process")
     .required("Process is required"),
 });
-const useStyles = makeStyles(() => ({
-  Select: {
-    "&>div": {
-      background: "none !important",
-      borderRadius: "8px !important",
-    },
-  },
-}));
 
 var CryptoJS = require("crypto-js");
 
@@ -38,7 +29,6 @@ function PrepareInspectionReport() {
   const userId = useEmployeeId();
   const [isShowModal, setIsShowModal] = useState(false);
   const navigate = useNavigate();
-  const muiclass = useStyles();
   const [loader, setloader] = useState(false);
   const [dropdownName, setDropDownName] = useState(1);
   const [first, setfirst] = useState("kannan");
@@ -65,23 +55,23 @@ function PrepareInspectionReport() {
 
   const dropDownItem = [
     {
-      id: 1,
-      name: "Incoming Inspection Report",
+      key: 1,
+      label: "Incoming Inspection Report",
       path: "/#/incoming_inspection_report",
     },
     {
-      id: 2,
-      name: "Setting Approval Report",
+      key: 2,
+      label: "Setting Approval Report",
       path: "/#/setting_approval_report",
     },
     {
-      id: 3,
-      name: "Line Inspection Report",
+      key: 3,
+      label: "Line Inspection Report",
       path: "/#/line_inspection_report",
     },
     {
-      id: 4,
-      name: "Final Inspection Report",
+      key: 4,
+      label: "Final Inspection Report",
       path: "/#/final_inspection_report",
     },
   ];
@@ -168,10 +158,9 @@ function PrepareInspectionReport() {
   return (
     <>
       <GlobalModal
-        size="md"
-        // ModalStyle="100px"
-        isVisible={isShowModal}
-        setIsVisible={() => setIsShowModal(false)}
+        CustomWidth={500}
+        isOpen={isShowModal}
+        onCancel={() => setIsShowModal(false)}
       >
         <LogoutConfirmationModal
           msg={`${getReportType()} is already saved for this ${
@@ -179,7 +168,7 @@ function PrepareInspectionReport() {
           } and ${values?.process}. Please submit that first.`}
           positiveButtonText="Go to Saved Data"
           onPositiveButtonPressed={() => {
-            navigate("/export_page");
+            navigate({ pathname: "/saved_logs" }, { state: values });
             setIsShowModal(false);
           }}
           onNegativeButtonPressed={() => setIsShowModal(false)}
@@ -244,24 +233,20 @@ function PrepareInspectionReport() {
           </div>
         </div>
         <div className="col-lg-12 mt-3">
-          <p className={classes.selectHead}>Select Report Type</p>
-          <FormControl fullWidth={true}>
-            <Select
-              className={muiclass?.Select}
-              value={dropdownName}
-              onChange={(e) => {
-                setDropDownName(e.target.value);
-              }}
-            >
-              {dropDownItem.map((items, index) => {
-                return (
-                  <MenuItem key={index} value={items.id}>
-                    {items.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
+          <CustomDropDown
+            placeholderText={"report type"}
+            requiredText="*"
+            items={[...dropDownItem]}
+            value={
+              [...dropDownItem].find(
+                (ele) => ele.key === parseInt(dropdownName)
+              )?.label
+            }
+            title="Select Report Type"
+            onSelect={(val) => {
+              setDropDownName(val);
+            }}
+          />
         </div>
         <div className="row">
           <div className="col-lg-4 col-6 my-4">

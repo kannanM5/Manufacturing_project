@@ -78,46 +78,33 @@ function InspectionCriteria() {
     <>
       <PageHeader heading={"Inspection Criteria"} BtnTrue={true} />
       <div>
-        {isShowModal?.status && (
-          <GlobalModal
-            size="lg"
-            ModalStyle="modalMDMaxWidth"
-            isVisible={isShowModal.status}
-            setIsVisible={() => {
+        <GlobalModal
+          title={`${isShowModal?.data ? "Edit" : "Add"} Insepction Criteria`}
+          isOpen={isShowModal.status}
+          onCancel={() => {
+            setIsShowModal((prev) => {
+              return {
+                ...prev,
+                status: false,
+              };
+            });
+          }}
+        >
+          <AddInspectionCriteria
+            listApiCall={() => handleListCriteriaService(1, values)}
+            getValue={values}
+            editData={isShowModal?.data}
+            modalClose={() => {
               setIsShowModal((prev) => {
                 return {
                   ...prev,
-                  status: true,
+                  status: false,
                 };
               });
             }}
-          >
-            <AddInspectionCriteria
-              listApiCall={() => handleListCriteriaService(1, values)}
-              getValue={values}
-              editData={isShowModal?.data}
-              heading={`${
-                isShowModal?.data ? "Edit" : "Add"
-              } Insepction Criteria`}
-              onClose={() => {
-                setIsShowModal((prev) => {
-                  return {
-                    ...prev,
-                    status: false,
-                  };
-                });
-              }}
-              modalClose={() => {
-                setIsShowModal((prev) => {
-                  return {
-                    ...prev,
-                    status: false,
-                  };
-                });
-              }}
-            />
-          </GlobalModal>
-        )}
+          />
+        </GlobalModal>
+
         <div className={classes.insepectionCreteria}>
           <div className="row">
             <div className="col-lg-3 col-md-6">

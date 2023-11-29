@@ -77,6 +77,11 @@ function Signin() {
         setloader(false);
       });
   };
+  const handleEnterLogin = (key) => {
+    if (key === "Enter") {
+      handleSubmit();
+    }
+  };
 
   return (
     <div className={classes.container1}>
@@ -130,6 +135,7 @@ function Signin() {
               placeHolder="Enter your password"
               value={values.password}
               name="password"
+              handleKeyPress={(e) => handleEnterLogin(e.key)}
               customInputProps={{
                 maxLength: 50,
                 onBlur: () => {

@@ -72,22 +72,6 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
   return (
     <>
       {loader ? <Loader /> : null}
-      <div className={classes.popup}>
-        <div className={classes.popup_head}>
-          <div className={classes.popup_head_left}>
-            <div className={classes.line}></div>
-            <div>
-              <p className={classes.Heading}>{heading}</p>
-            </div>
-          </div>
-        </div>
-        <img
-          className={classes.close}
-          src={close}
-          alt="close"
-          onClick={onClose}
-        />
-      </div>
       <div className={classes.employeeChangePassword}>
         <div className="row">
           <div className="col-12 mb-3">

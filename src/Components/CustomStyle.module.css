@@ -20,10 +20,7 @@
   display: flex;
   flex-direction: column;
 }
-.container .star {
-  color: var(--dangerColor);
-}
-.dropdown .star {
+.star {
   color: var(--dangerColor);
 }
 
@@ -69,7 +66,11 @@
 .container input::placeholder {
   font-size: 14px;
 }
-
+.placeholder {
+  font-family: var(--fontRegular) !important;
+  font-size: 14px !important;
+  color: rgb(174, 168, 168) !important;
+}
 .inputBox:hover,
 .inputBox:focus {
   border: 1px solid #f25922;
@@ -283,4 +284,66 @@
   .dropdowndisplay {
     justify-content: flex-end;
   }
+}
+
+/* antd dropdonw start design  */
+
+/* dropdown  */
+.dropdonwContainer button {
+  border: var(--inputBorder) !important;
+  font-family: var(--fontRegular);
+  font-size: 15px;
+  padding: 0 15px !important;
+  height: 42px !important;
+  width: 100% !important;
+}
+.dropdonwContainer button:hover {
+  color: black !important;
+  box-shadow: none !important;
+  border: var(--inputBorder) !important;
+}
+.dropdonwContainer button:focus {
+  color: black !important;
+  box-shadow: none !important;
+  border: var(--inputBorder) !important;
+}
+.dropdonwContainer .btnTextAndArrow {
+  height: 32px !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+/* date picker  */
+.datePicker {
+  border-color: var(--inputBorder) !important;
+}
+.datePicker > div:hover {
+  box-shadow: none !important;
+  border-color: lightgray !important;
+}
+.datePicker > div:focus {
+  box-shadow: none !important;
+  border-color: #43bcff !important;
+}
+/* modal style  */
+
+/* all popup same head  and close*/
+.popup_head_left .line {
+  width: 4px;
+  height: 30px;
+  background-color: var(--btnClr);
+  margin-right: 10px;
+  border-radius: 5px;
+}
+.popup_head_left {
+  font-size: var(--textMd);
+  font-weight: var(--fontWxl);
+  display: flex;
+  align-items: center;
+}
+.popup_head_left .Heading {
+  color: black;
+  font-family: var(--fontBold);
+  font-size: var(--textXXl);
+  font-weight: var(--fontweight);
 }
