@@ -1,6 +1,6 @@
-import { Button, Dropdown, Menu, MenuProps, Space } from "antd";
-import React, { useState } from "react";
-import { DownOutlined, UserOutlined } from "@ant-design/icons";
+import { Button, Dropdown, Space } from "antd";
+import React from "react";
+import { DownOutlined } from "@ant-design/icons";
 import classes from "./CustomStyle.module.css";
 
 function CustomDropDown({

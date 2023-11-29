@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import { useToken } from "../../Utility/StoreData";
 import classes from "./UserProfile.module.css";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
 import { getCookie } from "../../Store/Storage/Cookie";

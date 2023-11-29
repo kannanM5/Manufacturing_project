@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import classes from "./Modal.module.css";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import ModalsHeader from "./ModalHeader";
 import { useEmployeeId, useEmployeeType, useToken } from "../Utility/StoreData";
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import { ALPHA_NUM } from "../Utility/Constants";

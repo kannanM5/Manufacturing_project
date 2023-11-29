@@ -4,7 +4,6 @@ import { CustomButton, TextInputBox } from "../../Components";
 import classes from "./Management.module.css";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import moment from "moment";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";

@@ -5,15 +5,15 @@ import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
+  savedDataList,
 } from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import { CustomButton, Loader } from "../../Components";
+import { Loader } from "../../Components";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
-import moment from "moment";
 import dayjs from "dayjs";
 import Commondate from "../../Components/Commondate";
 var CryptoJS = require("crypto-js");
@@ -105,8 +105,9 @@ export default function Emptypage() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("user_id", userId);
+    formData.append("option", 1);
     formData.append("report_type", urlValues?.pageStatus);
-    editInspectionReportList(formData)
+    savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);

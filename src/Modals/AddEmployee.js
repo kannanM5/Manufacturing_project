@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import classes from "./Modal.module.css";
-import close from "../Assets/Icons/Svg/close.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -11,7 +9,6 @@ import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { getCookie } from "../Store/Storage/Cookie";
 import CustomDropDown from "../Components/CustomDropDown";
-import { AutoComplete } from "antd";
 
 const validationSchema = Yup.object({
   name: Yup.string()

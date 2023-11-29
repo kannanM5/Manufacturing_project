@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import classes from "./Modal.module.css";
-import close from "../Assets/Icons/Svg/close.svg";
 import { CustomButton, TextInputBox } from "../Components";
 import { useFormik } from "formik";
 import * as Yup from "yup";

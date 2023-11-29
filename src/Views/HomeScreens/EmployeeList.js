@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import classes from "./Management.module.css";
 import { GlobalModal } from "../../Components";
 import AddEmployee from "../../Modals/AddEmployee";
 import EmployeeChangePassword from "../../Modals/EmployeeChangePassword";
 import { employeeList } from "../../Services/Services";
 import { getCookie } from "../../Store/Storage/Cookie";
-import toast from "react-hot-toast";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import chagepassword_Icon from "../../Assets/Icons/SvgIcons/password_key.svg";
-import { AutoComplete } from "antd";
 function EmployeeList() {
   const [isShowModal, setIsShowModal] = useState({
     status: false,

@@ -11,7 +11,6 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import moment from "moment";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 
 import Commondate from "../../Components/Commondate";

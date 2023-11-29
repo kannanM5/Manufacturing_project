@@ -30,6 +30,7 @@ function PrepareInspectionReport() {
   const [isShowModal, setIsShowModal] = useState(false);
   const navigate = useNavigate();
   const [loader, setloader] = useState(false);
+  const [buttonStatus, setbuttonStatus] = useState(null);
   const [dropdownName, setDropDownName] = useState(1);
   const [first, setfirst] = useState("kannan");
   const {
@@ -46,7 +47,6 @@ function PrepareInspectionReport() {
     initialValues: {
       part_no: "",
       process: "",
-      buttonStatus: "",
       token: token,
       user_id: userId,
     },
@@ -96,13 +96,11 @@ function PrepareInspectionReport() {
       return setData;
     }
   };
-  console.log(token, "CURRENTTOKEN");
-  const handleClick = (data) => {
-    if (data) {
-      setFieldValue("buttonStatus", data);
-    }
+  const handleClick = () => {
     // getAndSetLoaclStorageDetails();
-    const getDetails = dropDownItem.find((ele) => ele.id === dropdownName);
+    const getDetails = dropDownItem.find(
+      (ele) => ele.key === parseInt(dropdownName)
+    );
     if (getDetails) {
       const encryptedData = sendData();
       const newTab = window.open(getDetails.path, "_blank");
@@ -117,7 +115,7 @@ function PrepareInspectionReport() {
     const getDetails = dropDownItem.find((ele) => ele.id)?.name;
     return getDetails;
   };
-  const handleGetProductsList = (handleStatus) => {
+  const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
     formData.append("token", token);
@@ -129,7 +127,8 @@ function PrepareInspectionReport() {
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          handleClick(handleStatus);
+          handleClick();
+
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
@@ -146,10 +145,14 @@ function PrepareInspectionReport() {
   };
   const sendData = () => {
     var encrypted = CryptoJS.AES.encrypt(
-      JSON.stringify({ ...values, pageStatus: dropdownName }),
+      JSON.stringify({
+        ...values,
+        pageStatus: dropdownName,
+        buttonStatus: buttonStatus,
+      }),
       "data"
     ).toString();
-
+    setbuttonStatus(null);
     return encrypted;
   };
   useEffect(() => {
@@ -253,7 +256,8 @@ function PrepareInspectionReport() {
             <CustomButton
               title="Add report"
               onButtonPress={() => {
-                handleGetProductsList("Add");
+                setbuttonStatus("Add");
+                handleGetProductsList();
                 // handleClick("Add");
               }}
             />
@@ -262,7 +266,8 @@ function PrepareInspectionReport() {
             <CustomButton
               title="Edit report"
               onButtonPress={() => {
-                handleClick("Edit");
+                setbuttonStatus("Edit");
+                handleGetProductsList();
               }}
             />
           </div>

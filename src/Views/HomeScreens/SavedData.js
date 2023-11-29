@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
-import AddInspectionCriteria from "../../Modals/AddInspectionCriteria";
+import { CustomButton, TextInputBox } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { criteriaListService, savedDataList } from "../../Services/Services";
+import { savedDataList } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
@@ -71,6 +70,7 @@ function SavedData() {
     formData.append("user_id", userId);
     formData.append("part_no", data?.part_no);
     formData.append("process", data?.process);
+    formData.append("option", 0);
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
