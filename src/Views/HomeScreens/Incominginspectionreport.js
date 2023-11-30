@@ -16,6 +16,7 @@ import { Loader } from "../../Components";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
 import Commondate from "../../Components/Commondate";
+import moment from "moment";
 var CryptoJS = require("crypto-js");
 
 export default function Emptypage() {
@@ -227,7 +228,7 @@ export default function Emptypage() {
       process_id: data?.process_id,
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
-      invoice_date: data?.invoice_date,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       supplier_name: data?.supplier_name,

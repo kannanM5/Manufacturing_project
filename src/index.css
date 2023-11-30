@@ -295,10 +295,18 @@ body {
 }
 
 /* ant design start  */
-
+.ant-tabs {
+  display: flex;
+  height: 65px;
+  justify-content: center;
+  align-items: center;
+}
 .ant-tabs-nav::before {
   border-bottom: none !important;
 }
 .ant-tabs-tab:hover {
   color: black !important;
+}
+.ant-menu {
+  border-inline-end: none !important;
 }

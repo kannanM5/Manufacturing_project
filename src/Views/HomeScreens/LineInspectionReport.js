@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
+import moment from "moment";
 var CryptoJS = require("crypto-js");
 
 function LineInspectionReport() {
@@ -214,7 +215,7 @@ function LineInspectionReport() {
       product_id: data?.product_id,
       report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      report_header_date: data?.report_header_date,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
       report_header_status: data?.report_header_status,
       checked_by: data?.checked_by,

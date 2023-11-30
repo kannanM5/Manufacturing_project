@@ -1,9 +1,10 @@
 .container {
-  background-color: white;
+  background-color: (160, 160, 160);
+  /* background-color: red; */
   height: 65px;
   position: fixed;
   top: 0;
-  z-index: 100;
+  /* z-index: 100; */
   width: 100%;
   /* box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px; */
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -29,7 +30,7 @@
 .content {
   width: 95%;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
   margin: auto auto;
   display: flex;
 }
@@ -126,11 +127,11 @@
   color: #fff !important;
 }
 
-.tabContent:hover {
+/* .tabContent:hover {
   background-color: rgb(243, 239, 239) !important;
   border-radius: 10px !important;
   color: white;
-}
+} */
 .profileLogout {
   display: flex;
   flex-direction: column;

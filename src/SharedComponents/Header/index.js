@@ -78,20 +78,20 @@ export default function Header() {
   // };
   const userInformation = [
     {
-      id: 1,
-      name: "Create Account",
+      key: 1,
+      label: "Create Account",
       photo: create_account,
       pathname: "/employee_list",
     },
     {
-      id: 2,
-      name: "Change Password",
+      key: 2,
+      label: "Change Password",
       photo: change_password,
       pathname: "/change_password",
     },
     {
-      id: 3,
-      name: "Logout",
+      key: 3,
+      label: "Logout",
       photo: logout,
     },
   ];
@@ -208,6 +208,21 @@ export default function Header() {
     const getPath = menuData.find((ele) => ele?.id == data)?.naviagationPath;
     navigate(getPath);
   };
+  const handleClick = (e) => {
+    if (parseInt(e.key) === 3) {
+      setdeleteModal((prev) => {
+        return {
+          ...prev,
+          modal: true,
+        };
+      });
+    } else if (parseInt(e.key) == 2) {
+      navigate("/change_password");
+    } else {
+      navigate("/employee_list");
+    }
+  };
+
   return (
     <>
       {/* {isShowModal?.status && (
@@ -402,55 +417,22 @@ export default function Header() {
                 <TabPane tab={item?.name} key={item.id} />
               ))}
             </Tabs>
-            {/* {menuData.map((ele, i) => {
-              return (
-                <TabContext value={pathname} key={i}>
-                  <div className={"headerTab"}>
-                    <TabList
-                      onChange={handleTabChange}
-                      aria-label="lab API tabs example"
-                      className={
-                        ele.naviagationPath === pathname
-                          ? `${styles.activeTab} ${styles.tabColor}`
-                          : `${styles.tabColor}`
-                      }
-                      style={{
-                        background: "rgb(242, 89, 34) !important",
-                      }}
-                    >
-                      <Tab
-                        // style={{
-                        //   display: ele.isVisible ? "block" : "none",
-                        // }}
-                        label={ele.name}
-                        value={ele.name}
-                        className={`${classes.tabContent} ${
-                          ele.naviagationPath === pathname
-                            ? `${styles.activeTab}`
-                            : ""
-                        }`}
-                        onClick={() => {
-                          navigate(ele?.naviagationPath);
-                        }}
-                      />
-                    </TabList>
-                  </div>
-                </TabContext>
-              );
-            })} */}
           </div>
           <div>
             <div
               onClick={() => {
                 setArrow((pre) => !pre);
               }}
-              style={{ padding: "5px" }}
+              // style={{ padding: "5px" }}
             >
               <div
                 className={classes.tabContent}
                 style={{
-                  padding: "4px",
+                  // padding: "4px",
                   display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "65px",
                   cursor: "pointer",
                 }}
               >
@@ -468,12 +450,13 @@ export default function Header() {
               </div>
               {Arrow && (
                 <Menu
-                  open={Arrow}
-                  style={{
-                    marginTop: "1px",
-                  }}
+                  items={userInformation}
+                  onClick={handleClick}
+                  // style={{
+                  //   marginTop: "1px",
+                  // }}
                 >
-                  {userInformation.map((ele, index) => (
+                  {/* {userInformation.map((ele, index) => (
                     <MenuItem>
                       <div
                         onClick={() => {
@@ -504,7 +487,7 @@ export default function Header() {
                         <p style={{ marginBottom: "3px" }}>{ele?.name}</p>
                       </div>
                     </MenuItem>
-                  ))}
+                  ))} */}
                 </Menu>
               )}
               {/* i chnage in grid under div*/}

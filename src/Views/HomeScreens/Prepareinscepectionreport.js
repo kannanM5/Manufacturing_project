@@ -34,7 +34,7 @@ function PrepareInspectionReport() {
   const [dropdownName, setDropDownName] = useState(1);
   // const [first, setfirst] = useState("kannan");
   const {
-    handleSubmit,
+    // handleSubmit,
     handleChange,
     values,
     errors,
@@ -42,7 +42,7 @@ function PrepareInspectionReport() {
     resetForm,
     setFieldError,
     setFieldTouched,
-    setFieldValue,
+    // setFieldValue,
   } = useFormik({
     initialValues: {
       part_no: "",
@@ -76,26 +76,26 @@ function PrepareInspectionReport() {
     },
   ];
 
-  const getAndSetLoaclStorageDetails = () => {
-    const setData = {
-      local_Process: values.process,
-      local_Part_No: values.part_no,
-      local_Report_Type: dropdownName,
-    };
+  // const getAndSetLoaclStorageDetails = () => {
+  //   const setData = {
+  //     local_Process: values.process,
+  //     local_Part_No: values.part_no,
+  //     local_Report_Type: dropdownName,
+  //   };
 
-    const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
-    if (getLocalValue) {
-      const setValue = getLocalValue.map((ele) => {
-        return {
-          ...ele,
-          setData,
-        };
-      });
-      return setValue;
-    } else {
-      return setData;
-    }
-  };
+  //   const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
+  //   if (getLocalValue) {
+  //     const setValue = getLocalValue.map((ele) => {
+  //       return {
+  //         ...ele,
+  //         setData,
+  //       };
+  //     });
+  //     return setValue;
+  //   } else {
+  //     return setData;
+  //   }
+  // };
   const handleClick = () => {
     // getAndSetLoaclStorageDetails();
     const getDetails = dropDownItem.find(

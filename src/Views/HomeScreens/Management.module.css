@@ -1,11 +1,14 @@
 /* dashborad */
 .DubpilcateDashboard {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 .DubpilcateDashboard p {
   font-size: var(--mdText);
+  position: absolute;
+  top: 30%;
+  left: 5%;
 }
 table .icons img {
   width: 30px;

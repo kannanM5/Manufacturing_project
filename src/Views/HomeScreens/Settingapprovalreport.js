@@ -14,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
+import moment from "moment";
 var CryptoJS = require("crypto-js");
 
 function SettingInspectionReport() {
@@ -209,7 +210,7 @@ function SettingInspectionReport() {
       mvc_no: data?.mvc_no,
       process_id: data?.process_id,
       setter_name: data?.setter_name,
-      report_header_date: data?.report_header_date,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
       report_shift: data?.report_shift,
       inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,

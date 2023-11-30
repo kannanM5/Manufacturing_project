@@ -14,6 +14,7 @@ import { useFormik } from "formik";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
+import moment from "moment";
 
 var CryptoJS = require("crypto-js");
 
@@ -184,7 +185,7 @@ function FinalInspectionReport() {
       product_id: data?.product_id,
       process_id: data?.process_id,
       invoice_no: data?.invoice_no,
-      invoice_date: data?.invoice_date,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       customer: data?.customer,
