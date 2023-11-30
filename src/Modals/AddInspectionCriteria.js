@@ -26,7 +26,6 @@ const validationSchema = Yup.object({
 });
 
 function AddInspectionCriteria({
-  onClose,
   heading,
   getValue,
   modalClose,

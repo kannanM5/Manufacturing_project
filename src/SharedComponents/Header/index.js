@@ -25,12 +25,11 @@ export default function Header() {
   const token = useToken();
   const userId = useEmployeeId();
   const userName = useUserName();
-  const { REACT_APP_BASEURL } = process.env;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [managementActive, setmanagementActive] = useState(false);
-  const [reportActive, setreportActive] = useState(false);
+  // const [managementActive, setmanagementActive] = useState(false);
+  // const [reportActive, setreportActive] = useState(false);
   const [Arrow, setArrow] = useState(false);
   const [isShowModal, setIsShowModal] = useState({
     status: false,
@@ -40,43 +39,43 @@ export default function Header() {
     modal: false,
     id: "",
   });
-  const [modalOpen, setModalOpen] = useState(false);
-  const [prepareInsepection, setPrepareInsepection] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
+  // const [prepareInsepection, setPrepareInsepection] = useState(false);
   const loginUserData = getCookie("mconnect_user_data")
     ? JSON.parse(getCookie("mconnect_user_data"))?.permission
     : null;
 
-  const getManagementInitialRoute = () => {
-    const loginUserData = getCookie("mconnect_user_data")
-      ? JSON.parse(getCookie("mconnect_user_data"))?.permission
-      : null;
-    const manageSubheadingData = [
-      {
-        pathname: "/dashboard/management/device",
-        isVisible: loginUserData?.device === 1 ? true : false,
-      },
-      {
-        pathname: "/dashboard/management/machine",
-        isVisible: loginUserData?.machine === 1 ? true : false,
-      },
-      {
-        pathname: "/dashboard/management/employee_management",
-        isVisible: loginUserData?.employee === 1 ? true : false,
-      },
-      {
-        pathname: "/dashboard/management/shift",
-        isVisible: loginUserData?.shift === 1 ? true : false,
-      },
-      {
-        pathname: "/dashboard/management/work_shedule",
-        isVisible: loginUserData?.work_orders === 1 ? true : false,
-      },
-    ];
+  // const getManagementInitialRoute = () => {
+  //   const loginUserData = getCookie("mconnect_user_data")
+  //     ? JSON.parse(getCookie("mconnect_user_data"))?.permission
+  //     : null;
+  //   const manageSubheadingData = [
+  //     {
+  //       pathname: "/dashboard/management/device",
+  //       isVisible: loginUserData?.device === 1 ? true : false,
+  //     },
+  //     {
+  //       pathname: "/dashboard/management/machine",
+  //       isVisible: loginUserData?.machine === 1 ? true : false,
+  //     },
+  //     {
+  //       pathname: "/dashboard/management/employee_management",
+  //       isVisible: loginUserData?.employee === 1 ? true : false,
+  //     },
+  //     {
+  //       pathname: "/dashboard/management/shift",
+  //       isVisible: loginUserData?.shift === 1 ? true : false,
+  //     },
+  //     {
+  //       pathname: "/dashboard/management/work_shedule",
+  //       isVisible: loginUserData?.work_orders === 1 ? true : false,
+  //     },
+  //   ];
 
-    let refData = [...manageSubheadingData];
-    refData = refData.filter((ele) => ele.isVisible);
-    return refData.length > 0 ? refData?.[0]?.pathname : "/dashboard";
-  };
+  //   let refData = [...manageSubheadingData];
+  //   refData = refData.filter((ele) => ele.isVisible);
+  //   return refData.length > 0 ? refData?.[0]?.pathname : "/dashboard";
+  // };
   const userInformation = [
     {
       id: 1,

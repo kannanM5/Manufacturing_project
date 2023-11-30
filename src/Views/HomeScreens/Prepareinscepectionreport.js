@@ -32,7 +32,7 @@ function PrepareInspectionReport() {
   const [loader, setloader] = useState(false);
   const [buttonStatus, setbuttonStatus] = useState(null);
   const [dropdownName, setDropDownName] = useState(1);
-  const [first, setfirst] = useState("kannan");
+  // const [first, setfirst] = useState("kannan");
   const {
     handleSubmit,
     handleChange,

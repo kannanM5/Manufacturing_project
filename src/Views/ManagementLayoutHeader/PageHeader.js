@@ -1,4 +1,3 @@
-import { useLocation } from "react-router-dom";
 import { CustomButton } from "../../Components";
 import classes from "./PageHeader.module.css";
 
@@ -14,8 +13,6 @@ function PageHeader({
   closeClick,
   secondBtn = true,
 }) {
-  const { pathname } = useLocation();
-
   return (
     <div>
       <div className={classes.header}>

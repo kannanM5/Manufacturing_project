@@ -37,8 +37,8 @@ function AddProducts({
 }) {
   const token = useToken();
   const userId = useEmployeeId();
-  const userType = useEmployeeType();
-  const [page, setPage] = useState(1);
+  // const userType = useEmployeeType();
+  // const [page, setPage] = useState(1);
   const [loader, setloader] = useState(false);
 
   const {

@@ -3,7 +3,6 @@ import DashboardLayout from "../Layout/DashboardLayout";
 import ErrorElement from "../Error/ErrorElement";
 import { authroute } from "./AuthRouting";
 import ListOfProducts from "../Views/HomeScreens/ListOfProducts";
-import EmptyPage from "../Views/HomeScreens/Dashboard";
 import Prepareinscepectionreport from "../Views/HomeScreens/Prepareinscepectionreport";
 import LineInspectionReport from "../Views/HomeScreens/LineInspectionReport";
 import Incominginspectionreport from "../Views/HomeScreens/Incominginspectionreport";

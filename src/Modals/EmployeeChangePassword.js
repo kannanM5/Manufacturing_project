@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import close from "../Assets/Icons/Svg/close.svg";
 import { useFormik } from "formik";
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import * as Yup from "yup";

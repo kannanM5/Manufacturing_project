@@ -1,4 +1,3 @@
-import { CancelToken } from "axios";
 import axios from "./Axios";
 
 // Authendication

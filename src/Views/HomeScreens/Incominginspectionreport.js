@@ -131,13 +131,17 @@ export default function Emptypage() {
   useEffect(() => {
     if (reportData) {
       let tempData = [...reportData?.processData];
+      console.log(tempData, "tempData");
       const getProcess = tempData.map((ele) => ele?.process);
       // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
-        if (ele?.observation) {
+        if (ele?.observationData) {
           return {
             ...ele,
-            observation: JSON.parse(ele?.observation),
+            observation:
+              typeof ele?.observation !== "string"
+                ? ele?.observation
+                : JSON.parse(ele?.observation),
           };
         } else {
           return {
@@ -297,7 +301,7 @@ export default function Emptypage() {
       },
     });
   };
-
+  console.log(values.datas, "DATRSESTRDGJHGUH");
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event.target.value;
