@@ -15,16 +15,16 @@ function EmployeeList() {
     id: "",
   });
   const [listOfEmployees, setListOfEmployees] = useState();
-  const userType = [
-    {
-      value: "1",
-      label: "Admin",
-    },
-    {
-      value: "2",
-      label: "Line Inspector",
-    },
-  ];
+  // const userType = [
+  //   {
+  //     value: "1",
+  //     label: "Admin",
+  //   },
+  //   {
+  //     value: "2",
+  //     label: "Line Inspector",
+  //   },
+  // ];
   const cookieData = getCookie("vt_enterprise_login");
 
   const handleGetEmployeeList = (page = 1) => {

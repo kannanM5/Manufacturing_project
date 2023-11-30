@@ -31,10 +31,10 @@ export default function Header() {
   // const [managementActive, setmanagementActive] = useState(false);
   // const [reportActive, setreportActive] = useState(false);
   const [Arrow, setArrow] = useState(false);
-  const [isShowModal, setIsShowModal] = useState({
-    status: false,
-    data: null,
-  });
+  // const [isShowModal, setIsShowModal] = useState({
+  //   status: false,
+  //   data: null,
+  // });
   const [deleteModal, setdeleteModal] = useState({
     modal: false,
     id: "",
@@ -181,10 +181,10 @@ export default function Header() {
     },
   ];
 
-  const [value, setValue] = React.useState("1");
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  // const [value, setValue] = React.useState("1");
+  // const handleTabChange = (event, newValue) => {
+  //   setValue(newValue);
+  // };
 
   const [show, setShow] = useState(false);
   const toggleShow = () => {

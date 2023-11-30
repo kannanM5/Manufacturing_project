@@ -12,7 +12,6 @@ import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import Logo from "../../Assets/Images/Png/VTLogo.jpg";
-import moment from "moment";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 var CryptoJS = require("crypto-js");

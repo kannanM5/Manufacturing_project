@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import classes from "./Modal.module.css";
-import { CustomButton, TextInputBox } from "../Components";
+import { CustomButton, Loader, TextInputBox } from "../Components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg } from "../Utility/GeneralUtils";
@@ -122,6 +122,7 @@ function AddInspectionCriteria({
   };
   return (
     <div>
+      {loader ? <Loader /> : null}
       <div className={classes.Container}>
         <div className="row">
           <div className="col-lg-6 mb-3 ">
