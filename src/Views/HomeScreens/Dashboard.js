@@ -12,15 +12,8 @@ function Dashboard() {
   //   }
   // };
   return (
-    <div>
-      <div className={classes.DubpilcateDashboard}>
-        <img
-          src={Bolt}
-          style={{ objectFit: "contain", marginTop: "70px" }}
-        ></img>
-        <p>Click to add</p>
-      </div>
-      <div></div>
+    <div className={classes.DubpilcateDashboard}>
+      <p>Click to add</p>
     </div>
   );
 }

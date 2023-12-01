@@ -28,6 +28,7 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [currenetTab, setcurrentTab] = useState(null);
   // const [managementActive, setmanagementActive] = useState(false);
   // const [reportActive, setreportActive] = useState(false);
   const [Arrow, setArrow] = useState(false);
@@ -205,7 +206,10 @@ export default function Header() {
     navigate("/");
   };
   const handleNavigateTabs = (data) => {
-    const getPath = menuData.find((ele) => ele?.id == data)?.naviagationPath;
+    setcurrentTab(data);
+    const getPath = menuData.find(
+      (ele) => ele?.id === parseInt(data)
+    )?.naviagationPath;
     navigate(getPath);
   };
   const handleClick = (e) => {
@@ -404,12 +408,13 @@ export default function Header() {
           </div>
           <div className={classes.child2}>
             <Tabs
-              activeKey={menuData
-                .find((ele) => ele?.naviagationPath === pathname)
-                ?.id.toString()}
-              defaultActiveKey={menuData
-                .find((ele) => ele?.naviagationPath === pathname)
-                ?.id.toString()}
+              activeKey={currenetTab ? currenetTab : ""}
+              // activeKey={menuData
+              //   .find((ele) => ele?.naviagationPath === pathname)
+              //   ?.id.toString()}
+              // defaultActiveKey={menuData
+              //   .find((ele) => ele?.naviagationPath === pathname)
+              //   ?.id.toString()}
               onChange={(value) => handleNavigateTabs(value)}
               tabBarStyle={{ marginBottom: 0 }}
             >
