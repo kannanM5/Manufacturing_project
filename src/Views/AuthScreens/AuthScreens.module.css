@@ -33,7 +33,9 @@
 
 .container2 {
   display: flex;
-  background-color: var(--menuBg2);
+  /* background-color: var(--menuBg2);
+   */
+  background-color: rgb(249, 249, 253);
   border-radius: 10px;
   padding: 30px;
   width: 100%;

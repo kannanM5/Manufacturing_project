@@ -297,16 +297,40 @@ body {
 /* ant design start  */
 .ant-tabs {
   display: flex;
-  height: 65px;
+  /* height: 65px;
   justify-content: center;
-  align-items: center;
+  align-items: center; */
 }
 .ant-tabs-nav::before {
   border-bottom: none !important;
 }
 .ant-tabs-tab:hover {
-  color: black !important;
+  color: rgb(250, 245, 245) !important;
 }
 .ant-menu {
   border-inline-end: none !important;
+}
+.ant-tabs-tab {
+  padding: 5px !important;
+  color: white !important;
+}
+.ant-tabs-tab-btn {
+  font-family: var(--fontRegular) !important;
+  font-size: var(--textSm1);
+  font-weight: var(--fontWm);
+}
+.ant-drawer-header-title {
+  justify-content: flex-end !important;
+}
+.ant-drawer-wrapper-body {
+  background-color: var(--menuBg) !important;
+}
+.ant-tabs-tab-active > div {
+  color: white !important;
+}
+.ant-tabs-ink-bar {
+  background-color: white !important;
+  height: 3px !important;
+  border-radius: 5px !important;
+  width: 40px !important;
 }

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import dash from "../../Assets/Icons/Svg/Dashboard.svg";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
-import { GlobalModal } from "../../Components";
+import { GlobalModal, Loader } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
 import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
@@ -19,7 +19,10 @@ import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
 import { Drawer, Menu, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
-import MenuItem from "antd/es/menu/MenuItem";
+import dummyIcon from "../../Assets/Images/Png/dummy.png";
+import downArrow from "../../Assets/Icons/SvgIcons/dropdownarrow.svg";
+import downUpArrow from "../../Assets/Icons/SvgIcons/dropUpArrow.svg";
+import { getCatchMsg } from "../../Utility/GeneralUtils";
 
 export default function Header() {
   const token = useToken();
@@ -28,20 +31,13 @@ export default function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const [loader, setloader] = useState(false);
   const [currenetTab, setcurrentTab] = useState(null);
-  // const [managementActive, setmanagementActive] = useState(false);
-  // const [reportActive, setreportActive] = useState(false);
   const [Arrow, setArrow] = useState(false);
-  // const [isShowModal, setIsShowModal] = useState({
-  //   status: false,
-  //   data: null,
-  // });
   const [deleteModal, setdeleteModal] = useState({
     modal: false,
     id: "",
   });
-  // const [modalOpen, setModalOpen] = useState(false);
-  // const [prepareInsepection, setPrepareInsepection] = useState(false);
   const loginUserData = getCookie("mconnect_user_data")
     ? JSON.parse(getCookie("mconnect_user_data"))?.permission
     : null;
@@ -77,6 +73,7 @@ export default function Header() {
   //   refData = refData.filter((ele) => ele.isVisible);
   //   return refData.length > 0 ? refData?.[0]?.pathname : "/dashboard";
   // };
+
   const userInformation = [
     {
       key: 1,
@@ -116,12 +113,12 @@ export default function Header() {
     },
 
     {
-      id: 5,
+      id: 4,
       name: "Saved Logs",
       naviagationPath: "/saved_logs",
     },
     {
-      id: 4,
+      id: 5,
       name: "Export",
       naviagationPath: "/export_page",
     },
@@ -182,24 +179,26 @@ export default function Header() {
     },
   ];
 
-  // const [value, setValue] = React.useState("1");
-  // const handleTabChange = (event, newValue) => {
-  //   setValue(newValue);
-  // };
-
   const [show, setShow] = useState(false);
   const toggleShow = () => {
     setShow((prevShow) => !prevShow);
   };
 
   const handleLogout = () => {
-    // setloader(true);
+    setloader(true);
     let formData = new FormData();
     formData.append("token", token);
     formData.append("user_id", userId);
-    signOut(formData).then((response) => {
-      dispatch(handleStoreUserData(null));
-    });
+    signOut(formData)
+      .then((response) => {
+        dispatch(handleStoreUserData(null));
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
     setCookie("vt_enterprise_login", "");
     document.cookie =
       "mconnect_user_data" + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
@@ -213,6 +212,7 @@ export default function Header() {
     navigate(getPath);
   };
   const handleClick = (e) => {
+    setArrow((prev) => !prev);
     if (parseInt(e.key) === 3) {
       setdeleteModal((prev) => {
         return {
@@ -226,44 +226,24 @@ export default function Header() {
       navigate("/employee_list");
     }
   };
-
+  useEffect(() => {
+    if (pathname === "/product_list") {
+      setcurrentTab("1");
+    } else if (pathname === "/inspection_criteria") {
+      setcurrentTab("2");
+    } else if (pathname === "/Prepareinscepectionreport") {
+      setcurrentTab("3");
+    } else if (pathname === "/saved_logs") {
+      setcurrentTab("4");
+    } else if (pathname === "/export_page") {
+      setcurrentTab("5");
+    } else {
+      setcurrentTab(null);
+    }
+  }, [pathname]);
   return (
     <>
-      {/* {isShowModal?.status && (
-        <GlobalModal
-          size="md"
-          ModalStyle="modalMDMaxWidth"
-          isVisible={isShowModal.status}
-          setIsVisible={() => {
-            setIsShowModal((prev) => {
-              return {
-                ...prev,
-                status: true,
-              };
-            });
-          }}
-        >
-          <GetPrepareReport
-            modalClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-            heading={"Get Report"}
-            onClose={() => {
-              setIsShowModal((prev) => {
-                return {
-                  ...prev,
-                  status: false,
-                };
-              });
-            }}
-          />
-        </GlobalModal>
-      )} */}
+      {loader ? <Loader /> : null}
       <GlobalModal
         CustomWidth={500}
         isOpen={deleteModal.modal}
@@ -304,18 +284,18 @@ export default function Header() {
           </div>
           <div className={classes.sideMenuLogo}>
             {/* <img src={CompanyLogo} alt="logo" /> */}
-            <h4
-              style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
+            <h5
+              style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
             >
               V.T. ENTERPRISE
-            </h4>
+            </h5>
           </div>
           <div className={classes.offcanvas}>
-            <Drawer open={show} onClose={toggleShow}>
-              <div className={classes.child3}>
+            <Drawer open={show} onClose={toggleShow} placement="left">
+              {/* <div className={classes.child3}>
                 <p>{userName}</p>
                 <button onClick={toggleShow} className="btn-close" />
-              </div>
+              </div> */}
 
               <div className={classes.child2}>
                 {hamburgerData.map((ele, i) => {
@@ -400,26 +380,24 @@ export default function Header() {
               alt="logo"
               style={{ width: 40, height: 40 }}
             />
-            <h4
-              style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
+            <h5
+              style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
             >
               V.T. ENTERPRISE
-            </h4>
+            </h5>
           </div>
           <div className={classes.child2}>
             <Tabs
               activeKey={currenetTab ? currenetTab : ""}
-              // activeKey={menuData
-              //   .find((ele) => ele?.naviagationPath === pathname)
-              //   ?.id.toString()}
-              // defaultActiveKey={menuData
-              //   .find((ele) => ele?.naviagationPath === pathname)
-              //   ?.id.toString()}
               onChange={(value) => handleNavigateTabs(value)}
               tabBarStyle={{ marginBottom: 0 }}
             >
               {menuData.map((item) => (
-                <TabPane tab={item?.name} key={item.id} />
+                <TabPane
+                  tab={item?.name}
+                  key={item.id}
+                  style={{ margin: 0, color: "white" }}
+                />
               ))}
             </Tabs>
           </div>
@@ -428,12 +406,10 @@ export default function Header() {
               onClick={() => {
                 setArrow((pre) => !pre);
               }}
-              // style={{ padding: "5px" }}
             >
               <div
                 className={classes.tabContent}
                 style={{
-                  // padding: "4px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -442,60 +418,20 @@ export default function Header() {
                 }}
               >
                 <div className={classes.nameContainer}>
-                  <p className={classes.user_name}>User Name : {userName}</p>
+                  <img
+                    src={dummyIcon}
+                    alt="dummy"
+                    className={classes.dummyImage}
+                  />
+                  <p className={classes.user_name}>{userName}</p>
+                  <img
+                    src={Arrow ? downUpArrow : downArrow}
+                    alt="downArrow"
+                    className={classes.downArrow}
+                  />
                 </div>
-                {/* <ArrowDropDownIcon
-                  style={{
-                    transition: "0.3s",
-                    transform: `rotate(${Arrow ? 180 : 0}deg)`,
-                    marginTop: "2px",
-                    fill: "black",
-                  }}
-                /> */}
               </div>
-              {Arrow && (
-                <Menu
-                  items={userInformation}
-                  onClick={handleClick}
-                  // style={{
-                  //   marginTop: "1px",
-                  // }}
-                >
-                  {/* {userInformation.map((ele, index) => (
-                    <MenuItem>
-                      <div
-                        onClick={() => {
-                          if (ele?.id === 3) {
-                            setdeleteModal((prev) => {
-                              return {
-                                ...prev,
-                                modal: true,
-                              };
-                            });
-                          } else {
-                            navigate(ele?.pathname);
-                          }
-                        }}
-                        style={{
-                          width: "100%",
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <img
-                          src={ele?.photo}
-                          width="20px"
-                          height="20px"
-                          alt="password"
-                          style={{ marginRight: "8px" }}
-                        />
-                        <p style={{ marginBottom: "3px" }}>{ele?.name}</p>
-                      </div>
-                    </MenuItem>
-                  ))} */}
-                </Menu>
-              )}
-              {/* i chnage in grid under div*/}
+              {Arrow && <Menu items={userInformation} onClick={handleClick} />}
             </div>
           </div>
         </div>

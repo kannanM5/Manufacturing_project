@@ -12,6 +12,7 @@ import {
   handleStoreUserToken,
 } from "../../Store/Reducers/LoginReducer";
 import img from "../../Assets/Images/Svg/loginimg.svg";
+// import img from "../../Assets/Images/Png/bolts4.jpg";
 import { setCookie } from "../../Store/Storage/Cookie";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import classes from "./AuthScreens.module.css";
@@ -95,7 +96,7 @@ function Signin() {
             <img
               src={img}
               alt="login_img"
-              // style={{ width: "200px", height: "100px" }}
+              style={{ width: "100%", height: "100%" }}
             ></img>
           </div>
         </div>

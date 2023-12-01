@@ -3,7 +3,7 @@
 .btn button {
   border: none;
   width: 100%;
-  background-color: var(--btnClr);
+  background-color: var(--menuBg);
   color: var(--whiteColor);
   border-radius: 5px;
   padding: 10px 5px;
