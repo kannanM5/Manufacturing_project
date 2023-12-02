@@ -11,7 +11,8 @@ import {
 import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
-import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import Logo from "../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";

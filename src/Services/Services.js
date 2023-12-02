@@ -71,3 +71,10 @@ export const dummy = (data) => {
 export const savedDataList = (data) => {
   return axios.post(`getsavedlogs`, data);
 };
+
+export const dummayone = (data) => {
+  return axios.post(`dummyone`, data);
+};
+export const dummaytwo = (data) => {
+  return axios.post(`dummytwo`, data);
+};

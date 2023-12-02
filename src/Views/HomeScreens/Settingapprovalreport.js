@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import Logo from "../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import {
   addInspectionReportList,
   editInspectionReportList,

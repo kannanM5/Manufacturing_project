@@ -97,7 +97,7 @@
 .child3 {
   display: flex;
   font-family: var(--fontRegular);
-  margin-bottom: 30px;
+  margin-bottom: 0px;
 }
 .user_name {
   padding-left: 10px;
@@ -173,7 +173,7 @@
 .menu_content {
   align-items: center;
   display: flex;
-  padding: 10px 3px;
+  padding: 15px 3px;
   margin-bottom: 5px;
   text-align: center;
 }
@@ -245,7 +245,7 @@
   .menu {
     display: block;
   }
-  .content {
+  .content .child2 {
     display: none;
   }
   .menu {

@@ -332,5 +332,8 @@ body {
   background-color: white !important;
   height: 3px !important;
   border-radius: 5px !important;
-  width: 40px !important;
+  /* width: 40px !important; */
+}
+.ant-drawer .ant-drawer-content {
+  color: white;
 }

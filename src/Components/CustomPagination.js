@@ -26,3 +26,15 @@
 //     />
 //   );
 // }
+import { Pagination } from "antd";
+import React from "react";
+
+function CustomPagination({ totalCount }) {
+  return (
+    <div>
+      <Pagination defaultCurrent={1} total={totalCount} />
+    </div>
+  );
+}
+
+export default CustomPagination;

@@ -10,7 +10,8 @@ import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
-import CompanyLogo from "../../Assets/Images/Png/VTLogo.jpg";
+// import CompanyLogo from "../../Assets/Images/Png/VTLogo.jpg";
+import CompanyLogo from "../../Assets/Images/Png/VTLogo.svg";
 import create_account from "../../Assets/Icons/SvgIcons/create_account.svg";
 import change_password from "../../Assets/Icons/SvgIcons/change_password.svg";
 import logout from "../../Assets/Icons/SvgIcons/logout.svg";
@@ -291,11 +292,40 @@ export default function Header() {
             </h5>
           </div>
           <div className={classes.offcanvas}>
-            <Drawer open={show} onClose={toggleShow} placement="left">
-              {/* <div className={classes.child3}>
-                <p>{userName}</p>
-                <button onClick={toggleShow} className="btn-close" />
-              </div> */}
+            <Drawer
+              open={show}
+              onClose={toggleShow}
+              placement="left"
+              closeIcon={false}
+            >
+              <div className={classes.child3}>
+                <img
+                  src={dummyIcon}
+                  style={{ width: "50px", height: "50px" }}
+                />
+                <p
+                  style={{
+                    padding: "0 10px",
+                    textAlign: "center",
+                    alignSelf: "center",
+                  }}
+                >
+                  {userName}
+                </p>
+                <button
+                  onClick={toggleShow}
+                  className="btn-close"
+                  style={{ width: "10px", height: "10px" }}
+                />
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "1px",
+                  backgroundColor: "white",
+                  marginTop: "20px",
+                }}
+              ></div>
 
               <div className={classes.child2}>
                 {hamburgerData.map((ele, i) => {
@@ -378,7 +408,7 @@ export default function Header() {
             <img
               src={CompanyLogo}
               alt="logo"
-              style={{ width: 40, height: 40 }}
+              style={{ width: 50, height: 50 }}
             />
             <h5
               style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
@@ -431,6 +461,7 @@ export default function Header() {
                   />
                 </div>
               </div>
+
               {Arrow && <Menu items={userInformation} onClick={handleClick} />}
             </div>
           </div>

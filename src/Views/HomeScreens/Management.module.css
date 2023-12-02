@@ -7,7 +7,7 @@
   background-repeat: no-repeat;
   background-size: contain;
   height: calc(100vh - 65px);
-  background-image: url(../../Assets//Images//Png//bolt5.jpg);
+  /* background-image: url(../../Assets//Images//Png//bolt5.jpg); */
 }
 .DubpilcateDashboard p {
   font-family: var(--fontMedium);
@@ -38,7 +38,7 @@ table .icons img {
 }
 .listOfTable th {
   text-align: center;
-  background-color: lightblue;
+  background-color: rgb(154, 157, 158);
   height: 40px;
 }
 .listOfTable thead th:first-child {
@@ -197,8 +197,10 @@ td {
   width: 30%;
   border-radius: 8px;
   margin: auto;
-  box-shadow: var(--shadow);
+  /* box-shadow: var(--shadow); */
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border: var(--inputBorder);
+  background: #ffff;
 }
 
 /* export page  */

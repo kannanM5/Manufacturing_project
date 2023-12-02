@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import { useState } from "react";
-import { GlobalModal, Loader } from "../../Components";
+import { CustomButton, GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import {
   useEmployeeId,
@@ -11,9 +11,10 @@ import {
 } from "../../Utility/StoreData";
 import * as Yup from "yup";
 import { ALPHA_NUM } from "../../Utility/Constants";
-import { productsList } from "../../Services/Services";
+import { dummayone, productsList } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import AddProducts from "../../Modals/AddProducts";
+import CustomPagination from "../../Components/CustomPagination";
 
 const validationSchema = Yup.object({
   part_no: Yup.string()
@@ -48,13 +49,22 @@ function ListOfProducts() {
   useEffect(() => {
     if (token) handleGetProductsList();
   }, [token]);
+  const hendleDummyApi = () => {
+    const data = {
+      test: "test",
+      array: [1, 2, 3, 4, 5],
+    };
+    dummayone(data).then((response) => {
+      console.log(response, "RESPONSEIN DUMMY ONE");
+    });
+  };
 
   const handleGetProductsList = (page = 1) => {
     setloader(true);
     const formData = new FormData();
     formData.append("token", token);
     formData.append("user_id", userId);
-    formData.append("limit", 10);
+    formData.append("limit", 40);
     productsList(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -112,6 +122,7 @@ function ListOfProducts() {
           }}
         />
       </GlobalModal>
+      <CustomButton title="Dummy" onButtonPress={hendleDummyApi} />
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>
@@ -165,6 +176,7 @@ function ListOfProducts() {
           }}
         />
       ) : null} */}
+      <CustomPagination totalCount={listOfProducts?.totalPage * 10} />
     </>
   );
 }

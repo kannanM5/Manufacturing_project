@@ -29,8 +29,9 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password")], "Passwords must match")
     .trim("Remove leading and trailing spaces")
     .strict(true),
-  userTypeName: Yup.string().required("User type is required"),
+  type: Yup.string().required("User type is required"),
 });
+
 function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   const {
     handleSubmit,
@@ -57,6 +58,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
       handleSignup(values);
     },
   });
+
   const [loader, setloader] = useState(false);
   const userType = [
     {
@@ -175,7 +177,6 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
             errorText={touched.email && errors.email ? errors.email : ""}
           />
         </div>
-
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
           <TextInputBox
             title="Confirm email"
@@ -235,9 +236,8 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
             errorText={
               touched.password && errors.password ? errors.password : ""
             }
-          ></TextInputBox>
+          />
         </div>
-
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
           <TextInputBox
             requiredText="*"
@@ -268,27 +268,9 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
                 ? errors.confirm_password
                 : ""
             }
-          ></TextInputBox>
+          />
         </div>
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
-          {/* <CustomDropDown
-            editName={values?.userTypeName}
-            title="User Type"
-            items={userType}
-            anotherFieldName={"id"}
-            fieldName={"name"}
-            requiredText={"*"}
-            onSelectedItem={(val, value) => {
-              setFieldValue("userTypeName", value?.label);
-              setFieldValue("type", value?.id);
-            }}
-            errorText={
-              errors?.userTypeName && touched?.userTypeName
-                ? errors?.userTypeName
-                : ""
-            }
-          /> */}
-
           <CustomDropDown
             placeholderText={"user type"}
             requiredText="*"
@@ -301,6 +283,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
             onSelect={(val) => {
               setFieldValue("type", val);
             }}
+            errorText={errors.type && touched.type ? errors?.type : ""}
           />
         </div>
       </div>

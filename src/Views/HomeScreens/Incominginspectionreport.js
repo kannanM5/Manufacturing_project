@@ -3,6 +3,7 @@ import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import {
   addInspectionReportList,
+  dummaytwo,
   editInspectionReportList,
   getInspectionReportList,
   savedDataList,
@@ -12,8 +13,9 @@ import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import { Loader } from "../../Components";
-import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import { CustomButton, Loader } from "../../Components";
+import Logo from "../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
 import Commondate from "../../Components/Commondate";
 var CryptoJS = require("crypto-js");
@@ -43,7 +45,13 @@ export default function Emptypage() {
       }
     }
   }, [urlValues]);
-
+  const hendleClikindummy = () => {
+    let formData = new FormData();
+    formData.append("test", urlValues?.part_no);
+    dummaytwo(formData).then((response) => {
+      console.log(response, "RESPONSE IN DUIMMY TWO");
+    });
+  };
   const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
@@ -315,6 +323,7 @@ export default function Emptypage() {
   console.log(token, "CURRENTTOKEN");
   return (
     <div>
+      <CustomButton title="Dummy" onButtonPress={hendleClikindummy} />
       {loader ? <Loader /> : null}
       <PageHeader
         Btntitle={"Save"}
