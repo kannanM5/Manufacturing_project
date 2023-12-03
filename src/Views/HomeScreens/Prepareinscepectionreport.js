@@ -103,14 +103,14 @@ function PrepareInspectionReport() {
   //     return setData;
   //   }
   // };
-  const handleClick = () => {
+  const handleClick = (data) => {
     // getAndSetLoaclStorageDetails();
     // setloader(true)
     const getDetails = dropDownItem.find(
       (ele) => ele.key === parseInt(dropdownName)
     );
     if (getDetails) {
-      const encryptedData = sendData();
+      const encryptedData = sendData(data);
       const newTab = window.open(getDetails.path, "_blank");
       if (newTab) {
         newTab.location.href = `${getDetails.path}?data=${encodeURIComponent(
@@ -136,7 +136,6 @@ function PrepareInspectionReport() {
       .then((response) => {
         if (response?.data?.status === 1) {
           handleClick();
-
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
@@ -152,12 +151,12 @@ function PrepareInspectionReport() {
       });
   };
 
-  const sendData = () => {
+  const sendData = (data) => {
     var encrypted = CryptoJS.AES.encrypt(
       JSON.stringify({
         ...values,
         pageStatus: dropdownName,
-        buttonStatus: buttonStatus,
+        buttonStatus: data,
       }),
       "data"
     ).toString();
@@ -281,7 +280,8 @@ function PrepareInspectionReport() {
               customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
               onButtonPress={() => {
                 setbuttonStatus("Edit");
-                handleSubmit();
+                // handleSubmit();
+                handleClick("Edit");
                 // handleGetProductsList();
               }}
             />
