@@ -16,6 +16,15 @@ import Logo from "../../Assets/Images/Png/VTLogo.svg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";
+import * as Yup from "yup";
+import { Loader } from "../../Components";
+
+const validationSchema = Yup.object({
+  mvc_no: Yup.string().required("Machine number is required"),
+  operator_name: Yup.string().required("Operator name is required"),
+  report_shift: Yup.string().required("Shift is required"),
+  inspector_name: Yup.string().required("Name is required"),
+});
 var CryptoJS = require("crypto-js");
 
 function LineInspectionReport() {
@@ -25,12 +34,22 @@ function LineInspectionReport() {
   const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
+  const [saveStatus, setsaveStatus] = useState(null);
   const [reportData, setReportData] = useState(null);
-  const { values, handleChange, setFieldValue, setValues } = useFormik({
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    setValues,
+    handleSubmit,
+    errors,
+    touched,
+  } = useFormik({
     initialValues: {
       process_id: "",
       product_id: "",
       part_no: "",
+      mvc_no: "",
       report_shift: "",
       operator_name: "",
       supplier_name: "",
@@ -47,8 +66,16 @@ function LineInspectionReport() {
       datas: "",
       tableHeadDataApi: "",
     },
+    validationSchema: validationSchema,
+    onSubmit: () => {
+      if (getColor()) {
+        handleAddIncomingReport(values);
+      } else {
+        toast.error("Observation is required");
+      }
+    },
   });
-
+  console.log(values, "VALUESSS");
   const tableHeadData = [
     {
       id: 1,
@@ -79,7 +106,14 @@ function LineInspectionReport() {
       rightData: values?.inspector_name,
     },
   ];
+  const getColor = () => {
+    const tempData = [...values.datas];
 
+    const getCode = tempData
+      .map((ele) => ele?.observation)
+      .some((text) => text !== "");
+    return getCode;
+  };
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
@@ -178,7 +212,6 @@ function LineInspectionReport() {
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -191,7 +224,12 @@ function LineInspectionReport() {
       });
   };
 
-  const handleAddIncomingReport = (data, saveStatus) => {
+  const CloseTab = () => {
+    setTimeout(() => {
+      window.close();
+    }, 2000);
+  };
+  const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [null, null, null, null, null, null, null, null];
     const observeData = [...data?.datas];
@@ -219,19 +257,18 @@ function LineInspectionReport() {
       report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
       report_header_status: data?.report_header_status,
-      checked_by: data?.checked_by,
-      approved_by: data?.approved_by,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
       inspector_name: data?.inspector_name,
-      final_status: isFinalStatus
-        ? isFinalStatus.toString()
-        : isFinalStatus.toString(),
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
-    addInspectionReportList(finalData)
+    addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
           toast.success(res?.data?.msg);
+          CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -255,8 +292,7 @@ function LineInspectionReport() {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
           : Array(8).fill(""); // Assuming a default value of an empty string for non-array observations
-        const dyummy = (newObservation[inputIndex] = event.target.value);
-        newObservation[inputIndex] = event.target.value;
+        newObservation[inputIndex] = event;
         return {
           ...ele,
           observation: newObservation,
@@ -268,7 +304,7 @@ function LineInspectionReport() {
   };
   const handleFirstOfChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].first_half = event.target.value;
+    updatedData[rowIndex].first_half = event;
     handleChange({
       target: {
         name: "datas",
@@ -279,7 +315,7 @@ function LineInspectionReport() {
 
   const handleLastOfChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].last_half = event.target.value;
+    updatedData[rowIndex].last_half = event;
     handleChange({
       target: {
         name: "datas",
@@ -289,7 +325,7 @@ function LineInspectionReport() {
   };
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].remark = event.target.value;
+    updatedData[rowIndex].remark = event;
     handleChange({
       target: {
         name: "datas",
@@ -299,19 +335,26 @@ function LineInspectionReport() {
   };
   const handleChangeStatus = (event, index) => {
     const newData = [...values?.report_header_status];
-    newData[index] = event.target?.value;
+    newData[index] = event;
     setFieldValue("report_header_status", newData);
   };
   return (
     <>
+      {loader ? <Loader /> : null}
       <div>
         <PageHeader
           Btntitle={"Save"}
           BtntitleOne={"Finish"}
           modal={() => {
-            handleAddIncomingReport(values, 0);
+            //save
+            setsaveStatus(0);
+            handleSubmit();
           }}
-          onPressOvertime={() => handleAddIncomingReport(values, 1)}
+          //submit
+          onPressOvertime={() => {
+            setsaveStatus(1);
+            handleSubmit();
+          }}
           heading={"Line Inspection Report"}
         />
         <div className={classes.reportInsepection}>
@@ -360,6 +403,12 @@ function LineInspectionReport() {
                     <th colSpan={10}>
                       {index === 0 ? (
                         <input
+                          style={{
+                            border:
+                              errors.mvc_no && touched.mvc_no
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={50}
                           type="text"
                           value={head?.leftData}
@@ -373,13 +422,25 @@ function LineInspectionReport() {
                           }}
                         />
                       ) : (
-                        head?.leftData
+                        <span
+                          style={{
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {head?.leftData}
+                        </span>
                       )}
                     </th>
                     <th colSpan={2}>{head?.right}</th>
                     <th colSpan={4}>
                       {index === 0 ? (
                         <input
+                          style={{
+                            border:
+                              errors.operator_name && touched.operator_name
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -404,6 +465,12 @@ function LineInspectionReport() {
                         />
                       ) : index === 2 ? (
                         <input
+                          style={{
+                            border:
+                              errors.report_shift && touched.report_shift
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -418,6 +485,12 @@ function LineInspectionReport() {
                         />
                       ) : (
                         <input
+                          style={{
+                            border:
+                              errors.inspector_name && touched.inspector_name
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -488,9 +561,14 @@ function LineInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.first_half}
-                          onChange={(event) =>
-                            handleFirstOfChange(index, event)
-                          }
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleFirstOfChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                       {ele?.observation !== ""
@@ -501,9 +579,18 @@ function LineInspectionReport() {
                                 maxLength={10}
                                 type="text"
                                 value={inputs}
-                                onChange={(event) =>
-                                  handleChangeValues(event, index, inputIndex)
-                                }
+                                onChange={(event) => {
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
+                                }}
                               />
                             </td>
                           ))
@@ -517,7 +604,16 @@ function LineInspectionReport() {
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
-                                  handleChangeValues(event, index, inputIndex);
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
                                 }}
                               />
                             </td>
@@ -529,7 +625,14 @@ function LineInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.last_half}
-                          onChange={(event) => handleLastOfChange(index, event)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleLastOfChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                       <td>
@@ -538,7 +641,14 @@ function LineInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.remark}
-                          onChange={(event) => handleRemarkChange(index, event)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleRemarkChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                     </tr>
@@ -557,7 +667,14 @@ function LineInspectionReport() {
                           maxLength={10}
                           type="text"
                           value={ele}
-                          onChange={(event) => handleChangeStatus(event, index)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChangeStatus(alphabeticText, index);
+                          }}
                         />
                       </td>
                     ))}

@@ -34,6 +34,7 @@
   --gantchartBorder: 1px solid #ffffff;
   --dropdownBg: #ebebeb;
   --dropdownClr: #555555;
+  --btnColor: #f25922;
   --textxxs: 11px;
   --textXs1: 11px;
   --textXs: 14px;
@@ -329,11 +330,35 @@ body {
   color: white !important;
 }
 .ant-tabs-ink-bar {
-  background-color: white !important;
+  background-color: var(--btnColor) !important;
   height: 3px !important;
   border-radius: 5px !important;
   /* width: 40px !important; */
 }
 .ant-drawer .ant-drawer-content {
   color: white;
+}
+.ant-dropdown-trigger {
+  /* color: white; */
+  padding-left: 10px;
+}
+
+.ant-dropdown-menu-title-content a {
+  text-decoration: none !important;
+}
+.ant-dropdown .ant-dropdown-menu {
+  padding: 0 !important;
+}
+.ant-dropdown .ant-dropdown-menu .ant-dropdown-menu-item-icon {
+  font-size: 18px !important;
+}
+.ant-dropdown {
+  padding: 11px 0 0 0 !important;
+}
+.ant-dropdown-menu-item {
+  padding: 14px !important;
+  border-radius: 0 !important;
+}
+.ant-dropdown-menu-item:not(:nth-last-child(1)) {
+  border-bottom: 1px solid rgb(239, 237, 237) !important;
 }

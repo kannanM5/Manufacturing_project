@@ -24,6 +24,15 @@ import dummyIcon from "../../Assets/Images/Png/dummy.png";
 import downArrow from "../../Assets/Icons/SvgIcons/dropdownarrow.svg";
 import downUpArrow from "../../Assets/Icons/SvgIcons/dropUpArrow.svg";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { Dropdown, Space } from "antd";
+import {
+  DownOutlined,
+  LockOutlined,
+  SmileOutlined,
+  LogoutOutlined,
+  UserAddOutlined,
+} from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function Header() {
   const token = useToken();
@@ -124,7 +133,23 @@ export default function Header() {
       naviagationPath: "/export_page",
     },
   ];
-
+  const items = [
+    {
+      key: "1",
+      label: "Create Account",
+      icon: <UserAddOutlined />,
+    },
+    {
+      key: "2",
+      label: "Change Password",
+      icon: <LockOutlined />,
+    },
+    {
+      key: "3",
+      label: "Logout",
+      icon: <LogoutOutlined />,
+    },
+  ];
   const hamburgerData = [
     {
       id: 1,
@@ -212,21 +237,36 @@ export default function Header() {
     )?.naviagationPath;
     navigate(getPath);
   };
-  const handleClick = (e) => {
-    setArrow((prev) => !prev);
-    if (parseInt(e.key) === 3) {
+  const onClick = (value) => {
+    if (parseInt(value.key) === 1) {
+      navigate("/employee_list");
+    } else if (parseInt(value.key) === 2) {
+      navigate("/change_password");
+    } else if (parseInt(value.key) === 3) {
       setdeleteModal((prev) => {
         return {
           ...prev,
           modal: true,
         };
       });
-    } else if (parseInt(e.key) == 2) {
-      navigate("/change_password");
-    } else {
-      navigate("/employee_list");
     }
+    console.log(value?.key, "KEYSSS");
   };
+  // const handleClick = (e) => {
+  //   setArrow((prev) => !prev);
+  //   if (parseInt(e.key) === 3) {
+  //     setdeleteModal((prev) => {
+  //       return {
+  //         ...prev,
+  //         modal: true,
+  //       };
+  //     });
+  //   } else if (parseInt(e.key) == 2) {
+  //     navigate("/change_password");
+  //   } else {
+  //     navigate("/employee_list");
+  //   }
+  // };
   useEffect(() => {
     if (pathname === "/product_list") {
       setcurrentTab("1");
@@ -258,7 +298,7 @@ export default function Header() {
         }}
       >
         <LogoutConfirmationModal
-          msg={"Are you sure do you want to Logout."}
+          msg={"Are you sure do you want to logout."}
           onClose={() => {
             setdeleteModal((prev) => {
               return {
@@ -453,16 +493,32 @@ export default function Header() {
                     alt="dummy"
                     className={classes.dummyImage}
                   />
-                  <p className={classes.user_name}>{userName}</p>
-                  <img
+                  <Dropdown menu={{ items, onClick }} trigger={["click"]}>
+                    <a
+                      onClick={(e) => {
+                        console.log(e, "EEEEEE");
+                      }}
+                    >
+                      <Space
+                        style={{
+                          color: "white",
+                        }}
+                      >
+                        {userName}
+                        <DownOutlined />
+                      </Space>
+                    </a>
+                  </Dropdown>
+                  {/* <p className={classes.user_name}>{userName}</p> */}
+                  {/* <img
                     src={Arrow ? downUpArrow : downArrow}
                     alt="downArrow"
                     className={classes.downArrow}
-                  />
+                  /> */}
                 </div>
               </div>
 
-              {Arrow && <Menu items={userInformation} onClick={handleClick} />}
+              {/* {Arrow && <Menu items={userInformation} onClick={handleClick} />} */}
             </div>
           </div>
         </div>

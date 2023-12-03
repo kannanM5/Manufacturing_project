@@ -97,7 +97,7 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
                 maxLength: 50,
               }}
               name="password"
-              title="New password"
+              title="New Password"
               errorText={
                 touched.password && errors.password ? errors.password : ""
               }
@@ -127,7 +127,7 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
               }}
               value={values.repeat_password}
               name="repeat_password"
-              title="Confirm password"
+              title="Confirm Password"
               errorText={
                 touched.repeat_password && errors.repeat_password
                   ? errors.repeat_password

@@ -7,6 +7,7 @@ import classes from "./UserProfile.module.css";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
 import { getCookie } from "../../Store/Storage/Cookie";
 import { superAdminChangePassword } from "../../Services/Services";
+import PageHeader from "../ManagementLayoutHeader/PageHeader";
 
 function ChangePassword() {
   const [loader, setloader] = useState(false);
@@ -97,12 +98,13 @@ function ChangePassword() {
 
   return (
     <>
+      <PageHeader
+        heading={"Change Password"}
+        onPressOvertime={true}
+        secondBtn={false}
+      />
       {loader ? <Loader /> : null}
       <div className={classes.container}>
-        <div className={classes.head}>
-          <div className={classes.line}></div>
-          <div className={classes.heading}>Change Password</div>
-        </div>
         <div className="container-fluid">
           <div className={classes.changepasswordcontent}>
             <div className="row">
@@ -114,7 +116,7 @@ function ChangePassword() {
                   value={values.old_password}
                   name="old_password"
                   onChangeText={handleChange("old_password")}
-                  title="Current password"
+                  title="Current Password"
                   errorText={
                     touched.old_password && errors.old_password
                       ? errors.old_password
@@ -162,7 +164,7 @@ function ChangePassword() {
                     maxLength: 50,
                   }}
                   name="new_password"
-                  title="New password"
+                  title="New Password"
                   errorText={
                     touched.new_password && errors.new_password
                       ? errors.new_password
@@ -194,7 +196,7 @@ function ChangePassword() {
                   }}
                   value={values.repeat_password}
                   name="repeat_password"
-                  title="Confirm password"
+                  title="Confirm Password"
                   errorText={
                     touched.repeat_password && errors.repeat_password
                       ? errors.repeat_password

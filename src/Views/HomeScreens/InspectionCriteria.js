@@ -109,8 +109,8 @@ function InspectionCriteria() {
           <div className="row">
             <div className="col-lg-3 col-md-6">
               <TextInputBox
-                title="Part No"
-                placeHolder="Enter part no"
+                title="Part Number"
+                placeHolder="Enter part number"
                 value={values.part_no}
                 onChangeText={handleChange("part_no")}
                 name="part_no"
@@ -170,7 +170,7 @@ function InspectionCriteria() {
 
             <div className="col-lg-1 col-md-6 col-3 mt-4">
               <CustomButton
-                title="Enter "
+                title="Enter"
                 onButtonPress={() => {
                   if (values.part_no && values.process) {
                     setIsShowModal((prev) => {
@@ -187,7 +187,11 @@ function InspectionCriteria() {
               />
             </div>
             <div className="col-lg-1 col-md-6 col-3 mt-4">
-              <CustomButton title="Search " onButtonPress={handleSubmit} />
+              <CustomButton
+                title="Search "
+                onButtonPress={handleSubmit}
+                customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+              />
             </div>
           </div>
 

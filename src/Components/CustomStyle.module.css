@@ -3,7 +3,9 @@
 .btn button {
   border: none;
   width: 100%;
-  background-color: var(--menuBg);
+  /* background-color: var(--menuBg);
+   */
+  background-color: var(--btnColor);
   color: var(--whiteColor);
   border-radius: 5px;
   padding: 10px 5px;
@@ -331,7 +333,7 @@
 .popup_head_left .line {
   width: 4px;
   height: 30px;
-  background-color: var(--btnClr);
+  background-color: var(--btnColor);
   margin-right: 10px;
   border-radius: 5px;
 }

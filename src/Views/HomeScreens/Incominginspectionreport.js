@@ -3,8 +3,6 @@ import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import {
   addInspectionReportList,
-  dummaytwo,
-  editInspectionReportList,
   getInspectionReportList,
   savedDataList,
 } from "../../Services/Services";
@@ -18,13 +16,21 @@ import Logo from "../../Assets/Images/Png/VTLogo.svg";
 // import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
 import Commondate from "../../Components/Commondate";
+import moment from "moment";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object({
+  supplier_name: Yup.string().required("Name is required"),
+  invoice_no: Yup.string().required("Name is required"),
+  quantity: Yup.string().required("Name is required"),
+});
 var CryptoJS = require("crypto-js");
 
 export default function Emptypage() {
   const token = useToken();
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
-
+  const [saveStatus, setsaveStatus] = useState(null);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
@@ -35,7 +41,6 @@ export default function Emptypage() {
     const decryptedData = JSON.parse(decryptedText);
     setUrlValues(decryptedData);
   }, [location.search]);
-  console.log(urlValues, "URLVALUES");
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -45,18 +50,20 @@ export default function Emptypage() {
       }
     }
   }, [urlValues]);
-  const hendleClikindummy = () => {
-    let formData = new FormData();
-    formData.append("test", urlValues?.part_no);
-    dummaytwo(formData).then((response) => {
-      console.log(response, "RESPONSE IN DUIMMY TWO");
-    });
-  };
+
   const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
-  const { values, handleChange, setFieldValue, setValues } = useFormik({
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    setValues,
+    handleSubmit,
+    errors,
+    touched,
+  } = useFormik({
     initialValues: {
       process_id: "",
       product_id: "",
@@ -72,6 +79,14 @@ export default function Emptypage() {
       quantity: "",
       datas: "",
       tableHeadDataApi: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: () => {
+      if (getColor()) {
+        handleAddIncomingReport(values);
+      } else {
+        toast.error("Observation is required");
+      }
     },
   });
 
@@ -139,7 +154,6 @@ export default function Emptypage() {
   useEffect(() => {
     if (reportData) {
       let tempData = [...reportData?.processData];
-      console.log(tempData, "tempData");
       const getProcess = tempData.map((ele) => ele?.process);
       // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
@@ -190,7 +204,6 @@ export default function Emptypage() {
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -202,8 +215,12 @@ export default function Emptypage() {
         setloader(false);
       });
   };
-
-  const handleAddIncomingReport = (data, saveStatus) => {
+  const CloseTab = () => {
+    setTimeout(() => {
+      window.close();
+    }, 2000);
+  };
+  const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [
       null,
@@ -235,22 +252,21 @@ export default function Emptypage() {
       process_id: data?.process_id,
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
-      invoice_date: data?.invoice_date,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       supplier_name: data?.supplier_name,
-      checked_by: data?.checked_by,
-      approved_by: data?.approved_by,
-      final_status: isFinalStatus
-        ? isFinalStatus.toString()
-        : isFinalStatus.toString(),
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
-    addInspectionReportList(finalData)
+    addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
           toast.success(res?.data?.msg);
+          CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -274,8 +290,7 @@ export default function Emptypage() {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
           : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
-        const dyummy = (newObservation[inputIndex] = event.target.value);
-        newObservation[inputIndex] = event.target.value;
+        newObservation[inputIndex] = event;
         return {
           ...ele,
           observation: newObservation,
@@ -285,23 +300,17 @@ export default function Emptypage() {
     });
     setFieldValue("datas", newData);
   };
-  const getColor = (index, inputIndex) => {
+  const getColor = () => {
     const tempData = [...values.datas];
 
-    // const getValue = tempData
-    //   .map((ele) => ele[index])
-    //   .filter((filterValue) => filterValue[inputIndex]);
-    // console.log(tempData[3], "GETVALUEEE");
-    // if (parseInt(emptyInput) > 10) {
-    //   return "red";
-    // } else {
-    //   return "black";
-    // }
+    const getCode = tempData
+      .map((ele) => ele?.observation)
+      .some((text) => text !== "");
+    return getCode;
   };
-
   const handleStatusChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].status = event.target.value;
+    updatedData[rowIndex].status = event;
     handleChange({
       target: {
         name: "datas",
@@ -309,10 +318,9 @@ export default function Emptypage() {
       },
     });
   };
-  console.log(values.datas, "DATRSESTRDGJHGUH");
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].remark = event.target.value;
+    updatedData[rowIndex].remark = event;
     handleChange({
       target: {
         name: "datas",
@@ -320,20 +328,23 @@ export default function Emptypage() {
       },
     });
   };
-  console.log(token, "CURRENTTOKEN");
+
   return (
     <div>
-      <CustomButton title="Dummy" onButtonPress={hendleClikindummy} />
       {loader ? <Loader /> : null}
       <PageHeader
         Btntitle={"Save"}
         BtntitleOne={"Finish"}
         modal={() => {
           //save
-          handleAddIncomingReport(values, 0);
+          setsaveStatus(0);
+          handleSubmit();
         }}
         //submit
-        onPressOvertime={() => handleAddIncomingReport(values, 1)}
+        onPressOvertime={() => {
+          setsaveStatus(1);
+          handleSubmit();
+        }}
         heading={"Incoming Inspection Report"}
       />
       <div className={classes.reportInsepection}>
@@ -382,6 +393,12 @@ export default function Emptypage() {
                   <td colSpan={11} className={classes.staticHeading}>
                     {index === 0 ? (
                       <input
+                        style={{
+                          border:
+                            errors.supplier_name && touched.supplier_name
+                              ? "2px solid red"
+                              : "",
+                        }}
                         maxLength={50}
                         type="text"
                         value={head?.leftData}
@@ -395,7 +412,13 @@ export default function Emptypage() {
                         }}
                       />
                     ) : (
-                      head?.leftData
+                      <span
+                        style={{
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        {head?.leftData}
+                      </span>
                     )}
                   </td>
                   <th colSpan={1} className={classes.secondRowThirdColumn}>
@@ -403,9 +426,21 @@ export default function Emptypage() {
                   </th>
                   <td colSpan={3} className={classes.staticHeading}>
                     {index === 0 ? (
-                      head?.rightData
+                      <span
+                        style={{
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        {head?.rightData}
+                      </span>
                     ) : index === 1 ? (
                       <input
+                        style={{
+                          border:
+                            errors.invoice_no && touched.invoice_no
+                              ? "2px solid red"
+                              : "",
+                        }}
                         maxLength={20}
                         type="text"
                         value={head?.rightData}
@@ -428,6 +463,12 @@ export default function Emptypage() {
                       />
                     ) : (
                       <input
+                        style={{
+                          border:
+                            errors.quantity && touched.quantity
+                              ? "2px solid red"
+                              : "",
+                        }}
                         maxLength={20}
                         type="text"
                         value={head?.rightData}
@@ -500,23 +541,38 @@ export default function Emptypage() {
                               maxLength={10}
                               type="text"
                               value={inputs}
-                              onChange={(event) =>
-                                handleChangeValues(event, index, inputIndex)
-                              }
+                              onChange={(event) => {
+                                const text = event.target.value;
+                                const alphabeticText = text.replace(
+                                  /[^A-Za-z0-9 ]/g,
+                                  ""
+                                );
+                                handleChangeValues(
+                                  alphabeticText,
+                                  index,
+                                  inputIndex
+                                );
+                              }}
                             />
                           </td>
                         ))
                       : [...Array(10)].map((emptyInput, inputIndex) => (
                           <td key={inputIndex}>
                             <input
-                              // style={{
-                              //   color: getColor(index, inputIndex),
-                              // }}
                               className={classes.observationInput}
                               type="text"
                               value={emptyInput ? emptyInput : ""}
                               onChange={(event) => {
-                                handleChangeValues(event, index, inputIndex);
+                                const text = event.target.value;
+                                const alphabeticText = text.replace(
+                                  /[^A-Za-z0-9 ]/g,
+                                  ""
+                                );
+                                handleChangeValues(
+                                  alphabeticText,
+                                  index,
+                                  inputIndex
+                                );
                               }}
                             />
                           </td>
@@ -527,7 +583,14 @@ export default function Emptypage() {
                         maxLength={20}
                         type="text"
                         value={ele?.status}
-                        onChange={(event) => handleStatusChange(index, event)}
+                        onChange={(event) => {
+                          const text = event.target.value;
+                          const alphabeticText = text.replace(
+                            /[^A-Za-z0-9 ]/g,
+                            ""
+                          );
+                          handleStatusChange(index, alphabeticText);
+                        }}
                       />
                     </td>
                     <td colSpan={2}>
@@ -536,7 +599,14 @@ export default function Emptypage() {
                         maxLength={20}
                         type="text"
                         value={ele?.remark}
-                        onChange={(event) => handleRemarkChange(index, event)}
+                        onChange={(event) => {
+                          const text = event.target.value;
+                          const alphabeticText = text.replace(
+                            /[^A-Za-z0-9 ]/g,
+                            ""
+                          );
+                          handleRemarkChange(index, alphabeticText);
+                        }}
                       />
                     </td>
                   </tr>

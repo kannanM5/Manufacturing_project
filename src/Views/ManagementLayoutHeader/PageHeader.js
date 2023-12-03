@@ -25,17 +25,19 @@ function PageHeader({
         ) : null} */}
         {BtnTrue ? null : (
           <div className={classes.header_right}>
-            <CustomButton
-              onButtonPress={modal}
-              title={Btntitle}
-              customButtonStyle={{
-                backgroundColor: "#262626",
-                fontSize: "13px",
-                fontWeight: "500",
-                padding: "10px 15px",
-                boxShadow: "0px 1.89921px 3.79843px rgba(0, 0, 0, 0.06)",
-              }}
-            />
+            {Btntitle && (
+              <CustomButton
+                onButtonPress={modal}
+                title={Btntitle}
+                customButtonStyle={{
+                  backgroundColor: "var(--btnColor)",
+                  fontSize: "13px",
+                  fontWeight: "500",
+                  padding: "10px 15px",
+                  boxShadow: "0px 1.89921px 3.79843px rgba(0, 0, 0, 0.06)",
+                }}
+              />
+            )}
             {secondBtn && (
               <div style={{ marginLeft: "23px" }}>
                 <CustomButton

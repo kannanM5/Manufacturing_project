@@ -248,6 +248,9 @@
   .content .child2 {
     display: none;
   }
+  .content {
+    display: none;
+  }
   .menu {
     align-items: center;
     height: 50px;

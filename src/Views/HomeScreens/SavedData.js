@@ -98,108 +98,114 @@ function SavedData() {
     }
   }, [state]);
   return (
-    <div className={classes.insepectionCreteria}>
+    <>
       <PageHeader heading={"Saved Logs"} BtnTrue={true} />
-      <div className="row">
-        <div className="col-lg-3 col-md-6">
-          <TextInputBox
-            title="Part No"
-            placeHolder="Enter part no"
-            value={values.part_no}
-            onChangeText={handleChange("part_no")}
-            name="part_no"
-            customInputProps={{
-              onBlur: () => {
-                try {
-                  validationSchema.validateSyncAt("part_no", values.part_no);
-                } catch (error) {
-                  if (error instanceof Error) {
-                    setFieldTouched("part_no", true);
-                    setFieldError("part_no", error.message);
+      <div className={classes.insepectionCreteria}>
+        <div className="row">
+          <div className="col-lg-3 col-md-6">
+            <TextInputBox
+              title="Part Number"
+              placeHolder="Enter part number"
+              value={values.part_no}
+              onChangeText={handleChange("part_no")}
+              name="part_no"
+              customInputProps={{
+                onBlur: () => {
+                  try {
+                    validationSchema.validateSyncAt("part_no", values.part_no);
+                  } catch (error) {
+                    if (error instanceof Error) {
+                      setFieldTouched("part_no", true);
+                      setFieldError("part_no", error.message);
+                    }
                   }
-                }
-              },
-              maxLength: 50,
-            }}
-            type={"text"}
-            requiredText="*"
-            errorText={touched.part_no && errors.part_no ? errors.part_no : ""}
-          />
-        </div>
-        <div className="col-lg-3 col-md-6">
-          <TextInputBox
-            title="Process"
-            placeHolder="Enter process"
-            value={values.process}
-            onChangeText={handleChange("process")}
-            name="process"
-            customInputProps={{
-              onBlur: () => {
-                try {
-                  validationSchema.validateSyncAt("process", values.process);
-                } catch (error) {
-                  if (error instanceof Error) {
-                    setFieldTouched("process", true);
-                    setFieldError("process", error.message);
+                },
+                maxLength: 50,
+              }}
+              type={"text"}
+              requiredText="*"
+              errorText={
+                touched.part_no && errors.part_no ? errors.part_no : ""
+              }
+            />
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <TextInputBox
+              title="Process"
+              placeHolder="Enter process"
+              value={values.process}
+              onChangeText={handleChange("process")}
+              name="process"
+              customInputProps={{
+                onBlur: () => {
+                  try {
+                    validationSchema.validateSyncAt("process", values.process);
+                  } catch (error) {
+                    if (error instanceof Error) {
+                      setFieldTouched("process", true);
+                      setFieldError("process", error.message);
+                    }
                   }
-                }
-              },
-              maxLength: 50,
-            }}
-            type={"text"}
-            requiredText="*"
-            errorText={touched.process && errors.process ? errors.process : ""}
-          />
+                },
+                maxLength: 50,
+              }}
+              type={"text"}
+              requiredText="*"
+              errorText={
+                touched.process && errors.process ? errors.process : ""
+              }
+            />
+          </div>
+
+          <div className="col-lg-1 col-md-6 col-3 mt-4">
+            <CustomButton title="Search" onButtonPress={handleSubmit} />
+          </div>
         </div>
 
-        <div className="col-lg-1 col-md-6 col-3 mt-4">
-          <CustomButton title="Search" onButtonPress={handleSubmit} />
+        <div style={{ margin: "20px 0" }}>
+          <div className={`table-responsive ${classes.Dashboard}`}>
+            <table className={classes.listOfTable}>
+              <thead className={classes.NormalTable}>
+                <tr>
+                  <th>S.No</th>
+                  <th>Part No</th>
+                  <th>Process</th>
+                  <th>Report Name</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {listInSpectionCriteria &&
+                  listInSpectionCriteria.map((products, index) => (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{products?.part_no}</td>
+                      <td>{products?.process}</td>
+                      <td>{getReportType(products?.report_type)}</td>
+                      <td>
+                        <img
+                          src={EditIcon}
+                          alt="edit_icon"
+                          style={{ width: 20, height: 20, cursor: "pointer" }}
+                          onClick={() => {
+                            setIsShowModal((prev) => {
+                              return {
+                                ...prev,
+                                data: products,
+                                status: true,
+                              };
+                            });
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-      <div style={{ margin: "20px 0" }}>
-        <div className={`table-responsive ${classes.Dashboard}`}>
-          <table className={classes.listOfTable}>
-            <thead className={classes.NormalTable}>
-              <tr>
-                <th>S.No</th>
-                <th>Part No</th>
-                <th>Process</th>
-                <th>Report Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listInSpectionCriteria &&
-                listInSpectionCriteria.map((products, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{products?.part_no}</td>
-                    <td>{products?.process}</td>
-                    <td>{getReportType(products?.report_type)}</td>
-                    <td>
-                      <img
-                        src={EditIcon}
-                        alt="edit_icon"
-                        style={{ width: 20, height: 20, cursor: "pointer" }}
-                        onClick={() => {
-                          setIsShowModal((prev) => {
-                            return {
-                              ...prev,
-                              data: products,
-                              status: true,
-                            };
-                          });
-                        }}
-                      />
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
 

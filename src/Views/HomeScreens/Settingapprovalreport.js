@@ -16,6 +16,16 @@ import { useFormik } from "formik";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";
+import * as Yup from "yup";
+import { Loader } from "../../Components";
+
+const validationSchema = Yup.object({
+  mvc_no: Yup.string().required("Name is required"),
+  setter_name: Yup.string().required("Name is required"),
+  report_shift: Yup.string().required("Name is required"),
+  inspector_name: Yup.string().required("Name is required"),
+});
+
 var CryptoJS = require("crypto-js");
 
 function SettingInspectionReport() {
@@ -26,7 +36,16 @@ function SettingInspectionReport() {
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
-  const { values, handleChange, setFieldValue, setValues } = useFormik({
+  const [saveStatus, setsaveStatus] = useState(null);
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    setValues,
+    handleSubmit,
+    errors,
+    touched,
+  } = useFormik({
     initialValues: {
       product_id: "",
       process_id: "",
@@ -46,7 +65,22 @@ function SettingInspectionReport() {
       datas: "",
       tableHeadDataApi: "",
     },
+    validationSchema: validationSchema,
+    onSubmit: () => {
+      if (getColor()) {
+        handleAddIncomingReport(values);
+      } else {
+        toast.error("Observation is required");
+      }
+    },
   });
+  const getColor = () => {
+    const tempData = [...values.datas];
+    const getCode = tempData
+      .map((ele) => ele?.observation)
+      .some((text) => text !== "");
+    return getCode;
+  };
   const tableHeadData = [
     {
       id: 1,
@@ -175,7 +209,6 @@ function SettingInspectionReport() {
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -187,8 +220,12 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
-
-  const handleAddIncomingReport = (data, saveStatus) => {
+  const CloseTab = () => {
+    setTimeout(() => {
+      window.close();
+    }, 2000);
+  };
+  const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [null, null, null, null, null];
     const observeData = [...data?.datas];
@@ -215,19 +252,18 @@ function SettingInspectionReport() {
       report_shift: data?.report_shift,
       inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,
-      final_status: isFinalStatus
-        ? isFinalStatus.toString()
-        : isFinalStatus.toString(),
-      checked_by: data?.checked_by,
-      approved_by: data?.approved_by,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
       observationData: sendData,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
-    addInspectionReportList(finalData)
+    addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
           toast.success(res?.data?.msg);
+          CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -243,7 +279,6 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
-  console.log(token, "CURRENTTOKEN");
   const handleChangeValues = (event, index, inputIndex) => {
     const tempData = [...values.datas];
     const newData = tempData.map((ele, dataIndex) => {
@@ -251,7 +286,7 @@ function SettingInspectionReport() {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
           : Array(5).fill(""); // Assuming a default value of an empty string for non-array observations
-        newObservation[inputIndex] = event.target.value;
+        newObservation[inputIndex] = event;
         return {
           ...ele,
           observation: newObservation,
@@ -264,7 +299,7 @@ function SettingInspectionReport() {
 
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].remark = event.target.value;
+    updatedData[rowIndex].remark = event;
     handleChange({
       target: {
         name: "datas",
@@ -275,18 +310,27 @@ function SettingInspectionReport() {
 
   const handleChangeStatus = (event, index) => {
     const newData = [...values?.report_header_status];
-    newData[index] = event.target?.value;
+    newData[index] = event;
     setFieldValue("report_header_status", newData);
   };
 
   return (
     <>
+      {loader ? <Loader /> : null}
       <div>
         <PageHeader
           Btntitle={"Save"}
           BtntitleOne={"Finish"}
-          modal={() => handleAddIncomingReport(values, 0)}
-          onPressOvertime={() => handleAddIncomingReport(values, 1)}
+          modal={() => {
+            //save
+            setsaveStatus(0);
+            handleSubmit();
+          }}
+          //submit
+          onPressOvertime={() => {
+            setsaveStatus(1);
+            handleSubmit();
+          }}
           heading={"Setting Approval Report"}
         />
         <div className={classes.reportInsepection}>
@@ -335,6 +379,12 @@ function SettingInspectionReport() {
                     <th colSpan={11} className={classes.staticHeading}>
                       {index === 0 ? (
                         <input
+                          style={{
+                            border:
+                              errors.mvc_no && touched.mvc_no
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={50}
                           type="text"
                           value={head?.leftData}
@@ -348,13 +398,25 @@ function SettingInspectionReport() {
                           }}
                         />
                       ) : (
-                        head?.leftData
+                        <span
+                          style={{
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {head?.leftData}
+                        </span>
                       )}
                     </th>
                     <th colSpan={1}>{head?.right}</th>
                     <th colSpan={3}>
                       {index === 0 ? (
                         <input
+                          style={{
+                            border:
+                              errors.setter_name && touched.setter_name
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -379,6 +441,12 @@ function SettingInspectionReport() {
                         />
                       ) : index === 2 ? (
                         <input
+                          style={{
+                            border:
+                              errors.report_shift && touched.report_shift
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -393,6 +461,12 @@ function SettingInspectionReport() {
                         />
                       ) : (
                         <input
+                          style={{
+                            border:
+                              errors.inspector_name && touched.inspector_name
+                                ? "2px solid red"
+                                : "",
+                          }}
                           maxLength={20}
                           type="text"
                           value={head?.rightData}
@@ -455,23 +529,38 @@ function SettingInspectionReport() {
                                 maxLength={10}
                                 type="text"
                                 value={inputs}
-                                onChange={(event) =>
-                                  handleChangeValues(event, index, inputIndex)
-                                }
+                                onChange={(event) => {
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
+                                }}
                               />
                             </td>
                           ))
                         : [...Array(5)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
-                                // style={{
-                                //   color: getColor(index, inputIndex),
-                                // }}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
-                                  handleChangeValues(event, index, inputIndex);
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
                                 }}
                               />
                             </td>
@@ -482,7 +571,14 @@ function SettingInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.remark}
-                          onChange={(event) => handleRemarkChange(index, event)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleRemarkChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                     </tr>
@@ -502,7 +598,14 @@ function SettingInspectionReport() {
                           maxLength={10}
                           type="text"
                           value={ele}
-                          onChange={(event) => handleChangeStatus(event, index)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChangeStatus(index, alphabeticText);
+                          }}
                         />
                       </td>
                     ))}

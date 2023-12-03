@@ -22,7 +22,8 @@
 .header_left .line {
   width: 4px;
   height: 30px;
-  background-color: var(--menuBg);
+  background-color: var(--btnColor);
+  /* background-color: var(--btn); */
   margin-right: 10px;
   border-radius: 5px;
 }

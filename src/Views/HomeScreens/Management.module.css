@@ -38,7 +38,7 @@ table .icons img {
 }
 .listOfTable th {
   text-align: center;
-  background-color: rgb(154, 157, 158);
+  background-color: rgb(197, 199, 199);
   height: 40px;
 }
 .listOfTable thead th:first-child {
@@ -58,7 +58,7 @@ table .icons img {
   border-bottom-right-radius: 8px;
 }
 .listOfTable tbody tr:nth-child(even) {
-  background-color: rgb(192, 196, 187);
+  background-color: rgb(228, 231, 225, 0.4);
 }
 .reportInsepection {
   width: 97%;
@@ -93,18 +93,19 @@ table .icons img {
 }
 .Dashboard .fourHeadings th {
   height: 35px;
-  padding-left: 10px;
 }
 .Dashboard .secondHead {
   text-align: center;
 }
 .devicetable td input,
-.reportInsepection td input {
+.reportInsepection input {
   border: none;
   outline: unset;
   background-color: transparent;
+  padding-left: 10px;
+  height: -webkit-fill-available;
   width: 100%;
-  height: 20px;
+  /* height: 20px; */
 }
 .Dashboard .observationInput {
   padding-left: 10px;
@@ -142,7 +143,6 @@ table .icons img {
 }
 .Dashboard .staticHeading {
   text-align: left;
-  padding-left: 10px;
 }
 .Dashboard td {
   height: 40px;
@@ -181,9 +181,12 @@ table .icons img {
   letter-spacing: 0em !important;
   text-align: left !important;
 }
+.inputBox::placeholder {
+  color: red;
+}
 
 th {
-  font-family: var(--fontBold);
+  /* font-family: var(--fontBold); */
   font-size: var(--textXs);
 }
 
@@ -206,11 +209,13 @@ td {
 /* export page  */
 .serachOptionConatiner {
   /* border: var(--inputBorder); */
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   padding: 10px;
   background-color: white;
   border-radius: 5px;
   box-shadow: var(--shadow);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  border: var(--inputBorder);
 }
 @media (max-width: 1200px) {
   .PrepareInspectionReport {

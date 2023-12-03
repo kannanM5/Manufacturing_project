@@ -16,18 +16,33 @@ import Logo from "../../Assets/Images/Png/VTLogo.svg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";
+import * as Yup from "yup";
+import { Loader } from "../../Components";
 
+const validationSchema = Yup.object({
+  invoice_no: Yup.string().required("Name is required"),
+  quantity: Yup.string().required("Name is required"),
+});
 var CryptoJS = require("crypto-js");
 
 function FinalInspectionReport() {
   const token = useToken();
   const location = useLocation();
   const userId = useEmployeeId();
+  const [saveStatus, setsaveStatus] = useState(null);
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [urlValues, setUrlValues] = useState();
-  const { values, handleChange, setFieldValue, setValues } = useFormik({
+  const {
+    values,
+    handleChange,
+    setFieldValue,
+    setValues,
+    handleSubmit,
+    errors,
+    touched,
+  } = useFormik({
     initialValues: {
       process_id: "",
       product_id: "",
@@ -45,7 +60,23 @@ function FinalInspectionReport() {
       datas: "",
       tableHeadDataApi: "",
     },
+    validationSchema: validationSchema,
+    onSubmit: () => {
+      if (getColor()) {
+        handleAddIncomingReport(values);
+      } else {
+        toast.error("Observation is required");
+      }
+    },
   });
+  const getColor = () => {
+    const tempData = [...values.datas];
+
+    const getCode = tempData
+      .map((ele) => ele?.observation)
+      .some((text) => text !== "");
+    return getCode;
+  };
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
@@ -89,6 +120,7 @@ function FinalInspectionReport() {
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
+        customer: reportData?.productData?.customer,
       });
     }
   }, [reportData]);
@@ -142,7 +174,6 @@ function FinalInspectionReport() {
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -154,7 +185,12 @@ function FinalInspectionReport() {
         setloader(false);
       });
   };
-  const handleAddIncomingReport = (data, saveStatus) => {
+  const CloseTab = () => {
+    setTimeout(() => {
+      window.close();
+    }, 2000);
+  };
+  const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [
       null,
@@ -192,14 +228,15 @@ function FinalInspectionReport() {
       customer: data?.customer,
       address: "CHENNAI",
       supplier_name: "V.T. ENTERPRISE",
-      checked_by: data?.checked_by,
-      approved_by: data?.approved_by,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
-    addInspectionReportList(finalData)
+    addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
+          CloseTab();
           toast.success(res?.data?.msg);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
@@ -223,8 +260,7 @@ function FinalInspectionReport() {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
           : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
-        const dyummy = (newObservation[inputIndex] = event.target.value);
-        newObservation[inputIndex] = event.target.value;
+        newObservation[inputIndex] = event;
         return {
           ...ele,
           observation: newObservation,
@@ -236,7 +272,7 @@ function FinalInspectionReport() {
   };
   const handleStatusChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].status = event.target.value;
+    updatedData[rowIndex].status = event;
     handleChange({
       target: {
         name: "datas",
@@ -246,7 +282,7 @@ function FinalInspectionReport() {
   };
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].remark = event.target.value;
+    updatedData[rowIndex].remark = event;
     handleChange({
       target: {
         name: "datas",
@@ -256,12 +292,21 @@ function FinalInspectionReport() {
   };
   return (
     <>
+      {loader ? <Loader /> : null}
       <div>
         <PageHeader
           Btntitle={"Save"}
           BtntitleOne={"Finish"}
-          modal={() => handleAddIncomingReport(values, 0)}
-          onPressOvertime={() => handleAddIncomingReport(values, 1)}
+          modal={() => {
+            //save
+            setsaveStatus(0);
+            handleSubmit();
+          }}
+          //submit
+          onPressOvertime={() => {
+            setsaveStatus(1);
+            handleSubmit();
+          }}
           heading={"Final inscepection Report"}
         />
         <div className={classes.reportInsepection}>
@@ -306,19 +351,7 @@ function FinalInspectionReport() {
                     Customer:
                   </th>
                   <th colSpan={5} rowSpan={2}>
-                    <input
-                      maxLength={20}
-                      type="text"
-                      value={values?.customer}
-                      onChange={(event) => {
-                        const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("customer")(alphabeticText);
-                      }}
-                    />
+                    {values?.tableHeadDataApi?.customer}
                   </th>
                 </tr>
                 <tr className={classes.fourHeadings}>
@@ -331,6 +364,12 @@ function FinalInspectionReport() {
                   <th colSpan={2}>Inv No:</th>
                   <th colSpan={5}>
                     <input
+                      style={{
+                        border:
+                          errors.invoice_no && touched.invoice_no
+                            ? "2px solid red"
+                            : "",
+                      }}
                       maxLength={20}
                       type="text"
                       value={values?.invoice_no}
@@ -367,6 +406,12 @@ function FinalInspectionReport() {
                   <th colSpan={2}>Quantity:</th>
                   <th colSpan={5}>
                     <input
+                      style={{
+                        border:
+                          errors.quantity && touched.quantity
+                            ? "2px solid red"
+                            : "",
+                      }}
                       maxLength={20}
                       type="text"
                       value={values?.quantity}
@@ -437,9 +482,18 @@ function FinalInspectionReport() {
                                 maxLength={10}
                                 type="text"
                                 value={inputs}
-                                onChange={(event) =>
-                                  handleChangeValues(event, index, inputIndex)
-                                }
+                                onChange={(event) => {
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
+                                }}
                               />
                             </td>
                           ))
@@ -453,7 +507,16 @@ function FinalInspectionReport() {
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
-                                  handleChangeValues(event, index, inputIndex);
+                                  const text = event.target.value;
+                                  const alphabeticText = text.replace(
+                                    /[^A-Za-z0-9 ]/g,
+                                    ""
+                                  );
+                                  handleChangeValues(
+                                    alphabeticText,
+                                    index,
+                                    inputIndex
+                                  );
                                 }}
                               />
                             </td>
@@ -464,7 +527,14 @@ function FinalInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.status}
-                          onChange={(event) => handleStatusChange(index, event)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleStatusChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                       <td colSpan={2}>
@@ -473,7 +543,14 @@ function FinalInspectionReport() {
                           maxLength={20}
                           type="text"
                           value={ele?.remark}
-                          onChange={(event) => handleRemarkChange(index, event)}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleRemarkChange(index, alphabeticText);
+                          }}
                         />
                       </td>
                     </tr>

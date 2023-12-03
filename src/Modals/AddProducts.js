@@ -157,7 +157,7 @@ function AddProducts({
                 maxLength: 50,
               }}
               type={"text"}
-              placeHolder="Enter Part number"
+              placeHolder="Enter part number"
               requiredText="*"
               errorText={
                 touched.part_no && errors.part_no ? errors.part_no : ""
@@ -184,7 +184,7 @@ function AddProducts({
                 maxLength: 50,
               }}
               type={"text"}
-              placeHolder="Enter Part name"
+              placeHolder="Enter part name"
               requiredText="*"
               errorText={
                 touched.part_name && errors.part_name ? errors.part_name : ""

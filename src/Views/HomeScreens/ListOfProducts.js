@@ -49,16 +49,30 @@ function ListOfProducts() {
   useEffect(() => {
     if (token) handleGetProductsList();
   }, [token]);
+
   const hendleDummyApi = () => {
     const data = {
-      test: "test",
-      array: [1, 2, 3, 4, 5],
+      test: "test22",
     };
-    dummayone(data).then((response) => {
+    const finalData = JSON.stringify(data);
+    dummayone(finalData).then((response) => {
       console.log(response, "RESPONSEIN DUMMY ONE");
     });
   };
-
+  const dropData = [
+    {
+      key: "1",
+      label: "employee",
+    },
+    {
+      key: "2",
+      label: "change",
+    },
+    {
+      key: "3",
+      label: "logout",
+    },
+  ];
   const handleGetProductsList = (page = 1) => {
     setloader(true);
     const formData = new FormData();
@@ -122,7 +136,7 @@ function ListOfProducts() {
           }}
         />
       </GlobalModal>
-      <CustomButton title="Dummy" onButtonPress={hendleDummyApi} />
+      {/* <CustomButton title="Dummy" onButtonPress={hendleDummyApi} /> */}
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>
@@ -132,7 +146,7 @@ function ListOfProducts() {
               <th>Part Name</th>
               <th>Customer</th>
               <th>Drawing Issue No</th>
-              <th>Customer Part number</th>
+              <th>Customer Part Number</th>
               <th>Action</th>
             </tr>
           </thead>

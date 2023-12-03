@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import { useNavigate } from "react-router-dom";
 import classes from "./Management.module.css";
-import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
+import {
+  CustomButton,
+  GlobalModal,
+  Loader,
+  TextInputBox,
+} from "../../Components";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
@@ -32,9 +37,7 @@ function PrepareInspectionReport() {
   const [loader, setloader] = useState(false);
   const [buttonStatus, setbuttonStatus] = useState(null);
   const [dropdownName, setDropDownName] = useState(1);
-  // const [first, setfirst] = useState("kannan");
   const {
-    // handleSubmit,
     handleChange,
     values,
     errors,
@@ -42,6 +45,7 @@ function PrepareInspectionReport() {
     resetForm,
     setFieldError,
     setFieldTouched,
+    handleSubmit,
     // setFieldValue,
   } = useFormik({
     initialValues: {
@@ -51,6 +55,9 @@ function PrepareInspectionReport() {
       user_id: userId,
     },
     validationSchema: validationSchema,
+    onSubmit: () => {
+      handleGetProductsList();
+    },
   });
 
   const dropDownItem = [
@@ -98,6 +105,7 @@ function PrepareInspectionReport() {
   // };
   const handleClick = () => {
     // getAndSetLoaclStorageDetails();
+    // setloader(true)
     const getDetails = dropDownItem.find(
       (ele) => ele.key === parseInt(dropdownName)
     );
@@ -143,6 +151,7 @@ function PrepareInspectionReport() {
         setloader(false);
       });
   };
+
   const sendData = () => {
     var encrypted = CryptoJS.AES.encrypt(
       JSON.stringify({
@@ -155,11 +164,14 @@ function PrepareInspectionReport() {
     setbuttonStatus(null);
     return encrypted;
   };
+
   useEffect(() => {
     resetForm();
   }, []);
+
   return (
     <>
+      {loader ? <Loader /> : null}
       <GlobalModal
         CustomWidth={500}
         isOpen={isShowModal}
@@ -200,7 +212,7 @@ function PrepareInspectionReport() {
                 maxLength: 50,
               }}
               type={"text"}
-              placeHolder="Enter Part number"
+              placeHolder="Enter part number"
               requiredText="*"
               errorText={
                 touched.part_no && errors.part_no ? errors.part_no : ""
@@ -257,7 +269,8 @@ function PrepareInspectionReport() {
               title="Add report"
               onButtonPress={() => {
                 setbuttonStatus("Add");
-                handleGetProductsList();
+                handleSubmit();
+                // handleGetProductsList();
                 // handleClick("Add");
               }}
             />
@@ -265,9 +278,11 @@ function PrepareInspectionReport() {
           <div className="col-lg-4 col-6 my-4">
             <CustomButton
               title="Edit report"
+              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
               onButtonPress={() => {
                 setbuttonStatus("Edit");
-                handleGetProductsList();
+                handleSubmit();
+                // handleGetProductsList();
               }}
             />
           </div>
