@@ -5,13 +5,14 @@ import {
   addInspectionReportList,
   getInspectionReportList,
   savedDataList,
+  updateInspectionReportList,
 } from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import { CustomButton, Loader } from "../../Components";
+import { Loader } from "../../Components";
 import Logo from "../../Assets/Images/Png/VTLogo.svg";
 // import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
@@ -78,18 +79,22 @@ export default function Emptypage() {
       final_status: isFinalStatus,
       quantity: "",
       datas: "",
+      report_id: "",
       tableHeadDataApi: "",
     },
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
-        handleAddIncomingReport(values);
+        if (urlValues?.buttonStatus === "Edit") {
+          handleUpdateReport(values);
+        } else {
+          handleAddIncomingReport(values);
+        }
       } else {
         toast.error("Observation is required");
       }
     },
   });
-
   const tableHeadData = [
     {
       id: 1,
@@ -134,7 +139,6 @@ export default function Emptypage() {
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -155,7 +159,6 @@ export default function Emptypage() {
     if (reportData) {
       let tempData = [...reportData?.processData];
       const getProcess = tempData.map((ele) => ele?.process);
-      // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
         if (ele?.observationData) {
           return {
@@ -187,7 +190,9 @@ export default function Emptypage() {
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
+        report_id: reportData?.productData?.report_id,
       });
+      setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
   }, [reportData]);
 
@@ -215,10 +220,76 @@ export default function Emptypage() {
         setloader(false);
       });
   };
+
   const CloseTab = () => {
     setTimeout(() => {
       window.close();
     }, 2000);
+  };
+
+  const handleUpdateReport = (data) => {
+    setloader(true);
+    const emptyObserveData = [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
+    const observeData = [...data?.datas];
+    const sendData = observeData.map((ele) => {
+      return {
+        process_details_id: ele?.process_details_id,
+        report_details_id: ele?.report_details_id,
+        status: ele?.status ? ele?.status : null,
+        remark: ele?.remark ? ele?.remark : null,
+        observationData:
+          ele?.observation == ""
+            ? emptyObserveData
+            : ele?.observation.map((observe) => (observe ? observe : null)),
+      };
+    });
+    const finalData = {
+      user_id: userId,
+      token: token,
+      process_id: data?.process_id,
+      product_id: data?.product_id,
+      invoice_no: data?.invoice_no,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      quantity: data?.quantity,
+      observationData: sendData,
+      supplier_name: data?.supplier_name,
+      report_id: data?.report_id,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      report_type: urlValues?.pageStatus,
+      save: saveStatus,
+    };
+    updateInspectionReportList(JSON.stringify(finalData))
+      .then((res) => {
+        if (res?.data?.status === 1) {
+          toast.success(res?.data?.msg);
+          CloseTab();
+        } else if (res?.data?.status === 0) {
+          if (typeof res?.data?.msg === "object") {
+            getInvalidMsg(res?.data?.msg);
+          } else {
+            toast.error(res?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
   const handleAddIncomingReport = (data) => {
     setloader(true);
@@ -333,7 +404,7 @@ export default function Emptypage() {
     <div>
       {loader ? <Loader /> : null}
       <PageHeader
-        Btntitle={"Save"}
+        Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
         BtntitleOne={"Finish"}
         modal={() => {
           //save
@@ -358,13 +429,7 @@ export default function Emptypage() {
               </tr>
               <tr>
                 <td colSpan={16} rowSpan={2}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
+                  <div className={classes.rowAlignment}>
                     <div
                       style={{
                         paddingLeft: "10px",

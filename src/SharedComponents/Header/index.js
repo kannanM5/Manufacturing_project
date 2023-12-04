@@ -18,11 +18,9 @@ import logout from "../../Assets/Icons/SvgIcons/logout.svg";
 import { useEmployeeId, useToken, useUserName } from "../../Utility/StoreData";
 import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
-import { Drawer, Menu, Tabs } from "antd";
+import { Drawer, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
 import dummyIcon from "../../Assets/Images/Png/dummy.png";
-import downArrow from "../../Assets/Icons/SvgIcons/dropdownarrow.svg";
-import downUpArrow from "../../Assets/Icons/SvgIcons/dropUpArrow.svg";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { Dropdown, Space } from "antd";
 import {
@@ -252,21 +250,7 @@ export default function Header() {
     }
     console.log(value?.key, "KEYSSS");
   };
-  // const handleClick = (e) => {
-  //   setArrow((prev) => !prev);
-  //   if (parseInt(e.key) === 3) {
-  //     setdeleteModal((prev) => {
-  //       return {
-  //         ...prev,
-  //         modal: true,
-  //       };
-  //     });
-  //   } else if (parseInt(e.key) == 2) {
-  //     navigate("/change_password");
-  //   } else {
-  //     navigate("/employee_list");
-  //   }
-  // };
+
   useEffect(() => {
     if (pathname === "/product_list") {
       setcurrentTab("1");
@@ -488,20 +472,22 @@ export default function Header() {
                 }}
               >
                 <div className={classes.nameContainer}>
-                  <img
-                    src={dummyIcon}
-                    alt="dummy"
-                    className={classes.dummyImage}
-                  />
                   <Dropdown menu={{ items, onClick }} trigger={["click"]}>
                     <a
                       onClick={(e) => {
                         console.log(e, "EEEEEE");
                       }}
                     >
+                      <img
+                        src={dummyIcon}
+                        alt="Profile icon"
+                        className={classes.dummyImage}
+                      />
+
                       <Space
                         style={{
                           color: "white",
+                          padding: "0 10px",
                         }}
                       >
                         {userName}
@@ -509,16 +495,8 @@ export default function Header() {
                       </Space>
                     </a>
                   </Dropdown>
-                  {/* <p className={classes.user_name}>{userName}</p> */}
-                  {/* <img
-                    src={Arrow ? downUpArrow : downArrow}
-                    alt="downArrow"
-                    className={classes.downArrow}
-                  /> */}
                 </div>
               </div>
-
-              {/* {Arrow && <Menu items={userInformation} onClick={handleClick} />} */}
             </div>
           </div>
         </div>

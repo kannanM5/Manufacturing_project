@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import { useState } from "react";
-import { CustomButton, GlobalModal, Loader } from "../../Components";
+import { GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import {
   useEmployeeId,
@@ -114,6 +114,7 @@ function ListOfProducts() {
       <GlobalModal
         title={`${isShowModal.data ? "Edit" : "Add"} Product`}
         isOpen={isShowModal.status}
+        // CustomWidth={500}
         onCancel={() => {
           setIsShowModal((prev) => {
             return {
@@ -136,7 +137,6 @@ function ListOfProducts() {
           }}
         />
       </GlobalModal>
-      {/* <CustomButton title="Dummy" onButtonPress={hendleDummyApi} /> */}
       <div className={`table-responsive ${classes.Dashboard}`}>
         <table className={classes.listOfTable}>
           <thead className={classes.NormalTable}>

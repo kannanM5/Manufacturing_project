@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";
-
+import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
 const validationSchema = Yup.object({
   reportType: Yup.string()
     .required("User type is required")
@@ -235,14 +235,7 @@ function Export() {
                 <td>1</td>
                 <td>1</td>
                 <td>
-                  <CustomButton
-                    title="download"
-                    customButtonStyle={{
-                      width: "90px",
-                      height: "30px",
-                      fontSize: "11px",
-                    }}
-                  />
+                  <img src={DownloadIcon} alt="Download icon" />
                 </td>
               </tr>
             </tbody>

@@ -135,7 +135,7 @@ function PrepareInspectionReport() {
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          handleClick();
+          handleClick("Add");
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);

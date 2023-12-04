@@ -7,6 +7,8 @@ import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
+  savedDataList,
+  updateInspectionReportList,
 } from "../../Services/Services";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
@@ -63,12 +65,17 @@ function SettingInspectionReport() {
       checked_by: "",
       approved_by: "",
       datas: "",
+      report_id: "",
       tableHeadDataApi: "",
     },
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
-        handleAddIncomingReport(values);
+        if (urlValues?.buttonStatus === "Edit") {
+          handleUpdateReport(values);
+        } else {
+          handleAddIncomingReport(values);
+        }
       } else {
         toast.error("Observation is required");
       }
@@ -140,12 +147,12 @@ function SettingInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("user_id", userId);
+    formData.append("option", 1);
     formData.append("report_type", urlValues?.pageStatus);
-    editInspectionReportList(formData)
+    savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -168,7 +175,7 @@ function SettingInspectionReport() {
       const getProcess = tempData.map((ele) => ele?.process);
       // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
-        if (ele?.observation) {
+        if (ele?.observationData) {
           return {
             ...ele,
             observation: JSON.parse(ele?.observation),
@@ -183,16 +190,22 @@ function SettingInspectionReport() {
       setValues({
         ...values,
         process: getProcess[0],
+        mvc_no: reportData?.productData?.mvc_no,
+        setter_name: reportData?.productData?.setter_name,
+        report_shift: reportData?.productData?.report_shift,
+        inspector_name: reportData?.productData?.inspector_name,
         process_id: reportData?.productData?.process_id,
         product_id: reportData?.productData?.product_id,
         datas: processingData,
         tableHeadDataApi: reportData?.productData,
         checked_by: reportData?.productData?.checked_by,
         approved_by: reportData?.productData?.approved_by,
+        report_id: reportData?.productData?.report_id,
         report_header_date: reportData?.productData?.report_header_date
           ? reportData?.productData?.report_header_date
           : values?.report_header_date,
       });
+      setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
   }, [reportData]);
 
@@ -224,6 +237,62 @@ function SettingInspectionReport() {
     setTimeout(() => {
       window.close();
     }, 2000);
+  };
+  const handleUpdateReport = (data) => {
+    setloader(true);
+    const emptyObserveData = [null, null, null, null, null];
+    const observeData = [...data?.datas];
+    const sendData = observeData.map((ele) => {
+      return {
+        report_details_id: ele?.report_details_id,
+        process_details_id: ele?.process_details_id,
+        status: ele?.status ? ele?.status : null,
+        remark: ele?.remark ? ele?.remark : null,
+        observationData:
+          ele?.observation == ""
+            ? emptyObserveData
+            : ele?.observation.map((observe) => (observe ? observe : null)),
+      };
+    });
+
+    const finalData = {
+      user_id: userId,
+      token: token,
+      product_id: data?.product_id,
+      mvc_no: data?.mvc_no,
+      process_id: data?.process_id,
+      setter_name: data?.setter_name,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      report_shift: data?.report_shift,
+      inspector_name: data?.inspector_name,
+      report_header_status: data?.report_header_status,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
+      observationData: sendData,
+      report_id: data?.report_id,
+      report_type: urlValues?.pageStatus,
+      save: saveStatus,
+    };
+    updateInspectionReportList(JSON.stringify(finalData))
+      .then((res) => {
+        if (res?.data?.status === 1) {
+          toast.success(res?.data?.msg);
+          CloseTab();
+        } else if (res?.data?.status === 0) {
+          if (typeof res?.data?.msg === "object") {
+            getInvalidMsg(res?.data?.msg);
+          } else {
+            toast.error(res?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
   };
   const handleAddIncomingReport = (data) => {
     setloader(true);
@@ -319,7 +388,7 @@ function SettingInspectionReport() {
       {loader ? <Loader /> : null}
       <div>
         <PageHeader
-          Btntitle={"Save"}
+          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
           BtntitleOne={"Finish"}
           modal={() => {
             //save
@@ -344,13 +413,7 @@ function SettingInspectionReport() {
                 </tr>
                 <tr>
                   <td colSpan={16} rowSpan={2}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className={classes.rowAlignment}>
                       <div
                         style={{
                           paddingLeft: "10px",
@@ -400,7 +463,7 @@ function SettingInspectionReport() {
                       ) : (
                         <span
                           style={{
-                            paddingLeft: "10px",
+                            fontFamily: "var(--fontRegular)",
                           }}
                         >
                           {head?.leftData}

@@ -7,6 +7,8 @@ import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
+  savedDataList,
+  updateInspectionReportList,
 } from "../../Services/Services";
 import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
@@ -63,19 +65,23 @@ function LineInspectionReport() {
       report_header_date: new Date(),
       final_status: isFinalStatus,
       quantity: "",
+      report_id: "",
       datas: "",
       tableHeadDataApi: "",
     },
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
-        handleAddIncomingReport(values);
+        if (urlValues?.buttonStatus === "Edit") {
+          handleUpdateReport(values);
+        } else {
+          handleAddIncomingReport(values);
+        }
       } else {
         toast.error("Observation is required");
       }
     },
   });
-  console.log(values, "VALUESSS");
   const tableHeadData = [
     {
       id: 1,
@@ -140,12 +146,12 @@ function LineInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("user_id", userId);
+    formData.append("option", 1);
     formData.append("report_type", urlValues?.pageStatus);
-    editInspectionReportList(formData)
+    savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -166,9 +172,8 @@ function LineInspectionReport() {
     if (reportData) {
       let tempData = [...reportData?.processData];
       const getProcess = tempData.map((ele) => ele?.process);
-      // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
-        if (ele?.observation) {
+        if (ele?.observationData) {
           return {
             ...ele,
             observation: JSON.parse(ele?.observation),
@@ -183,6 +188,10 @@ function LineInspectionReport() {
       setValues({
         ...values,
         process: getProcess[0],
+        mvc_no: reportData?.productData?.mvc_no,
+        operator_name: reportData?.productData?.operator_name,
+        report_shift: reportData?.productData?.report_shift,
+        inspector_name: reportData?.productData?.inspector_name,
         product_id: reportData?.productData?.product_id,
         datas: processingData,
         tableHeadDataApi: reportData?.productData,
@@ -195,7 +204,9 @@ function LineInspectionReport() {
         invoice_no: reportData?.productData?.invoice_no,
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
+        report_id: reportData?.productData?.report_id,
       });
+      setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
   }, [reportData]);
 
@@ -229,6 +240,65 @@ function LineInspectionReport() {
       window.close();
     }, 2000);
   };
+
+  const handleUpdateReport = (data) => {
+    setloader(true);
+    const emptyObserveData = [null, null, null, null, null, null, null, null];
+    const observeData = [...data?.datas];
+    const sendData = observeData.map((ele) => {
+      return {
+        process_details_id: ele?.process_details_id,
+        report_details_id: ele?.report_details_id,
+        last_half: ele?.last_half ? ele?.last_half : null,
+        first_half: ele?.first_half ? ele?.first_half : null,
+        remark: ele?.remark ? ele?.remark : null,
+        observationData:
+          ele?.observation == ""
+            ? emptyObserveData
+            : ele?.observation.map((observe) => (observe ? observe : null)),
+      };
+    });
+    const finalData = {
+      user_id: userId,
+      token: token,
+      mvc_no: data?.mvc_no,
+      process_id: data?.process_id,
+      operator_name: data?.operator_name,
+      product_id: data?.product_id,
+      report_shift: data?.report_shift,
+      invoice_no: data?.invoice_no,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      observationData: sendData,
+      report_id: data?.report_id,
+      report_header_status: data?.report_header_status,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
+      inspector_name: data?.inspector_name,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      report_type: urlValues?.pageStatus,
+      save: saveStatus,
+    };
+    updateInspectionReportList(JSON.stringify(finalData))
+      .then((res) => {
+        if (res?.data?.status === 1) {
+          toast.success(res?.data?.msg);
+          CloseTab();
+        } else if (res?.data?.status === 0) {
+          if (typeof res?.data?.msg === "object") {
+            getInvalidMsg(res?.data?.msg);
+          } else {
+            toast.error(res?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
+
   const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [null, null, null, null, null, null, null, null];
@@ -343,7 +413,7 @@ function LineInspectionReport() {
       {loader ? <Loader /> : null}
       <div>
         <PageHeader
-          Btntitle={"Save"}
+          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
           BtntitleOne={"Finish"}
           modal={() => {
             //save
@@ -368,13 +438,7 @@ function LineInspectionReport() {
                 </tr>
                 <tr>
                   <td colSpan={14} rowSpan={2}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className={classes.rowAlignment}>
                       <div
                         style={{
                           paddingLeft: "10px",
@@ -423,9 +487,11 @@ function LineInspectionReport() {
                         />
                       ) : (
                         <span
-                          style={{
-                            paddingLeft: "10px",
-                          }}
+                          style={
+                            {
+                              // paddingLeft: "10px",
+                            }
+                          }
                         >
                           {head?.leftData}
                         </span>

@@ -5,6 +5,8 @@ import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
+  savedDataList,
+  updateInspectionReportList,
 } from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
@@ -54,6 +56,7 @@ function FinalInspectionReport() {
       approved_by: "",
       process: "",
       invoice_no: "",
+      report_id: "",
       invoice_date: new Date(),
       final_status: isFinalStatus,
       quantity: "",
@@ -63,7 +66,11 @@ function FinalInspectionReport() {
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
-        handleAddIncomingReport(values);
+        if (urlValues?.buttonStatus === "Edit") {
+          handleUpdateReport(values);
+        } else {
+          handleAddIncomingReport(values);
+        }
       } else {
         toast.error("Observation is required");
       }
@@ -93,7 +100,7 @@ function FinalInspectionReport() {
       const getProcess = tempData.map((ele) => ele?.process);
       // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
-        if (ele?.observation) {
+        if (ele?.observationData) {
           return {
             ...ele,
             observation: JSON.parse(ele?.observation),
@@ -121,6 +128,7 @@ function FinalInspectionReport() {
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
         customer: reportData?.productData?.customer,
+        report_id: reportData?.productData?.report_id,
       });
     }
   }, [reportData]);
@@ -140,12 +148,12 @@ function FinalInspectionReport() {
     formData.append("part_no", urlValues?.part_no);
     formData.append("process", urlValues?.process);
     formData.append("user_id", userId);
+    formData.append("option", 1);
     formData.append("report_type", urlValues?.pageStatus);
-    editInspectionReportList(formData)
+    savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
-          toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -190,6 +198,73 @@ function FinalInspectionReport() {
       window.close();
     }, 2000);
   };
+
+  const handleUpdateReport = (data) => {
+    setloader(true);
+    const emptyObserveData = [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
+    const observeData = [...data?.datas];
+    const sendData = observeData.map((ele) => {
+      return {
+        report_details_id: ele?.report_details_id,
+        process_details_id: ele?.process_details_id,
+        status: ele?.status ? ele?.status : null,
+        remark: ele?.remark ? ele?.remark : null,
+        observationData:
+          ele?.observation == ""
+            ? emptyObserveData
+            : ele?.observation.map((observe) => (observe ? observe : null)),
+      };
+    });
+    const finalData = {
+      user_id: userId,
+      token: token,
+      product_id: data?.product_id,
+      process_id: data?.process_id,
+      invoice_no: data?.invoice_no,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      quantity: data?.quantity,
+      observationData: sendData,
+      customer: data?.customer,
+      address: "CHENNAI",
+      supplier_name: "V.T. ENTERPRISE",
+      report_id: data?.report_id,
+      checked_by: data?.checked_by ?? null,
+      approved_by: data?.approved_by ?? null,
+      report_type: urlValues?.pageStatus,
+      save: saveStatus,
+    };
+    updateInspectionReportList(JSON.stringify(finalData))
+      .then((res) => {
+        if (res?.data?.status === 1) {
+          CloseTab();
+          toast.success(res?.data?.msg);
+        } else if (res?.data?.status === 0) {
+          if (typeof res?.data?.msg === "object") {
+            getInvalidMsg(res?.data?.msg);
+          } else {
+            toast.error(res?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
+
   const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [
@@ -253,6 +328,7 @@ function FinalInspectionReport() {
         setloader(false);
       });
   };
+
   const handleChangeValues = (event, index, inputIndex) => {
     const tempData = [...values.datas];
     const newData = tempData.map((ele, dataIndex) => {
@@ -295,7 +371,7 @@ function FinalInspectionReport() {
       {loader ? <Loader /> : null}
       <div>
         <PageHeader
-          Btntitle={"Save"}
+          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
           BtntitleOne={"Finish"}
           modal={() => {
             //save
@@ -315,13 +391,7 @@ function FinalInspectionReport() {
               <thead>
                 <tr>
                   <td colSpan={15} rowSpan={2}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className={classes.rowAlignment}>
                       <div
                         style={{
                           paddingLeft: "10px",

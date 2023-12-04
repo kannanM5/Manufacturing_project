@@ -63,6 +63,9 @@ export const addInspectionReportList = (data) => {
 export const editInspectionReportList = (data) => {
   return axios.post("geteditreportdata", data);
 };
+export const updateInspectionReportList = (data) => {
+  return axios.post("editreportdata", data);
+};
 
 export const dummy = (data) => {
   return axios.post("test", data);
