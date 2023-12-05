@@ -15,6 +15,7 @@ const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
   process: Yup.string().required("Process is required").strict(true),
 });
+var CryptoJS = require("crypto-js");
 
 function SavedData() {
   const { state } = useLocation();
@@ -27,7 +28,7 @@ function SavedData() {
     viewStatus: false,
   });
   const [listInSpectionCriteria, setlistInSpectionCriteria] = useState(null);
-
+  console.log(token, "TOKENSS");
   const {
     handleSubmit,
     handleChange,
@@ -62,6 +63,56 @@ function SavedData() {
     }
   };
 
+  const dropDownItem = [
+    {
+      key: 1,
+      label: "Incoming Inspection Report",
+      path: "/#/incoming_inspection_report",
+    },
+    {
+      key: 2,
+      label: "Setting Approval Report",
+      path: "/#/setting_approval_report",
+    },
+    {
+      key: 3,
+      label: "Line Inspection Report",
+      path: "/#/line_inspection_report",
+    },
+    {
+      key: 4,
+      label: "Final Inspection Report",
+      path: "/#/final_inspection_report",
+    },
+  ];
+  const sendData = (data) => {
+    var encrypted = CryptoJS.AES.encrypt(
+      JSON.stringify({
+        ...values,
+        pageStatus: data,
+        buttonStatus: "Edit",
+      }),
+      "data"
+    ).toString();
+    // setbuttonStatus(null);
+    return encrypted;
+  };
+  const handleClick = (reportType) => {
+    // getAndSetLoaclStorageDetails();
+    // setloader(true)
+    const getDetails = dropDownItem.find(
+      (ele) => ele.key === parseInt(reportType)
+    );
+    if (getDetails) {
+      const encryptedData = sendData(getDetails?.key);
+      const newTab = window.open(getDetails.path, "_blank");
+      if (newTab) {
+        newTab.location.href = `${getDetails.path}?data=${encodeURIComponent(
+          encryptedData
+        )}`;
+      }
+    }
+  };
   const handleListCriteriaService = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -91,12 +142,12 @@ function SavedData() {
   };
 
   useEffect(() => {
-    if (state) {
+    if (state && token) {
       handleListCriteriaService(state);
       setFieldValue("part_no", state?.part_no);
       setFieldValue("process", state?.process);
     }
-  }, [state]);
+  }, [state, token]);
   return (
     <>
       <PageHeader heading={"Saved Logs"} BtnTrue={true} />
@@ -187,15 +238,7 @@ function SavedData() {
                           src={EditIcon}
                           alt="edit_icon"
                           style={{ width: 20, height: 20, cursor: "pointer" }}
-                          onClick={() => {
-                            setIsShowModal((prev) => {
-                              return {
-                                ...prev,
-                                data: products,
-                                status: true,
-                              };
-                            });
-                          }}
+                          onClick={() => handleClick(products?.report_type)}
                         />
                       </td>
                     </tr>

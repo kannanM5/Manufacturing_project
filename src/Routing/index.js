@@ -69,7 +69,7 @@ export const Indexroute = [
         ],
       },
       {
-        path: "Prepareinscepectionreport",
+        path: "prepare_inspection_report",
         element: <DashboardLayout />,
         children: [
           {

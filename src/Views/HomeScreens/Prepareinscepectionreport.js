@@ -127,7 +127,9 @@ function PrepareInspectionReport() {
     }
   };
   const getReportType = () => {
-    const getDetails = dropDownItem.find((ele) => ele.id)?.name;
+    const getDetails = dropDownItem.find(
+      (ele) => ele.key === parseInt(dropdownName)
+    )?.label;
     return getDetails;
   };
   const handleGetProductsList = () => {
@@ -185,6 +187,7 @@ function PrepareInspectionReport() {
         setloader(false);
       });
   };
+
   const sendData = (data) => {
     var encrypted = CryptoJS.AES.encrypt(
       JSON.stringify({

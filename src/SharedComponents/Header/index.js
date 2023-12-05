@@ -117,7 +117,7 @@ export default function Header() {
     {
       id: 3,
       name: "Prepare Inspection Report",
-      naviagationPath: "/Prepareinscepectionreport",
+      naviagationPath: "/prepare_inspection_report",
     },
 
     {
@@ -167,8 +167,8 @@ export default function Header() {
     {
       id: 3,
       name: "Prepare Inspection Report",
-      pathname: "Prepareinscepectionreport",
-      naviagationPath: "/Prepareinscepectionreport",
+      pathname: "prepare_inspection_report",
+      naviagationPath: "/prepare_inspection_report",
       icon: prepare_report_icon,
       privatePermission: true,
       isVisible: loginUserData?.work_orders === 1 ? true : false,
