@@ -20,9 +20,7 @@ function PageHeader({
           <div className={classes.line}></div>
           <div className={classes.heading}>{heading}</div>
         </div>
-        {/* {closeIcon ? (
-          <Close style={{ cursor: "pointer" }} onClick={closeClick} />
-        ) : null} */}
+
         {BtnTrue ? null : (
           <div className={classes.header_right}>
             {Btntitle && (

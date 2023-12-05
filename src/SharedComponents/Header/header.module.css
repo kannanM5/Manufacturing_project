@@ -1,6 +1,4 @@
 .container {
-  /* background-color: (160, 160, 160); */
-
   height: 65px;
   position: fixed;
   top: 0;
@@ -11,9 +9,7 @@
    */
   background: var(--menuBg);
 }
-/* .dropDownContainer {
-  background-color: red;
-} */
+
 .tablist {
   height: 55px;
   display: flex;

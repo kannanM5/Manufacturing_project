@@ -137,3 +137,7 @@ export function getAspectRatio(height, width) {
   const denominator = width / divisor;
   return numerator / denominator;
 }
+
+export const CloseTab = () => {
+  window.close();
+};

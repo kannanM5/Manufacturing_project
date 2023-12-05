@@ -1,43 +1,50 @@
 import React, { useEffect, useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import classes from "./Management.module.css";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
-import toast from "react-hot-toast";
+import PageHeader from "../../ManagementLayoutHeader/PageHeader";
+import classes from "../Management.module.css";
+import Logo from "../../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
-} from "../../Services/Services";
-import { useFormik } from "formik";
-import { useEmployeeId, useToken } from "../../Utility/StoreData";
+} from "../../../Services/Services";
+import {
+  CloseTab,
+  getCatchMsg,
+  getInvalidMsg,
+} from "../../../Utility/GeneralUtils";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
+import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
-import Logo from "../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
-import Commondate from "../../Components/Commondate";
+import { useFormik } from "formik";
+import Commondate from "../../../Components/Commondate";
+import { GlobalModal, Loader } from "../../../Components";
 import dayjs from "dayjs";
 import moment from "moment";
 import * as Yup from "yup";
-import { Loader } from "../../Components";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 
 const validationSchema = Yup.object({
   mvc_no: Yup.string().required("Machine number is required"),
-  operator_name: Yup.string().required("Operator name is required"),
+  setter_name: Yup.string().required("Name is required"),
   report_shift: Yup.string().required("Shift is required"),
-  inspector_name: Yup.string().required("Name is required"),
+  inspector_name: Yup.string().required("Inspector name is required"),
 });
+
 var CryptoJS = require("crypto-js");
 
-function LineInspectionReport() {
+function SettingInspectionReport() {
   const token = useToken();
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
-  const [saveStatus, setsaveStatus] = useState(null);
   const [reportData, setReportData] = useState(null);
+  const [saveStatus, setsaveStatus] = useState(null);
+  const [isShowModal, setIshowModal] = useState(false);
   const {
     values,
     handleChange,
@@ -48,25 +55,23 @@ function LineInspectionReport() {
     touched,
   } = useFormik({
     initialValues: {
-      process_id: "",
       product_id: "",
-      part_no: "",
+      process_id: "",
       mvc_no: "",
+      setter_name: "",
+      part_no: "",
+      part_name: "",
+      process: "",
+      setter_name: "",
+      report_header_date: new Date(),
       report_shift: "",
-      operator_name: "",
-      supplier_name: "",
-      report_status: "",
+      inspector_name: "",
+      report_header_status: Array(5).fill(null),
+      final_status: isFinalStatus,
       checked_by: "",
       approved_by: "",
-      process: "",
-      invoice_no: "",
-      inspector_name: "",
-      report_header_status: Array(8).fill(null),
-      report_header_date: new Date(),
-      final_status: isFinalStatus,
-      quantity: "",
-      report_id: "",
       datas: "",
+      report_id: "",
       tableHeadDataApi: "",
     },
     validationSchema: validationSchema,
@@ -82,13 +87,22 @@ function LineInspectionReport() {
       }
     },
   });
+
+  const getColor = () => {
+    const tempData = [...values.datas];
+    const getCode = tempData
+      .map((ele) => ele?.observation)
+      .some((text) => text !== "");
+    return getCode;
+  };
+
   const tableHeadData = [
     {
       id: 1,
-      left: "M/C No:",
-      right: "Operator Name:",
+      left: "M/C N0.",
+      right: "Setter Name:",
       leftData: values?.mvc_no,
-      rightData: values?.operator_name,
+      rightData: values?.setter_name,
     },
     {
       id: 2,
@@ -105,31 +119,23 @@ function LineInspectionReport() {
       rightData: values?.report_shift,
     },
     {
-      id: "4",
+      id: 4,
       left: "Process:",
-      right: "Inspector Name:",
+      right: "Inspector Name",
       leftData: values?.process,
       rightData: values?.inspector_name,
     },
   ];
-  const getColor = () => {
-    const tempData = [...values.datas];
 
-    const getCode = tempData
-      .map((ele) => ele?.observation)
-      .some((text) => text !== "");
-    return getCode;
-  };
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
-
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
     const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-
     const decryptedData = JSON.parse(decryptedText);
     setUrlValues(decryptedData);
   }, [location.search]);
+
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -139,6 +145,7 @@ function LineInspectionReport() {
       }
     }
   }, [urlValues]);
+
   const handleEditReport = () => {
     setloader(true);
     let formData = new FormData();
@@ -172,6 +179,7 @@ function LineInspectionReport() {
     if (reportData) {
       let tempData = [...reportData?.processData];
       const getProcess = tempData.map((ele) => ele?.process);
+      // setisFinalstatus(reportData?.productData?.final_status);
       const processingData = tempData.map((ele) => {
         if (ele?.observationData) {
           return {
@@ -189,22 +197,19 @@ function LineInspectionReport() {
         ...values,
         process: getProcess[0],
         mvc_no: reportData?.productData?.mvc_no,
-        operator_name: reportData?.productData?.operator_name,
+        setter_name: reportData?.productData?.setter_name,
         report_shift: reportData?.productData?.report_shift,
         inspector_name: reportData?.productData?.inspector_name,
+        process_id: reportData?.productData?.process_id,
         product_id: reportData?.productData?.product_id,
         datas: processingData,
         tableHeadDataApi: reportData?.productData,
-        supplier_name: reportData?.productData?.supplier_name,
         checked_by: reportData?.productData?.checked_by,
         approved_by: reportData?.productData?.approved_by,
+        report_id: reportData?.productData?.report_id,
         report_header_date: reportData?.productData?.report_header_date
           ? reportData?.productData?.report_header_date
           : values?.report_header_date,
-        invoice_no: reportData?.productData?.invoice_no,
-        quantity: reportData?.productData?.quantity,
-        process_id: reportData?.productData?.process_id,
-        report_id: reportData?.productData?.report_id,
       });
       setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
@@ -235,22 +240,15 @@ function LineInspectionReport() {
       });
   };
 
-  const CloseTab = () => {
-    setTimeout(() => {
-      window.close();
-    }, 2000);
-  };
-
   const handleUpdateReport = (data) => {
     setloader(true);
-    const emptyObserveData = [null, null, null, null, null, null, null, null];
+    const emptyObserveData = [null, null, null, null, null];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        process_details_id: ele?.process_details_id,
         report_details_id: ele?.report_details_id,
-        last_half: ele?.last_half ? ele?.last_half : null,
-        first_half: ele?.first_half ? ele?.first_half : null,
+        process_details_id: ele?.process_details_id,
+        status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
@@ -258,31 +256,30 @@ function LineInspectionReport() {
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
     });
+
     const finalData = {
       user_id: userId,
       token: token,
+      product_id: data?.product_id,
       mvc_no: data?.mvc_no,
       process_id: data?.process_id,
-      operator_name: data?.operator_name,
-      product_id: data?.product_id,
-      report_shift: data?.report_shift,
-      invoice_no: data?.invoice_no,
+      setter_name: data?.setter_name,
       report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
-      observationData: sendData,
-      report_id: data?.report_id,
+      report_shift: data?.report_shift,
+      inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
-      inspector_name: data?.inspector_name,
-      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      observationData: sendData,
+      report_id: data?.report_id,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     updateInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -298,16 +295,14 @@ function LineInspectionReport() {
         setloader(false);
       });
   };
-
   const handleAddIncomingReport = (data) => {
     setloader(true);
-    const emptyObserveData = [null, null, null, null, null, null, null, null];
+    const emptyObserveData = [null, null, null, null, null];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
         process_details_id: ele?.process_details_id,
-        last_half: ele?.last_half ? ele?.last_half : null,
-        first_half: ele?.first_half ? ele?.first_half : null,
+        status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
@@ -315,30 +310,29 @@ function LineInspectionReport() {
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
     });
+
     const finalData = {
       user_id: userId,
       token: token,
+      product_id: data?.product_id,
       mvc_no: data?.mvc_no,
       process_id: data?.process_id,
-      operator_name: data?.operator_name,
-      product_id: data?.product_id,
-      report_shift: data?.report_shift,
-      invoice_no: data?.invoice_no,
+      setter_name: data?.setter_name,
       report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
-      observationData: sendData,
+      report_shift: data?.report_shift,
+      inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
-      inspector_name: data?.inspector_name,
-      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      observationData: sendData,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -354,14 +348,13 @@ function LineInspectionReport() {
         setloader(false);
       });
   };
-
   const handleChangeValues = (event, index, inputIndex) => {
     const tempData = [...values.datas];
     const newData = tempData.map((ele, dataIndex) => {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(8).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(5).fill(""); // Assuming a default value of an empty string for non-array observations
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -372,27 +365,7 @@ function LineInspectionReport() {
     });
     setFieldValue("datas", newData);
   };
-  const handleFirstOfChange = (rowIndex, event) => {
-    const updatedData = [...values.datas];
-    updatedData[rowIndex].first_half = event;
-    handleChange({
-      target: {
-        name: "datas",
-        value: updatedData,
-      },
-    });
-  };
 
-  const handleLastOfChange = (rowIndex, event) => {
-    const updatedData = [...values.datas];
-    updatedData[rowIndex].last_half = event;
-    handleChange({
-      target: {
-        name: "datas",
-        value: updatedData,
-      },
-    });
-  };
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event;
@@ -403,14 +376,37 @@ function LineInspectionReport() {
       },
     });
   };
+
   const handleChangeStatus = (event, index) => {
     const newData = [...values?.report_header_status];
     newData[index] = event;
     setFieldValue("report_header_status", newData);
   };
+
   return (
     <>
       {loader ? <Loader /> : null}
+      <GlobalModal
+        CustomWidth={500}
+        isOpen={isShowModal}
+        onCancel={() => setIshowModal(false)}
+      >
+        <LogoutConfirmationModal
+          cancelBtn={false}
+          positiveButtonText="Ok"
+          msg={`Data ${
+            urlValues?.buttonStatus === "Add" && saveStatus === 0
+              ? "saved successfully."
+              : urlValues?.buttonStatus === "Edit" && saveStatus === 0
+              ? "updated successfully."
+              : "submitted successfully."
+          }`}
+          onPositiveButtonPressed={() => {
+            CloseTab();
+            setIshowModal(false);
+          }}
+        />
+      </GlobalModal>
       <div>
         <PageHeader
           Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
@@ -425,19 +421,19 @@ function LineInspectionReport() {
             setsaveStatus(1);
             handleSubmit();
           }}
-          heading={"Line Inspection Report"}
+          heading={"Setting Approval Report"}
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
             <table>
               <thead>
                 <tr>
-                  <th colSpan={16} className={classes.CompanyName}>
+                  <th colSpan={18} className={classes.CompanyName}>
                     VT ENTERPRISES
                   </th>
                 </tr>
                 <tr>
-                  <td colSpan={14} rowSpan={2}>
+                  <td colSpan={16} rowSpan={2}>
                     <div className={classes.rowAlignment}>
                       <div
                         style={{
@@ -451,20 +447,20 @@ function LineInspectionReport() {
                         />
                       </div>
                       <div className={classes.heading}>
-                        LINE INSPECTION REPORT
+                        SETTING APPROVAL REPORT
                       </div>
                       <div></div>
                     </div>
                   </td>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/03</td>
+                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/02</td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
-                    <th colSpan={2}>{head?.left}</th>
-                    <th colSpan={10}>
+                    <th colSpan={3}>{head?.left}</th>
+                    <th colSpan={11} className={classes.staticHeading}>
                       {index === 0 ? (
                         <input
                           style={{
@@ -487,23 +483,21 @@ function LineInspectionReport() {
                         />
                       ) : (
                         <span
-                          style={
-                            {
-                              // paddingLeft: "10px",
-                            }
-                          }
+                          style={{
+                            fontFamily: "var(--fontRegular)",
+                          }}
                         >
                           {head?.leftData}
                         </span>
                       )}
                     </th>
-                    <th colSpan={2}>{head?.right}</th>
-                    <th colSpan={4}>
+                    <th colSpan={1}>{head?.right}</th>
+                    <th colSpan={3}>
                       {index === 0 ? (
                         <input
                           style={{
                             border:
-                              errors.operator_name && touched.operator_name
+                              errors.setter_name && touched.setter_name
                                 ? "2px solid red"
                                 : "",
                           }}
@@ -516,7 +510,7 @@ function LineInspectionReport() {
                               /[^A-Za-z0-9 ]/g,
                               ""
                             );
-                            handleChange("operator_name")(alphabeticText);
+                            handleChange("setter_name")(alphabeticText);
                           }}
                         />
                       ) : index === 1 ? (
@@ -577,7 +571,7 @@ function LineInspectionReport() {
                   <th colSpan={1} rowSpan={2} className={classes.serialNo}>
                     S.No
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2}>
                     Characteristics
                   </th>
                   <th colSpan={1} rowSpan={2}>
@@ -587,56 +581,30 @@ function LineInspectionReport() {
                     Units
                   </th>
                   <th colSpan={1} rowSpan={2}>
-                    Method Of
-                    <br /> Check
+                    Method Of Check
                   </th>
-                  <th
-                    colSpan={10}
-                    rowSpan={1}
-                    className={classes.secondFourtColumn}
-                  >
+                  <th colSpan={5} className={classes.secondFourtColumn}>
                     Observations
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={10} rowSpan={2}>
                     Remarks
                   </th>
                 </tr>
-                <th className={classes.observe}>First Off</th>
                 <th className={classes.observe}>1</th>
                 <th className={classes.observe}>2</th>
                 <th className={classes.observe}>3</th>
                 <th className={classes.observe}>4</th>
                 <th className={classes.observe}>5</th>
-                <th className={classes.observe}>6</th>
-                <th className={classes.observe}>7</th>
-                <th className={classes.observe}>8</th>
-                <th className={classes.observe}>Last Off</th>
               </thead>
               <tbody>
                 {values?.datas &&
                   values?.datas.map((ele, index) => (
                     <tr>
                       <td>{index + 1}</td>
-                      <td>{ele?.characteristics}</td>
-                      <td>{ele?.specification}</td>
-                      <td>{ele?.units}</td>
-                      <td>{ele?.method_of_check}</td>
-                      <td>
-                        <input
-                          className={classes.observationInput}
-                          maxLength={20}
-                          type="text"
-                          value={ele?.first_half}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleFirstOfChange(index, alphabeticText);
-                          }}
-                        />
-                      </td>
+                      <td colSpan={2}>{ele?.characteristics}</td>
+                      <td colSpan={1}>{ele?.specification}</td>
+                      <td colSpan={1}>{ele?.units}</td>
+                      <td colSpan={1}>{ele?.method_of_check}</td>
                       {ele?.observation !== ""
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
@@ -660,12 +628,9 @@ function LineInspectionReport() {
                               />
                             </td>
                           ))
-                        : [...Array(8)].map((emptyInput, inputIndex) => (
+                        : [...Array(5)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
-                                // style={{
-                                //   color: getColor(index, inputIndex),
-                                // }}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
@@ -684,24 +649,7 @@ function LineInspectionReport() {
                               />
                             </td>
                           ))}
-
-                      <td>
-                        <input
-                          className={classes.observationInput}
-                          maxLength={20}
-                          type="text"
-                          value={ele?.last_half}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleLastOfChange(index, alphabeticText);
-                          }}
-                        />
-                      </td>
-                      <td>
+                      <td colSpan={10}>
                         <input
                           className={classes.observationInput}
                           maxLength={20}
@@ -720,11 +668,12 @@ function LineInspectionReport() {
                     </tr>
                   ))}
                 <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td colSpan={2}>Status</td>
+                  <td
+                    style={{ textAlign: "right", padding: "0 15px" }}
+                    colSpan={6}
+                  >
+                    Status
+                  </td>
                   {values?.report_header_status &&
                     values?.report_header_status.map((ele, index) => (
                       <td>
@@ -739,16 +688,15 @@ function LineInspectionReport() {
                               /[^A-Za-z0-9 ]/g,
                               ""
                             );
-                            handleChangeStatus(alphabeticText, index);
+                            handleChangeStatus(index, alphabeticText);
                           }}
                         />
                       </td>
                     ))}
-                  <td></td>
-                  <td colSpan={1}></td>
+                  <td colSpan={8}></td>
                 </tr>
                 <tr>
-                  <td colSpan={16} className={classes.final}>
+                  <td colSpan={26} className={classes.final}>
                     <div className={classes.finalStatus}>
                       <p>Final Status</p>
                       <div className={classes.checkBoxContainer}>
@@ -773,8 +721,8 @@ function LineInspectionReport() {
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={2}>Checked BY</td>
-                  <td colSpan={6}>
+                  <td colSpan={4}>Checked BY</td>
+                  <td colSpan={9}>
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -792,8 +740,7 @@ function LineInspectionReport() {
                     />
                   </td>
                   <td colSpan={4}>Appproved By</td>
-                  <td colSpan={4}>
-                    {" "}
+                  <td colSpan={10}>
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -820,4 +767,4 @@ function LineInspectionReport() {
   );
 }
 
-export default LineInspectionReport;
+export default SettingInspectionReport;

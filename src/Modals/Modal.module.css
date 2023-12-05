@@ -32,6 +32,10 @@
   text-align: center;
   margin-bottom: 10px;
 }
+.confirmModal .deleteIcon img {
+  width: 80px;
+  height: 80px;
+}
 .selectHead {
   color: var(--blackColor);
   font-family: var(--fontRegular);

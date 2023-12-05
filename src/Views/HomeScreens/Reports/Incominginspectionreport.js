@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import classes from "./Management.module.css";
+import PageHeader from "../../ManagementLayoutHeader/PageHeader";
+import classes from "../Management.module.css";
 import {
   addInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
-} from "../../Services/Services";
-import { useEmployeeId, useToken } from "../../Utility/StoreData";
+} from "../../../Services/Services";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
+import {
+  CloseTab,
+  getCatchMsg,
+  getInvalidMsg,
+} from "../../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import { Loader } from "../../Components";
-import Logo from "../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import { GlobalModal, Loader } from "../../../Components";
+import Logo from "../../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
-import Commondate from "../../Components/Commondate";
+import Commondate from "../../../Components/Commondate";
 import moment from "moment";
 import * as Yup from "yup";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 
 const validationSchema = Yup.object({
   supplier_name: Yup.string().required("Name is required"),
@@ -32,16 +37,20 @@ export default function Emptypage() {
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
   const [saveStatus, setsaveStatus] = useState(null);
+  const userId = useEmployeeId();
+  const [isFinalStatus, setisFinalstatus] = useState(null);
+  const [loader, setloader] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [isShowModal, setIshowModal] = useState(false);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
-
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
     const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-
     const decryptedData = JSON.parse(decryptedText);
     setUrlValues(decryptedData);
   }, [location.search]);
+
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -52,10 +61,6 @@ export default function Emptypage() {
     }
   }, [urlValues]);
 
-  const userId = useEmployeeId();
-  const [isFinalStatus, setisFinalstatus] = useState(null);
-  const [loader, setloader] = useState(false);
-  const [reportData, setReportData] = useState(null);
   const {
     values,
     handleChange,
@@ -95,6 +100,7 @@ export default function Emptypage() {
       }
     },
   });
+
   const tableHeadData = [
     {
       id: 1,
@@ -221,12 +227,6 @@ export default function Emptypage() {
       });
   };
 
-  const CloseTab = () => {
-    setTimeout(() => {
-      window.close();
-    }, 2000);
-  };
-
   const handleUpdateReport = (data) => {
     setloader(true);
     const emptyObserveData = [
@@ -274,8 +274,7 @@ export default function Emptypage() {
     updateInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -291,6 +290,7 @@ export default function Emptypage() {
         setloader(false);
       });
   };
+
   const handleAddIncomingReport = (data) => {
     setloader(true);
     const emptyObserveData = [
@@ -336,8 +336,7 @@ export default function Emptypage() {
     addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -371,6 +370,7 @@ export default function Emptypage() {
     });
     setFieldValue("datas", newData);
   };
+
   const getColor = () => {
     const tempData = [...values.datas];
 
@@ -379,6 +379,7 @@ export default function Emptypage() {
       .some((text) => text !== "");
     return getCode;
   };
+
   const handleStatusChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].status = event;
@@ -389,6 +390,7 @@ export default function Emptypage() {
       },
     });
   };
+
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event;
@@ -403,6 +405,27 @@ export default function Emptypage() {
   return (
     <div>
       {loader ? <Loader /> : null}
+      <GlobalModal
+        CustomWidth={500}
+        isOpen={isShowModal}
+        onCancel={() => setIshowModal(false)}
+      >
+        <LogoutConfirmationModal
+          cancelBtn={false}
+          positiveButtonText="Ok"
+          msg={`Data ${
+            urlValues?.buttonStatus === "Add" && saveStatus === 0
+              ? "saved successfully."
+              : urlValues?.buttonStatus === "Edit" && saveStatus === 0
+              ? "updated successfully."
+              : "submitted successfully."
+          }`}
+          onPositiveButtonPressed={() => {
+            CloseTab();
+            setIshowModal(false);
+          }}
+        />
+      </GlobalModal>
       <PageHeader
         Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
         BtntitleOne={"Finish"}

@@ -1,44 +1,47 @@
 import React, { useEffect, useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import classes from "./Management.module.css";
-import Logo from "../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
+import PageHeader from "../../ManagementLayoutHeader/PageHeader";
+import classes from "../Management.module.css";
 import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
-} from "../../Services/Services";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
-import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import toast from "react-hot-toast";
+} from "../../../Services/Services";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  CloseTab,
+  getCatchMsg,
+  getInvalidMsg,
+} from "../../../Utility/GeneralUtils";
 import { useFormik } from "formik";
-import Commondate from "../../Components/Commondate";
+import Logo from "../../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
+import Commondate from "../../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";
 import * as Yup from "yup";
-import { Loader } from "../../Components";
+import { GlobalModal, Loader } from "../../../Components";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 
 const validationSchema = Yup.object({
-  mvc_no: Yup.string().required("Name is required"),
-  setter_name: Yup.string().required("Name is required"),
-  report_shift: Yup.string().required("Name is required"),
-  inspector_name: Yup.string().required("Name is required"),
+  invoice_no: Yup.string().required("Name is required"),
+  quantity: Yup.string().required("Name is required"),
 });
-
 var CryptoJS = require("crypto-js");
 
-function SettingInspectionReport() {
+function FinalInspectionReport() {
   const token = useToken();
   const location = useLocation();
-  const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
+  const [saveStatus, setsaveStatus] = useState(null);
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
-  const [saveStatus, setsaveStatus] = useState(null);
+  const [urlValues, setUrlValues] = useState();
+  const [isShowModal, setIshowModal] = useState(false);
   const {
     values,
     handleChange,
@@ -49,23 +52,21 @@ function SettingInspectionReport() {
     touched,
   } = useFormik({
     initialValues: {
-      product_id: "",
       process_id: "",
-      mvc_no: "",
-      setter_name: "",
+      product_id: "",
       part_no: "",
-      part_name: "",
-      process: "",
-      setter_name: "",
-      report_header_date: new Date(),
-      report_shift: "",
-      inspector_name: "",
-      report_header_status: Array(5).fill(null),
-      final_status: isFinalStatus,
+      supplier_name: "",
+      report_status: "",
+      customer: "",
       checked_by: "",
       approved_by: "",
-      datas: "",
+      process: "",
+      invoice_no: "",
       report_id: "",
+      invoice_date: new Date(),
+      final_status: isFinalStatus,
+      quantity: "",
+      datas: "",
       tableHeadDataApi: "",
     },
     validationSchema: validationSchema,
@@ -83,42 +84,12 @@ function SettingInspectionReport() {
   });
   const getColor = () => {
     const tempData = [...values.datas];
+
     const getCode = tempData
       .map((ele) => ele?.observation)
       .some((text) => text !== "");
     return getCode;
   };
-  const tableHeadData = [
-    {
-      id: 1,
-      left: "M/C N0.",
-      right: "Setter Name:",
-      leftData: values?.mvc_no,
-      rightData: values?.setter_name,
-    },
-    {
-      id: 2,
-      left: "Part No:",
-      right: "Date:",
-      leftData: values?.tableHeadDataApi?.part_no,
-      rightData: values?.report_header_date,
-    },
-    {
-      id: "3",
-      left: "Part Name:",
-      right: "Shift:",
-      leftData: values?.tableHeadDataApi?.part_name,
-      rightData: values?.report_shift,
-    },
-    {
-      id: 4,
-      left: "Process:",
-      right: "Inspector Name",
-      leftData: values?.process,
-      rightData: values?.inspector_name,
-    },
-  ];
-
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
@@ -129,7 +100,44 @@ function SettingInspectionReport() {
     const decryptedData = JSON.parse(decryptedText);
     setUrlValues(decryptedData);
   }, [location.search]);
-
+  useEffect(() => {
+    if (reportData) {
+      let tempData = [...reportData?.processData];
+      const getProcess = tempData.map((ele) => ele?.process);
+      // setisFinalstatus(reportData?.productData?.final_status);
+      const processingData = tempData.map((ele) => {
+        if (ele?.observationData) {
+          return {
+            ...ele,
+            observation: JSON.parse(ele?.observation),
+          };
+        } else {
+          return {
+            ...ele,
+            observation: ele?.observation ? ele?.observation : "",
+          };
+        }
+      });
+      setValues({
+        ...values,
+        process: getProcess[0],
+        product_id: reportData?.productData?.product_id,
+        datas: processingData,
+        tableHeadDataApi: reportData?.productData,
+        supplier_name: reportData?.productData?.supplier_name,
+        checked_by: reportData?.productData?.checked_by,
+        approved_by: reportData?.productData?.approved_by,
+        invoice_date: reportData?.productData?.invoice_date
+          ? reportData?.productData?.invoice_date
+          : values?.invoice_date,
+        invoice_no: reportData?.productData?.invoice_no,
+        quantity: reportData?.productData?.quantity,
+        process_id: reportData?.productData?.process_id,
+        customer: reportData?.productData?.customer,
+        report_id: reportData?.productData?.report_id,
+      });
+    }
+  }, [reportData]);
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -139,7 +147,6 @@ function SettingInspectionReport() {
       }
     }
   }, [urlValues]);
-
   const handleEditReport = () => {
     setloader(true);
     let formData = new FormData();
@@ -168,47 +175,6 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
-
-  useEffect(() => {
-    if (reportData) {
-      let tempData = [...reportData?.processData];
-      const getProcess = tempData.map((ele) => ele?.process);
-      // setisFinalstatus(reportData?.productData?.final_status);
-      const processingData = tempData.map((ele) => {
-        if (ele?.observationData) {
-          return {
-            ...ele,
-            observation: JSON.parse(ele?.observation),
-          };
-        } else {
-          return {
-            ...ele,
-            observation: ele?.observation ? ele?.observation : "",
-          };
-        }
-      });
-      setValues({
-        ...values,
-        process: getProcess[0],
-        mvc_no: reportData?.productData?.mvc_no,
-        setter_name: reportData?.productData?.setter_name,
-        report_shift: reportData?.productData?.report_shift,
-        inspector_name: reportData?.productData?.inspector_name,
-        process_id: reportData?.productData?.process_id,
-        product_id: reportData?.productData?.product_id,
-        datas: processingData,
-        tableHeadDataApi: reportData?.productData,
-        checked_by: reportData?.productData?.checked_by,
-        approved_by: reportData?.productData?.approved_by,
-        report_id: reportData?.productData?.report_id,
-        report_header_date: reportData?.productData?.report_header_date
-          ? reportData?.productData?.report_header_date
-          : values?.report_header_date,
-      });
-      setisFinalstatus(reportData?.productData?.final_status ?? null);
-    }
-  }, [reportData]);
-
   const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
@@ -233,14 +199,21 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
-  const CloseTab = () => {
-    setTimeout(() => {
-      window.close();
-    }, 2000);
-  };
+
   const handleUpdateReport = (data) => {
     setloader(true);
-    const emptyObserveData = [null, null, null, null, null];
+    const emptyObserveData = [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
@@ -254,31 +227,28 @@ function SettingInspectionReport() {
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
     });
-
     const finalData = {
       user_id: userId,
       token: token,
       product_id: data?.product_id,
-      mvc_no: data?.mvc_no,
       process_id: data?.process_id,
-      setter_name: data?.setter_name,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
-      report_shift: data?.report_shift,
-      inspector_name: data?.inspector_name,
-      report_header_status: data?.report_header_status,
-      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      invoice_no: data?.invoice_no,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      quantity: data?.quantity,
+      observationData: sendData,
+      customer: data?.customer,
+      address: "CHENNAI",
+      supplier_name: "V.T. ENTERPRISE",
+      report_id: data?.report_id,
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
-      observationData: sendData,
-      report_id: data?.report_id,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     updateInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -294,9 +264,21 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
+
   const handleAddIncomingReport = (data) => {
     setloader(true);
-    const emptyObserveData = [null, null, null, null, null];
+    const emptyObserveData = [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
@@ -309,30 +291,27 @@ function SettingInspectionReport() {
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
     });
-
     const finalData = {
       user_id: userId,
       token: token,
       product_id: data?.product_id,
-      mvc_no: data?.mvc_no,
       process_id: data?.process_id,
-      setter_name: data?.setter_name,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
-      report_shift: data?.report_shift,
-      inspector_name: data?.inspector_name,
-      report_header_status: data?.report_header_status,
-      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
+      invoice_no: data?.invoice_no,
+      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      quantity: data?.quantity,
+      observationData: sendData,
+      customer: data?.customer,
+      address: "CHENNAI",
+      supplier_name: "V.T. ENTERPRISE",
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
-      observationData: sendData,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          toast.success(res?.data?.msg);
-          CloseTab();
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -348,13 +327,14 @@ function SettingInspectionReport() {
         setloader(false);
       });
   };
+
   const handleChangeValues = (event, index, inputIndex) => {
     const tempData = [...values.datas];
     const newData = tempData.map((ele, dataIndex) => {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(5).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -365,7 +345,16 @@ function SettingInspectionReport() {
     });
     setFieldValue("datas", newData);
   };
-
+  const handleStatusChange = (rowIndex, event) => {
+    const updatedData = [...values.datas];
+    updatedData[rowIndex].status = event;
+    handleChange({
+      target: {
+        name: "datas",
+        value: updatedData,
+      },
+    });
+  };
   const handleRemarkChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
     updatedData[rowIndex].remark = event;
@@ -376,16 +365,30 @@ function SettingInspectionReport() {
       },
     });
   };
-
-  const handleChangeStatus = (event, index) => {
-    const newData = [...values?.report_header_status];
-    newData[index] = event;
-    setFieldValue("report_header_status", newData);
-  };
-
   return (
     <>
       {loader ? <Loader /> : null}
+      <GlobalModal
+        CustomWidth={500}
+        isOpen={isShowModal}
+        onCancel={() => setIshowModal(false)}
+      >
+        <LogoutConfirmationModal
+          cancelBtn={false}
+          positiveButtonText="Ok"
+          msg={`Data ${
+            urlValues?.buttonStatus === "Add" && saveStatus === 0
+              ? "saved successfully."
+              : urlValues?.buttonStatus === "Edit" && saveStatus === 0
+              ? "updated successfully."
+              : "submitted successfully."
+          }`}
+          onPositiveButtonPressed={() => {
+            CloseTab();
+            setIshowModal(false);
+          }}
+        />
+      </GlobalModal>
       <div>
         <PageHeader
           Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
@@ -400,19 +403,14 @@ function SettingInspectionReport() {
             setsaveStatus(1);
             handleSubmit();
           }}
-          heading={"Setting Approval Report"}
+          heading={"Final inscepection Report"}
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
             <table>
               <thead>
                 <tr>
-                  <th colSpan={18} className={classes.CompanyName}>
-                    VT ENTERPRISES
-                  </th>
-                </tr>
-                <tr>
-                  <td colSpan={16} rowSpan={2}>
+                  <td colSpan={15} rowSpan={2}>
                     <div className={classes.rowAlignment}>
                       <div
                         style={{
@@ -426,131 +424,100 @@ function SettingInspectionReport() {
                         />
                       </div>
                       <div className={classes.heading}>
-                        SETTING APPROVAL REPORT
+                        FINAL INSPECTION REPORT
                       </div>
                       <div></div>
                     </div>
                   </td>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/02</td>
+                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/04</td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
-                {tableHeadData.map((head, index) => (
-                  <tr key={index} className={classes.fourHeadings}>
-                    <th colSpan={3}>{head?.left}</th>
-                    <th colSpan={11} className={classes.staticHeading}>
-                      {index === 0 ? (
-                        <input
-                          style={{
-                            border:
-                              errors.mvc_no && touched.mvc_no
-                                ? "2px solid red"
-                                : "",
-                          }}
-                          maxLength={50}
-                          type="text"
-                          value={head?.leftData}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("mvc_no")(alphabeticText);
-                          }}
-                        />
-                      ) : (
-                        <span
-                          style={{
-                            fontFamily: "var(--fontRegular)",
-                          }}
-                        >
-                          {head?.leftData}
-                        </span>
-                      )}
-                    </th>
-                    <th colSpan={1}>{head?.right}</th>
-                    <th colSpan={3}>
-                      {index === 0 ? (
-                        <input
-                          style={{
-                            border:
-                              errors.setter_name && touched.setter_name
-                                ? "2px solid red"
-                                : "",
-                          }}
-                          maxLength={20}
-                          type="text"
-                          value={head?.rightData}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("setter_name")(alphabeticText);
-                          }}
-                        />
-                      ) : index === 1 ? (
-                        <Commondate
-                          borderNone={false}
-                          onChange={(value) => {
-                            setFieldValue("report_header_date", value);
-                          }}
-                          value={dayjs(values?.report_header_date).format(
-                            "YYYY-MM-DD"
-                          )}
-                        />
-                      ) : index === 2 ? (
-                        <input
-                          style={{
-                            border:
-                              errors.report_shift && touched.report_shift
-                                ? "2px solid red"
-                                : "",
-                          }}
-                          maxLength={20}
-                          type="text"
-                          value={head?.rightData}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("report_shift")(alphabeticText);
-                          }}
-                        />
-                      ) : (
-                        <input
-                          style={{
-                            border:
-                              errors.inspector_name && touched.inspector_name
-                                ? "2px solid red"
-                                : "",
-                          }}
-                          maxLength={20}
-                          type="text"
-                          value={head?.rightData}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("inspector_name")(alphabeticText);
-                          }}
-                        />
-                      )}
-                    </th>
-                  </tr>
-                ))}
+                <tr className={classes.fourHeadings}>
+                  <th colSpan={2}>Supplier Name:</th>
+                  <th colSpan={10}>V.T. ENTERPRISE</th>
+                  <th colSpan={2} rowSpan={2}>
+                    Customer:
+                  </th>
+                  <th colSpan={5} rowSpan={2}>
+                    {values?.tableHeadDataApi?.customer}
+                  </th>
+                </tr>
+                <tr className={classes.fourHeadings}>
+                  <th colSpan={2}>Address:</th>
+                  <th colSpan={11}>CHENNAI</th>
+                </tr>
+                <tr className={classes.fourHeadings}>
+                  <th colSpan={2}>Part No:</th>
+                  <th colSpan={10}>{values?.tableHeadDataApi?.part_no}</th>
+                  <th colSpan={2}>Inv No:</th>
+                  <th colSpan={5}>
+                    <input
+                      style={{
+                        border:
+                          errors.invoice_no && touched.invoice_no
+                            ? "2px solid red"
+                            : "",
+                      }}
+                      maxLength={20}
+                      type="text"
+                      value={values?.invoice_no}
+                      onChange={(event) => {
+                        const text = event.target.value;
+                        const alphabeticText = text.replace(
+                          /[^A-Za-z0-9 ]/g,
+                          ""
+                        );
+                        handleChange("invoice_no")(alphabeticText);
+                      }}
+                    />
+                  </th>
+                </tr>
+                <tr className={classes.fourHeadings}>
+                  <th colSpan={2}>Drg Issue No:</th>
+                  <th colSpan={10}>
+                    {values?.tableHeadDataApi?.drawing_issue_no}
+                  </th>
+                  <th colSpan={2}>Inv Date:</th>
+                  <th colSpan={5}>
+                    <Commondate
+                      borderNone={false}
+                      onChange={(value) => {
+                        setFieldValue("invoice_date", value);
+                      }}
+                      value={dayjs(values?.invoice_date).format("YYYY-MM-DD")}
+                    />
+                  </th>
+                </tr>
+                <tr className={classes.fourHeadings}>
+                  <th colSpan={2}>Part Name:</th>
+                  <th colSpan={10}>{values?.tableHeadDataApi?.part_name}</th>
+                  <th colSpan={2}>Quantity:</th>
+                  <th colSpan={5}>
+                    <input
+                      style={{
+                        border:
+                          errors.quantity && touched.quantity
+                            ? "2px solid red"
+                            : "",
+                      }}
+                      maxLength={20}
+                      type="text"
+                      value={values?.quantity}
+                      onChange={(event) => {
+                        const text = event.target.value;
+                        const alphabeticText = text.replace(/[^0-9]/g, "");
+                        handleChange("quantity")(alphabeticText);
+                      }}
+                    />
+                  </th>
+                </tr>
                 <tr className={classes.secondHead}>
                   <th colSpan={1} rowSpan={2} className={classes.serialNo}>
                     S.No
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={1} rowSpan={2}>
                     Characteristics
                   </th>
                   <th colSpan={1} rowSpan={2}>
@@ -560,12 +527,20 @@ function SettingInspectionReport() {
                     Units
                   </th>
                   <th colSpan={1} rowSpan={2}>
-                    Method Of Check
+                    Method Of
+                    <br /> Check
                   </th>
-                  <th colSpan={5} className={classes.secondFourtColumn}>
+                  <th
+                    colSpan={10}
+                    rowSpan={1}
+                    className={classes.secondFourtColumn}
+                  >
                     Observations
                   </th>
-                  <th colSpan={10} rowSpan={2}>
+                  <th colSpan={1} rowSpan={2}>
+                    Status
+                  </th>
+                  <th colSpan={2} rowSpan={2}>
                     Remarks
                   </th>
                 </tr>
@@ -574,16 +549,21 @@ function SettingInspectionReport() {
                 <th className={classes.observe}>3</th>
                 <th className={classes.observe}>4</th>
                 <th className={classes.observe}>5</th>
+                <th className={classes.observe}>6</th>
+                <th className={classes.observe}>7</th>
+                <th className={classes.observe}>8</th>
+                <th className={classes.observe}>9</th>
+                <th className={classes.observe}>10</th>
               </thead>
               <tbody>
                 {values?.datas &&
                   values?.datas.map((ele, index) => (
                     <tr>
                       <td>{index + 1}</td>
-                      <td colSpan={2}>{ele?.characteristics}</td>
-                      <td colSpan={1}>{ele?.specification}</td>
-                      <td colSpan={1}>{ele?.units}</td>
-                      <td colSpan={1}>{ele?.method_of_check}</td>
+                      <td>{ele?.characteristics}</td>
+                      <td>{ele?.specification}</td>
+                      <td>{ele?.units}</td>
+                      <td>{ele?.method_of_check}</td>
                       {ele?.observation !== ""
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
@@ -607,9 +587,12 @@ function SettingInspectionReport() {
                               />
                             </td>
                           ))
-                        : [...Array(5)].map((emptyInput, inputIndex) => (
+                        : [...Array(10)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
+                                style={{
+                                  color: "red",
+                                }}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
@@ -628,7 +611,23 @@ function SettingInspectionReport() {
                               />
                             </td>
                           ))}
-                      <td colSpan={10}>
+                      <td>
+                        <input
+                          className={classes.observationInput}
+                          maxLength={20}
+                          type="text"
+                          value={ele?.status}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleStatusChange(index, alphabeticText);
+                          }}
+                        />
+                      </td>
+                      <td colSpan={2}>
                         <input
                           className={classes.observationInput}
                           maxLength={20}
@@ -647,61 +646,10 @@ function SettingInspectionReport() {
                     </tr>
                   ))}
                 <tr>
-                  <td
-                    style={{ textAlign: "right", padding: "0 15px" }}
-                    colSpan={6}
-                  >
-                    Status
+                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
+                    Checked By
                   </td>
-                  {values?.report_header_status &&
-                    values?.report_header_status.map((ele, index) => (
-                      <td>
-                        <input
-                          className={classes.observationInput}
-                          maxLength={10}
-                          type="text"
-                          value={ele}
-                          onChange={(event) => {
-                            const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChangeStatus(index, alphabeticText);
-                          }}
-                        />
-                      </td>
-                    ))}
-                  <td colSpan={8}></td>
-                </tr>
-                <tr>
-                  <td colSpan={26} className={classes.final}>
-                    <div className={classes.finalStatus}>
-                      <p>Final Status</p>
-                      <div className={classes.checkBoxContainer}>
-                        <input
-                          className={classes.checkBox}
-                          type="checkbox"
-                          onClick={() => setisFinalstatus(1)}
-                          checked={isFinalStatus == 1 ? true : false}
-                        ></input>
-                        <p>Accepted</p>
-                      </div>
-                      <div className={classes.checkBoxContainer}>
-                        <input
-                          className={classes.checkBox}
-                          type="checkbox"
-                          checked={isFinalStatus == 0 ? true : false}
-                          onClick={() => setisFinalstatus(0)}
-                        ></input>
-                        <p>Rejected</p>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={4}>Checked BY</td>
-                  <td colSpan={9}>
+                  <td colSpan={5}>
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -718,8 +666,10 @@ function SettingInspectionReport() {
                       }}
                     />
                   </td>
-                  <td colSpan={4}>Appproved By</td>
-                  <td colSpan={10}>
+                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
+                    Approved By
+                  </td>
+                  <td colSpan={5}>
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -746,4 +696,4 @@ function SettingInspectionReport() {
   );
 }
 
-export default SettingInspectionReport;
+export default FinalInspectionReport;

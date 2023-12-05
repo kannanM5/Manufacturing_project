@@ -1,41 +1,49 @@
 import React, { useEffect, useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import classes from "./Management.module.css";
+import PageHeader from "../../ManagementLayoutHeader/PageHeader";
+import classes from "../Management.module.css";
+import {
+  CloseTab,
+  getCatchMsg,
+  getInvalidMsg,
+} from "../../../Utility/GeneralUtils";
+import toast from "react-hot-toast";
 import {
   addInspectionReportList,
   editInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
-} from "../../Services/Services";
-import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { useLocation } from "react-router-dom";
-import toast from "react-hot-toast";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
+} from "../../../Services/Services";
 import { useFormik } from "formik";
-import Logo from "../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
-import Commondate from "../../Components/Commondate";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
+import { useLocation } from "react-router-dom";
+import Logo from "../../../Assets/Images/Png/VTLogo.svg";
+// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
+import Commondate from "../../../Components/Commondate";
 import dayjs from "dayjs";
 import moment from "moment";
 import * as Yup from "yup";
-import { Loader } from "../../Components";
+import { GlobalModal, Loader } from "..//../../Components";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 
 const validationSchema = Yup.object({
-  invoice_no: Yup.string().required("Name is required"),
-  quantity: Yup.string().required("Name is required"),
+  mvc_no: Yup.string().required("Machine number is required"),
+  operator_name: Yup.string().required("Operator name is required"),
+  report_shift: Yup.string().required("Shift is required"),
+  inspector_name: Yup.string().required("Name is required"),
 });
 var CryptoJS = require("crypto-js");
 
-function FinalInspectionReport() {
+function LineInspectionReport() {
   const token = useToken();
   const location = useLocation();
+  const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
-  const [saveStatus, setsaveStatus] = useState(null);
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
+  const [saveStatus, setsaveStatus] = useState(null);
   const [reportData, setReportData] = useState(null);
-  const [urlValues, setUrlValues] = useState();
+  const [isShowModal, setIshowModal] = useState(false);
   const {
     values,
     handleChange,
@@ -49,17 +57,21 @@ function FinalInspectionReport() {
       process_id: "",
       product_id: "",
       part_no: "",
+      mvc_no: "",
+      report_shift: "",
+      operator_name: "",
       supplier_name: "",
       report_status: "",
-      customer: "",
       checked_by: "",
       approved_by: "",
       process: "",
       invoice_no: "",
-      report_id: "",
-      invoice_date: new Date(),
+      inspector_name: "",
+      report_header_status: Array(8).fill(null),
+      report_header_date: new Date(),
       final_status: isFinalStatus,
       quantity: "",
+      report_id: "",
       datas: "",
       tableHeadDataApi: "",
     },
@@ -76,6 +88,37 @@ function FinalInspectionReport() {
       }
     },
   });
+  const tableHeadData = [
+    {
+      id: 1,
+      left: "M/C No:",
+      right: "Operator Name:",
+      leftData: values?.mvc_no,
+      rightData: values?.operator_name,
+    },
+    {
+      id: 2,
+      left: "Part No:",
+      right: "Date:",
+      leftData: values?.tableHeadDataApi?.part_no,
+      rightData: values?.report_header_date,
+    },
+    {
+      id: "3",
+      left: "Part Name:",
+      right: "Shift:",
+      leftData: values?.tableHeadDataApi?.part_name,
+      rightData: values?.report_shift,
+    },
+    {
+      id: "4",
+      left: "Process:",
+      right: "Inspector Name:",
+      leftData: values?.process,
+      rightData: values?.inspector_name,
+    },
+  ];
+
   const getColor = () => {
     const tempData = [...values.datas];
 
@@ -84,54 +127,16 @@ function FinalInspectionReport() {
       .some((text) => text !== "");
     return getCode;
   };
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
-
     const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
     const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-
     const decryptedData = JSON.parse(decryptedText);
     setUrlValues(decryptedData);
   }, [location.search]);
-  useEffect(() => {
-    if (reportData) {
-      let tempData = [...reportData?.processData];
-      const getProcess = tempData.map((ele) => ele?.process);
-      // setisFinalstatus(reportData?.productData?.final_status);
-      const processingData = tempData.map((ele) => {
-        if (ele?.observationData) {
-          return {
-            ...ele,
-            observation: JSON.parse(ele?.observation),
-          };
-        } else {
-          return {
-            ...ele,
-            observation: ele?.observation ? ele?.observation : "",
-          };
-        }
-      });
-      setValues({
-        ...values,
-        process: getProcess[0],
-        product_id: reportData?.productData?.product_id,
-        datas: processingData,
-        tableHeadDataApi: reportData?.productData,
-        supplier_name: reportData?.productData?.supplier_name,
-        checked_by: reportData?.productData?.checked_by,
-        approved_by: reportData?.productData?.approved_by,
-        invoice_date: reportData?.productData?.invoice_date
-          ? reportData?.productData?.invoice_date
-          : values?.invoice_date,
-        invoice_no: reportData?.productData?.invoice_no,
-        quantity: reportData?.productData?.quantity,
-        process_id: reportData?.productData?.process_id,
-        customer: reportData?.productData?.customer,
-        report_id: reportData?.productData?.report_id,
-      });
-    }
-  }, [reportData]);
+
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -141,6 +146,7 @@ function FinalInspectionReport() {
       }
     }
   }, [urlValues]);
+
   const handleEditReport = () => {
     setloader(true);
     let formData = new FormData();
@@ -169,6 +175,49 @@ function FinalInspectionReport() {
         setloader(false);
       });
   };
+
+  useEffect(() => {
+    if (reportData) {
+      let tempData = [...reportData?.processData];
+      const getProcess = tempData.map((ele) => ele?.process);
+      const processingData = tempData.map((ele) => {
+        if (ele?.observationData) {
+          return {
+            ...ele,
+            observation: JSON.parse(ele?.observation),
+          };
+        } else {
+          return {
+            ...ele,
+            observation: ele?.observation ? ele?.observation : "",
+          };
+        }
+      });
+      setValues({
+        ...values,
+        process: getProcess[0],
+        mvc_no: reportData?.productData?.mvc_no,
+        operator_name: reportData?.productData?.operator_name,
+        report_shift: reportData?.productData?.report_shift,
+        inspector_name: reportData?.productData?.inspector_name,
+        product_id: reportData?.productData?.product_id,
+        datas: processingData,
+        tableHeadDataApi: reportData?.productData,
+        supplier_name: reportData?.productData?.supplier_name,
+        checked_by: reportData?.productData?.checked_by,
+        approved_by: reportData?.productData?.approved_by,
+        report_header_date: reportData?.productData?.report_header_date
+          ? reportData?.productData?.report_header_date
+          : values?.report_header_date,
+        invoice_no: reportData?.productData?.invoice_no,
+        quantity: reportData?.productData?.quantity,
+        process_id: reportData?.productData?.process_id,
+        report_id: reportData?.productData?.report_id,
+      });
+      setisFinalstatus(reportData?.productData?.final_status ?? null);
+    }
+  }, [reportData]);
+
   const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
@@ -193,32 +242,17 @@ function FinalInspectionReport() {
         setloader(false);
       });
   };
-  const CloseTab = () => {
-    setTimeout(() => {
-      window.close();
-    }, 2000);
-  };
 
   const handleUpdateReport = (data) => {
     setloader(true);
-    const emptyObserveData = [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-    ];
+    const emptyObserveData = [null, null, null, null, null, null, null, null];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
-        report_details_id: ele?.report_details_id,
         process_details_id: ele?.process_details_id,
-        status: ele?.status ? ele?.status : null,
+        report_details_id: ele?.report_details_id,
+        last_half: ele?.last_half ? ele?.last_half : null,
+        first_half: ele?.first_half ? ele?.first_half : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
@@ -229,26 +263,27 @@ function FinalInspectionReport() {
     const finalData = {
       user_id: userId,
       token: token,
-      product_id: data?.product_id,
+      mvc_no: data?.mvc_no,
       process_id: data?.process_id,
+      operator_name: data?.operator_name,
+      product_id: data?.product_id,
+      report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
-      quantity: data?.quantity,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
-      customer: data?.customer,
-      address: "CHENNAI",
-      supplier_name: "V.T. ENTERPRISE",
       report_id: data?.report_id,
+      report_header_status: data?.report_header_status,
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
+      inspector_name: data?.inspector_name,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     updateInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          CloseTab();
-          toast.success(res?.data?.msg);
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -267,23 +302,13 @@ function FinalInspectionReport() {
 
   const handleAddIncomingReport = (data) => {
     setloader(true);
-    const emptyObserveData = [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-    ];
+    const emptyObserveData = [null, null, null, null, null, null, null, null];
     const observeData = [...data?.datas];
     const sendData = observeData.map((ele) => {
       return {
         process_details_id: ele?.process_details_id,
-        status: ele?.status ? ele?.status : null,
+        last_half: ele?.last_half ? ele?.last_half : null,
+        first_half: ele?.first_half ? ele?.first_half : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
           ele?.observation == ""
@@ -294,25 +319,26 @@ function FinalInspectionReport() {
     const finalData = {
       user_id: userId,
       token: token,
-      product_id: data?.product_id,
+      mvc_no: data?.mvc_no,
       process_id: data?.process_id,
+      operator_name: data?.operator_name,
+      product_id: data?.product_id,
+      report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
-      quantity: data?.quantity,
+      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
-      customer: data?.customer,
-      address: "CHENNAI",
-      supplier_name: "V.T. ENTERPRISE",
+      report_header_status: data?.report_header_status,
       checked_by: data?.checked_by ?? null,
       approved_by: data?.approved_by ?? null,
+      inspector_name: data?.inspector_name,
+      final_status: isFinalStatus ? isFinalStatus.toString() : isFinalStatus,
       report_type: urlValues?.pageStatus,
       save: saveStatus,
     };
     addInspectionReportList(JSON.stringify(finalData))
       .then((res) => {
         if (res?.data?.status === 1) {
-          CloseTab();
-          toast.success(res?.data?.msg);
+          setIshowModal(true);
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -335,7 +361,7 @@ function FinalInspectionReport() {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(8).fill(""); // Assuming a default value of an empty string for non-array observations
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -346,9 +372,20 @@ function FinalInspectionReport() {
     });
     setFieldValue("datas", newData);
   };
-  const handleStatusChange = (rowIndex, event) => {
+  const handleFirstOfChange = (rowIndex, event) => {
     const updatedData = [...values.datas];
-    updatedData[rowIndex].status = event;
+    updatedData[rowIndex].first_half = event;
+    handleChange({
+      target: {
+        name: "datas",
+        value: updatedData,
+      },
+    });
+  };
+
+  const handleLastOfChange = (rowIndex, event) => {
+    const updatedData = [...values.datas];
+    updatedData[rowIndex].last_half = event;
     handleChange({
       target: {
         name: "datas",
@@ -366,9 +403,35 @@ function FinalInspectionReport() {
       },
     });
   };
+  const handleChangeStatus = (event, index) => {
+    const newData = [...values?.report_header_status];
+    newData[index] = event;
+    setFieldValue("report_header_status", newData);
+  };
   return (
     <>
       {loader ? <Loader /> : null}
+      <GlobalModal
+        CustomWidth={500}
+        isOpen={isShowModal}
+        onCancel={() => setIshowModal(false)}
+      >
+        <LogoutConfirmationModal
+          cancelBtn={false}
+          positiveButtonText="Ok"
+          msg={`Data ${
+            urlValues?.buttonStatus === "Add" && saveStatus === 0
+              ? "saved successfully."
+              : urlValues?.buttonStatus === "Edit" && saveStatus === 0
+              ? "updated successfully."
+              : "submitted successfully."
+          }`}
+          onPositiveButtonPressed={() => {
+            CloseTab();
+            setIshowModal(false);
+          }}
+        />
+      </GlobalModal>
       <div>
         <PageHeader
           Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
@@ -383,14 +446,19 @@ function FinalInspectionReport() {
             setsaveStatus(1);
             handleSubmit();
           }}
-          heading={"Final inscepection Report"}
+          heading={"Line Inspection Report"}
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
             <table>
               <thead>
                 <tr>
-                  <td colSpan={15} rowSpan={2}>
+                  <th colSpan={16} className={classes.CompanyName}>
+                    VT ENTERPRISES
+                  </th>
+                </tr>
+                <tr>
+                  <td colSpan={14} rowSpan={2}>
                     <div className={classes.rowAlignment}>
                       <div
                         style={{
@@ -404,95 +472,128 @@ function FinalInspectionReport() {
                         />
                       </div>
                       <div className={classes.heading}>
-                        FINAL INSPECTION REPORT
+                        LINE INSPECTION REPORT
                       </div>
                       <div></div>
                     </div>
                   </td>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/04</td>
+                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/03</td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
-                <tr className={classes.fourHeadings}>
-                  <th colSpan={2}>Supplier Name:</th>
-                  <th colSpan={10}>V.T. ENTERPRISE</th>
-                  <th colSpan={2} rowSpan={2}>
-                    Customer:
-                  </th>
-                  <th colSpan={5} rowSpan={2}>
-                    {values?.tableHeadDataApi?.customer}
-                  </th>
-                </tr>
-                <tr className={classes.fourHeadings}>
-                  <th colSpan={2}>Address:</th>
-                  <th colSpan={11}>CHENNAI</th>
-                </tr>
-                <tr className={classes.fourHeadings}>
-                  <th colSpan={2}>Part No:</th>
-                  <th colSpan={10}>{values?.tableHeadDataApi?.part_no}</th>
-                  <th colSpan={2}>Inv No:</th>
-                  <th colSpan={5}>
-                    <input
-                      style={{
-                        border:
-                          errors.invoice_no && touched.invoice_no
-                            ? "2px solid red"
-                            : "",
-                      }}
-                      maxLength={20}
-                      type="text"
-                      value={values?.invoice_no}
-                      onChange={(event) => {
-                        const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("invoice_no")(alphabeticText);
-                      }}
-                    />
-                  </th>
-                </tr>
-                <tr className={classes.fourHeadings}>
-                  <th colSpan={2}>Drg Issue No:</th>
-                  <th colSpan={10}>
-                    {values?.tableHeadDataApi?.drawing_issue_no}
-                  </th>
-                  <th colSpan={2}>Inv Date:</th>
-                  <th colSpan={5}>
-                    <Commondate
-                      borderNone={false}
-                      onChange={(value) => {
-                        setFieldValue("invoice_date", value);
-                      }}
-                      value={dayjs(values?.invoice_date).format("YYYY-MM-DD")}
-                    />
-                  </th>
-                </tr>
-                <tr className={classes.fourHeadings}>
-                  <th colSpan={2}>Part Name:</th>
-                  <th colSpan={10}>{values?.tableHeadDataApi?.part_name}</th>
-                  <th colSpan={2}>Quantity:</th>
-                  <th colSpan={5}>
-                    <input
-                      style={{
-                        border:
-                          errors.quantity && touched.quantity
-                            ? "2px solid red"
-                            : "",
-                      }}
-                      maxLength={20}
-                      type="text"
-                      value={values?.quantity}
-                      onChange={(event) => {
-                        const text = event.target.value;
-                        const alphabeticText = text.replace(/[^0-9]/g, "");
-                        handleChange("quantity")(alphabeticText);
-                      }}
-                    />
-                  </th>
-                </tr>
+                {tableHeadData.map((head, index) => (
+                  <tr key={index} className={classes.fourHeadings}>
+                    <th colSpan={2}>{head?.left}</th>
+                    <th colSpan={10}>
+                      {index === 0 ? (
+                        <input
+                          style={{
+                            border:
+                              errors.mvc_no && touched.mvc_no
+                                ? "2px solid red"
+                                : "",
+                          }}
+                          maxLength={50}
+                          type="text"
+                          value={head?.leftData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChange("mvc_no")(alphabeticText);
+                          }}
+                        />
+                      ) : (
+                        <span
+                          style={
+                            {
+                              // paddingLeft: "10px",
+                            }
+                          }
+                        >
+                          {head?.leftData}
+                        </span>
+                      )}
+                    </th>
+                    <th colSpan={2}>{head?.right}</th>
+                    <th colSpan={4}>
+                      {index === 0 ? (
+                        <input
+                          style={{
+                            border:
+                              errors.operator_name && touched.operator_name
+                                ? "2px solid red"
+                                : "",
+                          }}
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChange("operator_name")(alphabeticText);
+                          }}
+                        />
+                      ) : index === 1 ? (
+                        <Commondate
+                          borderNone={false}
+                          onChange={(value) => {
+                            setFieldValue("report_header_date", value);
+                          }}
+                          value={dayjs(values?.report_header_date).format(
+                            "YYYY-MM-DD"
+                          )}
+                        />
+                      ) : index === 2 ? (
+                        <input
+                          style={{
+                            border:
+                              errors.report_shift && touched.report_shift
+                                ? "2px solid red"
+                                : "",
+                          }}
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9. ]/g,
+                              ""
+                            );
+                            handleChange("report_shift")(alphabeticText);
+                          }}
+                        />
+                      ) : (
+                        <input
+                          style={{
+                            border:
+                              errors.inspector_name && touched.inspector_name
+                                ? "2px solid red"
+                                : "",
+                          }}
+                          maxLength={20}
+                          type="text"
+                          value={head?.rightData}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9. ]/g,
+                              ""
+                            );
+                            handleChange("inspector_name")(alphabeticText);
+                          }}
+                        />
+                      )}
+                    </th>
+                  </tr>
+                ))}
                 <tr className={classes.secondHead}>
                   <th colSpan={1} rowSpan={2} className={classes.serialNo}>
                     S.No
@@ -518,12 +619,10 @@ function FinalInspectionReport() {
                     Observations
                   </th>
                   <th colSpan={1} rowSpan={2}>
-                    Status
-                  </th>
-                  <th colSpan={2} rowSpan={2}>
                     Remarks
                   </th>
                 </tr>
+                <th className={classes.observe}>First Off</th>
                 <th className={classes.observe}>1</th>
                 <th className={classes.observe}>2</th>
                 <th className={classes.observe}>3</th>
@@ -532,8 +631,7 @@ function FinalInspectionReport() {
                 <th className={classes.observe}>6</th>
                 <th className={classes.observe}>7</th>
                 <th className={classes.observe}>8</th>
-                <th className={classes.observe}>9</th>
-                <th className={classes.observe}>10</th>
+                <th className={classes.observe}>Last Off</th>
               </thead>
               <tbody>
                 {values?.datas &&
@@ -544,6 +642,22 @@ function FinalInspectionReport() {
                       <td>{ele?.specification}</td>
                       <td>{ele?.units}</td>
                       <td>{ele?.method_of_check}</td>
+                      <td>
+                        <input
+                          className={classes.observationInput}
+                          maxLength={20}
+                          type="text"
+                          value={ele?.first_half}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleFirstOfChange(index, alphabeticText);
+                          }}
+                        />
+                      </td>
                       {ele?.observation !== ""
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
@@ -567,12 +681,12 @@ function FinalInspectionReport() {
                               />
                             </td>
                           ))
-                        : [...Array(10)].map((emptyInput, inputIndex) => (
+                        : [...Array(8)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
-                                style={{
-                                  color: "red",
-                                }}
+                                // style={{
+                                //   color: getColor(index, inputIndex),
+                                // }}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
@@ -591,23 +705,24 @@ function FinalInspectionReport() {
                               />
                             </td>
                           ))}
+
                       <td>
                         <input
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
-                          value={ele?.status}
+                          value={ele?.last_half}
                           onChange={(event) => {
                             const text = event.target.value;
                             const alphabeticText = text.replace(
                               /[^A-Za-z0-9 ]/g,
                               ""
                             );
-                            handleStatusChange(index, alphabeticText);
+                            handleLastOfChange(index, alphabeticText);
                           }}
                         />
                       </td>
-                      <td colSpan={2}>
+                      <td>
                         <input
                           className={classes.observationInput}
                           maxLength={20}
@@ -626,10 +741,61 @@ function FinalInspectionReport() {
                     </tr>
                   ))}
                 <tr>
-                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
-                    Checked By
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td colSpan={2}>Status</td>
+                  {values?.report_header_status &&
+                    values?.report_header_status.map((ele, index) => (
+                      <td>
+                        <input
+                          className={classes.observationInput}
+                          maxLength={10}
+                          type="text"
+                          value={ele}
+                          onChange={(event) => {
+                            const text = event.target.value;
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
+                            handleChangeStatus(alphabeticText, index);
+                          }}
+                        />
+                      </td>
+                    ))}
+                  <td></td>
+                  <td colSpan={1}></td>
+                </tr>
+                <tr>
+                  <td colSpan={16} className={classes.final}>
+                    <div className={classes.finalStatus}>
+                      <p>Final Status</p>
+                      <div className={classes.checkBoxContainer}>
+                        <input
+                          className={classes.checkBox}
+                          type="checkbox"
+                          onClick={() => setisFinalstatus(1)}
+                          checked={isFinalStatus == 1 ? true : false}
+                        ></input>
+                        <p>Accepted</p>
+                      </div>
+                      <div className={classes.checkBoxContainer}>
+                        <input
+                          className={classes.checkBox}
+                          type="checkbox"
+                          checked={isFinalStatus == 0 ? true : false}
+                          onClick={() => setisFinalstatus(0)}
+                        ></input>
+                        <p>Rejected</p>
+                      </div>
+                    </div>
                   </td>
-                  <td colSpan={5}>
+                </tr>
+                <tr>
+                  <td colSpan={2}>Checked BY</td>
+                  <td colSpan={6}>
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -646,10 +812,9 @@ function FinalInspectionReport() {
                       }}
                     />
                   </td>
-                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
-                    Approved By
-                  </td>
-                  <td colSpan={5}>
+                  <td colSpan={4}>Appproved By</td>
+                  <td colSpan={4}>
+                    {" "}
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -676,4 +841,4 @@ function FinalInspectionReport() {
   );
 }
 
-export default FinalInspectionReport;
+export default LineInspectionReport;

@@ -12,9 +12,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { ALPHA_NUM } from "../../Utility/Constants";
-import { getInspectionReportList } from "../../Services/Services";
+import {
+  getInspectionReportList,
+  savedDataList,
+} from "../../Services/Services";
 import toast from "react-hot-toast";
-import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 import CustomDropDown from "../../Components/CustomDropDown";
 
@@ -56,7 +59,11 @@ function PrepareInspectionReport() {
     },
     validationSchema: validationSchema,
     onSubmit: () => {
-      handleGetProductsList();
+      if (buttonStatus === "Add") {
+        handleGetProductsList();
+      } else {
+        handleEditReport();
+      }
     },
   });
 
@@ -136,7 +143,7 @@ function PrepareInspectionReport() {
       .then((response) => {
         if (response?.data?.status === 1) {
           handleClick("Add");
-          toast.success(response?.data?.msg);
+          // toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         } else if (response.data.status === 2) {
@@ -150,7 +157,34 @@ function PrepareInspectionReport() {
         setloader(false);
       });
   };
-
+  const handleEditReport = () => {
+    setloader(true);
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("part_no", values?.part_no);
+    formData.append("process", values?.process);
+    formData.append("user_id", userId);
+    formData.append("option", 2);
+    formData.append("report_type", dropdownName);
+    savedDataList(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          handleClick("Edit");
+        } else if (response?.data?.status === 0) {
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
   const sendData = (data) => {
     var encrypted = CryptoJS.AES.encrypt(
       JSON.stringify({
@@ -280,8 +314,8 @@ function PrepareInspectionReport() {
               customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
               onButtonPress={() => {
                 setbuttonStatus("Edit");
-                // handleSubmit();
-                handleClick("Edit");
+                handleSubmit();
+                // handleClick("Edit");
                 // handleGetProductsList();
               }}
             />
