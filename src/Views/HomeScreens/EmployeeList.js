@@ -133,20 +133,22 @@ function EmployeeList() {
                 <td>{emp?.name}</td>
                 <td>{emp?.user_type}</td>
                 <td>{emp?.email}</td>
-                <td className={classes.icons}>
-                  <img
-                    src={chagepassword_Icon}
-                    alt="edit_icon"
-                    onClick={() => {
-                      setIsShowModal((prev) => {
-                        return {
-                          ...prev,
-                          changePasswordStatus: true,
-                          id: emp?.id,
-                        };
-                      });
-                    }}
-                  />
+                <td>
+                  <div className={classes.icons}>
+                    <img
+                      src={chagepassword_Icon}
+                      alt="edit_icon"
+                      onClick={() => {
+                        setIsShowModal((prev) => {
+                          return {
+                            ...prev,
+                            changePasswordStatus: true,
+                            id: emp?.id,
+                          };
+                        });
+                      }}
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

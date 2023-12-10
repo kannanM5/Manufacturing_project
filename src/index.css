@@ -2,7 +2,6 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  /* font-family: 'Inter' !important; */
 }
 
 :root {
@@ -298,22 +297,19 @@ body {
 /* ant design start  */
 .ant-tabs {
   display: flex;
-  /* height: 65px;
-  justify-content: center;
-  align-items: center; */
 }
 .ant-tabs-nav::before {
   border-bottom: none !important;
 }
 .ant-tabs-tab:hover {
-  color: rgb(250, 245, 245) !important;
+  color: black !important;
 }
 .ant-menu {
   border-inline-end: none !important;
 }
 .ant-tabs-tab {
   padding: 5px !important;
-  color: white !important;
+  color: black !important;
 }
 .ant-tabs-tab-btn {
   font-family: var(--fontRegular) !important;
@@ -324,10 +320,12 @@ body {
   justify-content: flex-end !important;
 }
 .ant-drawer-wrapper-body {
-  background-color: var(--menuBg) !important;
+  /* background-color: var(--menuBg) !important; */
+  background-color: white;
 }
 .ant-tabs-tab-active > div {
-  color: white !important;
+  /* color: white !important; */
+  color: black !important;
 }
 .ant-tabs-ink-bar {
   background-color: var(--btnColor) !important;
@@ -336,7 +334,7 @@ body {
   /* width: 40px !important; */
 }
 .ant-drawer .ant-drawer-content {
-  color: white;
+  color: black;
 }
 .ant-dropdown-trigger {
   /* color: white; */

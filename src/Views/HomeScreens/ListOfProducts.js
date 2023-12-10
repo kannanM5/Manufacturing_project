@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { useState } from "react";
 import { GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import {
@@ -9,30 +8,12 @@ import {
   useEmployeeType,
   useToken,
 } from "../../Utility/StoreData";
-import * as Yup from "yup";
-import { ALPHA_NUM } from "../../Utility/Constants";
 import { dummayone, productsList } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import AddProducts from "../../Modals/AddProducts";
 import CustomPagination from "../../Components/CustomPagination";
-
-const validationSchema = Yup.object({
-  part_no: Yup.string()
-    .required("Part number is required")
-    .matches(ALPHA_NUM, "Enter valid part number"),
-  part_name: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid part name")
-    .required("Part name is required"),
-  customer: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid customer")
-    .required("Customer is required"),
-  customer_part_no: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid customer part number")
-    .required("Customer part number is required"),
-  drawing_issue_no: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid drawing issue number")
-    .required("Drawing issue number is required"),
-});
+import { Tooltip } from "antd";
+import CustomToolTip from "../../Components/CustomToolTip";
 
 function ListOfProducts() {
   const token = useToken();
@@ -146,7 +127,7 @@ function ListOfProducts() {
               <th>Part Name</th>
               <th>Customer</th>
               <th>Drawing Issue No</th>
-              <th>Customer Part Number</th>
+              <th>Customer Part No</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -160,20 +141,23 @@ function ListOfProducts() {
                 <td>{products?.drawing_issue_no}</td>
                 <td>{products?.customer_part_no}</td>
                 <td>
-                  <img
-                    src={EditIcon}
-                    alt="edit_icon"
-                    style={{ width: 20, height: 20, cursor: "pointer" }}
-                    onClick={() => {
-                      setIsShowModal((prev) => {
-                        return {
-                          ...prev,
-                          data: products,
-                          status: true,
-                        };
-                      });
-                    }}
-                  />
+                  <div className={classes.icons}>
+                    <CustomToolTip title="Edit">
+                      <img
+                        src={EditIcon}
+                        alt="edit_icon"
+                        onClick={() => {
+                          setIsShowModal((prev) => {
+                            return {
+                              ...prev,
+                              data: products,
+                              status: true,
+                            };
+                          });
+                        }}
+                      />
+                    </CustomToolTip>
+                  </div>
                 </td>
               </tr>
             ))}

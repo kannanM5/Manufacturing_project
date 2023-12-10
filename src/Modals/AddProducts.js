@@ -1,31 +1,20 @@
 import React, { useState } from "react";
-import classes from "./Modal.module.css";
 import { useFormik } from "formik";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
+import classes from "./Modal.module.css";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 import { CustomButton, Loader, TextInputBox } from "../Components";
-import { ALPHA_NUM } from "../Utility/Constants";
-import toast from "react-hot-toast";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import { addProductService, editProductService } from "../Services/Services";
 import UpdateDeleteActions from "./UpdateDeleteActions";
 
 const validationSchema = Yup.object({
-  part_no: Yup.string()
-    .required("Part number is required")
-    .matches(ALPHA_NUM, "Enter valid part number"),
-  part_name: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid part name")
-    .required("Part name is required"),
-  customer: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid customer")
-    .required("Customer is required"),
-  customer_part_no: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid customer part number")
-    .required("Customer part number is required"),
-  drawing_issue_no: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid drawing issue number")
-    .required("Drawing issue number is required"),
+  part_no: Yup.string().required("Part number is required"),
+  part_name: Yup.string().required("Part name is required"),
+  customer: Yup.string().required("Customer is required"),
+  customer_part_no: Yup.string().required("Customer part number is required"),
+  drawing_issue_no: Yup.string().required("Drawing issue number is required"),
 });
 function AddProducts({
   onClose,
@@ -286,7 +275,7 @@ function AddProducts({
             onUpdatePress={handleSubmit}
           />
         ) : (
-          <div className="col-lg-2 col-md-3 col-3  mb-3">
+          <div className="col-lg-2 col-md-3 col-3  mb-2">
             <CustomButton onButtonPress={handleSubmit} title="Submit" />
           </div>
         )}

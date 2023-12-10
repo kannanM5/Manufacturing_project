@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { CustomButton, TextInputBox } from "../../Components";
+import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
 import EditIcon from "../../Assets/Icons/Svg/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { savedDataList } from "../../Services/Services";
+import { deleteSavedLogs, savedDataList } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
+import CustomPagination from "../../Components/CustomPagination";
+import deleteIcon from "../../Assets/Icons/Svg/delete.svg";
+import CustomToolTip from "../../Components/CustomToolTip";
+import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -21,14 +25,14 @@ function SavedData() {
   const { state } = useLocation();
   const token = useToken();
   const userId = useEmployeeId();
+  const [pageNo, setpageNo] = useState(1);
   const [loader, setloader] = useState(false);
-  const [isShowModal, setIsShowModal] = useState({
-    status: false,
-    data: null,
-    viewStatus: false,
+  const [deleteModal, setdeleteModal] = useState({
+    modal: false,
+    data: "",
   });
   const [listInSpectionCriteria, setlistInSpectionCriteria] = useState(null);
-  console.log(token, "TOKENSS");
+
   const {
     handleSubmit,
     handleChange,
@@ -36,9 +40,9 @@ function SavedData() {
     values,
     errors,
     touched,
-    resetForm,
     setFieldError,
     setFieldTouched,
+    resetForm,
   } = useFormik({
     initialValues: {
       process: "",
@@ -85,26 +89,28 @@ function SavedData() {
       path: "/#/final_inspection_report",
     },
   ];
+
   const sendData = (data) => {
+    resetForm();
     var encrypted = CryptoJS.AES.encrypt(
       JSON.stringify({
-        ...values,
-        pageStatus: data,
+        part_no: data?.part_no,
+        process: data?.process,
+        pageStatus: data?.report_type,
         buttonStatus: "Edit",
       }),
       "data"
     ).toString();
-    // setbuttonStatus(null);
     return encrypted;
   };
-  const handleClick = (reportType) => {
-    // getAndSetLoaclStorageDetails();
-    // setloader(true)
+
+  const handleClick = (data) => {
+    console.log(data);
     const getDetails = dropDownItem.find(
-      (ele) => ele.key === parseInt(reportType)
+      (ele) => ele.key === parseInt(data.report_type)
     );
     if (getDetails) {
-      const encryptedData = sendData(getDetails?.key);
+      const encryptedData = sendData(data);
       const newTab = window.open(getDetails.path, "_blank");
       if (newTab) {
         newTab.location.href = `${getDetails.path}?data=${encodeURIComponent(
@@ -113,6 +119,7 @@ function SavedData() {
       }
     }
   };
+
   const handleListCriteriaService = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -124,7 +131,7 @@ function SavedData() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setlistInSpectionCriteria(response?.data?.data);
+          setlistInSpectionCriteria(response?.data);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -141,6 +148,43 @@ function SavedData() {
       });
   };
 
+  // useEffect(() => {
+  //   listSavedDataApiCall();
+  // }, []);
+
+  const listSavedDataApiCall = (page = pageNo, limit = 10) => {
+    setloader(true);
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("option", 3);
+    formData.append("page", page);
+    formData.append("limit", limit);
+    savedDataList(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          setlistInSpectionCriteria(response?.data);
+        } else if (response?.data?.status === 0) {
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
+  useEffect(() => {
+    if (token) {
+      listSavedDataApiCall();
+    }
+  }, [token]);
+
   useEffect(() => {
     if (state && token) {
       handleListCriteriaService(state);
@@ -148,9 +192,73 @@ function SavedData() {
       setFieldValue("process", state?.process);
     }
   }, [state, token]);
+
+  const handleDeleteReportData = () => {
+    setloader(true);
+    let formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("part_no", deleteModal?.data?.part_no);
+    formData.append("process", deleteModal?.data?.process);
+    formData.append("report_type", deleteModal?.data?.report_type);
+    deleteSavedLogs(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          listSavedDataApiCall(1, 10);
+          toast.success(response?.data?.msg);
+          // setlistInSpectionCriteria(response?.data);
+        } else if (response?.data?.status === 0) {
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+        setdeleteModal((prev) => {
+          return {
+            ...prev,
+            data: null,
+            modal: false,
+          };
+        });
+      });
+  };
+
   return (
     <>
       <PageHeader heading={"Saved Logs"} BtnTrue={true} />
+      <GlobalModal
+        CustomWidth={500}
+        isOpen={deleteModal.modal}
+        onCancel={() => {
+          setdeleteModal((prev) => {
+            return {
+              ...prev,
+              modal: false,
+            };
+          });
+        }}
+      >
+        <LogoutConfirmationModal
+          msg={"Are you sure do you want to Delete."}
+          positiveButtonText="Delete"
+          onPositiveButtonPressed={handleDeleteReportData}
+          onNegativeButtonPressed={() => {
+            setdeleteModal((prev) => {
+              return {
+                ...prev,
+                modal: false,
+              };
+            });
+          }}
+        />
+      </GlobalModal>
       <div className={classes.insepectionCreteria}>
         <div className="row">
           <div className="col-lg-3 col-md-6">
@@ -227,19 +335,37 @@ function SavedData() {
               </thead>
               <tbody>
                 {listInSpectionCriteria &&
-                  listInSpectionCriteria.map((products, index) => (
+                  listInSpectionCriteria?.data.map((products, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{products?.part_no}</td>
                       <td>{products?.process}</td>
                       <td>{getReportType(products?.report_type)}</td>
                       <td>
-                        <img
-                          src={EditIcon}
-                          alt="edit_icon"
-                          style={{ width: 20, height: 20, cursor: "pointer" }}
-                          onClick={() => handleClick(products?.report_type)}
-                        />
+                        <div className={classes.icons}>
+                          <CustomToolTip title={"Edit"}>
+                            <img
+                              src={EditIcon}
+                              alt="edit_icon"
+                              onClick={() => handleClick(products)}
+                            />
+                          </CustomToolTip>
+                          <CustomToolTip title={"Delete"}>
+                            <img
+                              src={deleteIcon}
+                              alt="delete"
+                              onClick={() =>
+                                setdeleteModal((prev) => {
+                                  return {
+                                    ...prev,
+                                    data: products,
+                                    modal: true,
+                                  };
+                                })
+                              }
+                            />
+                          </CustomToolTip>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -248,6 +374,19 @@ function SavedData() {
           </div>
         </div>
       </div>
+      <CustomPagination
+        defaultCurrent={1}
+        showSizeChanger={true}
+        totalCount={listInSpectionCriteria?.totalCount}
+        onChange={(page) => {
+          setpageNo(page);
+          listSavedDataApiCall(page, 10);
+          console.log(page, "page");
+        }}
+        onShowSizeChange={(current, pageSize) => {
+          console.log(current, pageSize);
+        }}
+      />
     </>
   );
 }

@@ -59,11 +59,13 @@ function PrepareInspectionReport() {
     },
     validationSchema: validationSchema,
     onSubmit: () => {
+      console.log("ONE");
       if (buttonStatus === "Add") {
         handleGetProductsList();
       } else {
         handleEditReport();
       }
+      // getAndSetLoaclStorageDetails();
     },
   });
 
@@ -89,27 +91,44 @@ function PrepareInspectionReport() {
       path: "/#/final_inspection_report",
     },
   ];
+  const getAndSetLoaclStorageDetails = (btnStatus) => {
+    console.log("TWO");
+    const setData = {
+      local_Process: values.process,
+      local_Part_No: values.part_no,
+      local_Report_Type: dropdownName,
+    };
 
-  // const getAndSetLoaclStorageDetails = () => {
-  //   const setData = {
-  //     local_Process: values.process,
-  //     local_Part_No: values.part_no,
-  //     local_Report_Type: dropdownName,
-  //   };
+    console.log(
+      setData?.local_Report_Type,
+      setData?.local_Part_No,
+      setData?.local_Part_No,
+      "report type"
+    );
 
-  //   const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
-  //   if (getLocalValue) {
-  //     const setValue = getLocalValue.map((ele) => {
-  //       return {
-  //         ...ele,
-  //         setData,
-  //       };
-  //     });
-  //     return setValue;
-  //   } else {
-  //     return setData;
-  //   }
-  // };
+    const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
+    if (getLocalValue) {
+      console.log("THREE");
+      [...getLocalValue].map((ele) => {
+        if (
+          ele?.local_Part_No == values.part_no &&
+          ele?.local_Process == values.process &&
+          ele?.local_Report_Type == values.local_Report_Type
+        ) {
+          console.log("FOUR");
+
+          toast.error("Already Opened");
+        } else {
+          console.log(" else block");
+          handleClick(btnStatus);
+        }
+      });
+    } else {
+      localStorage.setItem("ReportTypes", JSON.stringify([setData]));
+      console.log("FIVE");
+      handleClick(btnStatus);
+    }
+  };
   const handleClick = (data) => {
     // getAndSetLoaclStorageDetails();
     // setloader(true)
@@ -144,8 +163,8 @@ function PrepareInspectionReport() {
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          handleClick("Add");
-          // toast.success(response?.data?.msg);
+          // handleClick("Add");
+          getAndSetLoaclStorageDetails("Add");
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         } else if (response.data.status === 2) {
@@ -171,7 +190,8 @@ function PrepareInspectionReport() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          handleClick("Edit");
+          // handleClick("Edit");
+          getAndSetLoaclStorageDetails("Edit");
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -300,7 +320,7 @@ function PrepareInspectionReport() {
           />
         </div>
         <div className="row">
-          <div className="col-lg-4 col-6 my-4">
+          <div className="col-lg-4 col-6 mb-2 mt-3">
             <CustomButton
               title="Add report"
               onButtonPress={() => {
@@ -311,7 +331,7 @@ function PrepareInspectionReport() {
               }}
             />
           </div>
-          <div className="col-lg-4 col-6 my-4">
+          <div className="col-lg-4 col-6 mb-2 mt-3">
             <CustomButton
               title="Edit report"
               customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}

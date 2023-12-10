@@ -371,6 +371,7 @@ function FinalInspectionReport() {
       <GlobalModal
         CustomWidth={500}
         isOpen={isShowModal}
+        closeIcon={false}
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
@@ -378,11 +379,14 @@ function FinalInspectionReport() {
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0
-              ? "saved successfully."
+              ? "saved successfully"
               : urlValues?.buttonStatus === "Edit" && saveStatus === 0
-              ? "updated successfully."
-              : "submitted successfully."
+              ? "updated successfully"
+              : "submitted successfully"
           }`}
+          secondaryMsg={
+            "After clicking the button Tab will be closed automatically"
+          }
           onPositiveButtonPressed={() => {
             CloseTab();
             setIshowModal(false);
@@ -412,17 +416,12 @@ function FinalInspectionReport() {
                 <tr>
                   <td colSpan={15} rowSpan={2}>
                     <div className={classes.rowAlignment}>
-                      <div
-                        style={{
-                          paddingLeft: "10px",
-                        }}
-                      >
-                        <img
-                          src={Logo}
-                          alt="logo"
-                          style={{ width: 50, height: 50 }}
-                        />
-                      </div>
+                      <img
+                        src={Logo}
+                        alt="logo"
+                        style={{ width: 60, height: 70 }}
+                      />
+
                       <div className={classes.heading}>
                         FINAL INSPECTION REPORT
                       </div>
@@ -440,13 +439,13 @@ function FinalInspectionReport() {
                   <th colSpan={2} rowSpan={2}>
                     Customer:
                   </th>
-                  <th colSpan={5} rowSpan={2}>
+                  <th colSpan={6} rowSpan={2}>
                     {values?.tableHeadDataApi?.customer}
                   </th>
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Address:</th>
-                  <th colSpan={11}>CHENNAI</th>
+                  <th colSpan={10}>CHENNAI</th>
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Part No:</th>

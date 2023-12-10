@@ -8,25 +8,30 @@ import { CustomButton, Loader, TextInputBox } from "../../Components";
 import { getCookie } from "../../Store/Storage/Cookie";
 import { superAdminChangePassword } from "../../Services/Services";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
+import { useEmployeeId, useToken } from "../../Utility/StoreData";
+import { useNavigate } from "react-router-dom";
+
+const validationSchema = Yup.object().shape({
+  old_password: Yup.string()
+    .required("Current password is required")
+    .trim("Remove leading and trailing spaces")
+    .strict(true),
+  new_password: Yup.string()
+    .required("Please enter new password")
+    .trim("Remove leading and trailing spaces")
+    .strict(true),
+  repeat_password: Yup.string()
+    .required("Please enter confirm password")
+    .oneOf([Yup.ref("new_password")], "Passwords must match")
+    .trim("Remove leading and trailing spaces")
+    .strict(true),
+});
 
 function ChangePassword() {
+  const token = useToken();
+  const userId = useEmployeeId();
+  const navigate = useNavigate();
   const [loader, setloader] = useState(false);
-  const validationSchema = Yup.object().shape({
-    old_password: Yup.string()
-      .required("Current password is required")
-      .trim("Remove leading and trailing spaces")
-      .strict(true),
-    new_password: Yup.string()
-      .required("Please enter new password")
-      .trim("Remove leading and trailing spaces")
-      .strict(true),
-    repeat_password: Yup.string()
-      .required("Please enter confirm password")
-      .oneOf([Yup.ref("new_password")], "Passwords must match")
-      .trim("Remove leading and trailing spaces")
-      .strict(true),
-  });
-
   const {
     values,
     handleChange,
@@ -47,12 +52,11 @@ function ChangePassword() {
       handleChangePassword(values);
     },
   });
-  const cookieData = getCookie("vt_enterprise_login");
   const handleChangePassword = (data) => {
     setloader(true);
     let formData = new FormData();
-    formData.append("id", cookieData?.data?.user_id);
-    formData.append("token", cookieData?.data?.token);
+    formData.append("id", userId);
+    formData.append("token", token);
     formData.append("current_password", data?.old_password);
     formData.append("password", data?.new_password);
     formData.append("confirm_password", data?.repeat_password);
@@ -60,6 +64,7 @@ function ChangePassword() {
       .then((response) => {
         if (response?.data?.status === 1) {
           toast.success(response?.data?.msg);
+          navigate("/dashboard");
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }

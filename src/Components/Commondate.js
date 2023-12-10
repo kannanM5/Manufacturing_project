@@ -34,6 +34,7 @@ export default function Commondate({
         value={value ? dayjs(value) : null}
         onChange={onChange}
         disabled={disabled}
+        format={"YYYY-MM-DD"}
         style={{
           ...styles,
           width: "100%",

@@ -13,9 +13,7 @@ import {
 import { ALPHA_NUM } from "../Utility/Constants";
 
 const validationSchema = Yup.object({
-  characteristics: Yup.string()
-    .required("Characteristics is required")
-    .matches(ALPHA_NUM, "Enter valid characteristics"),
+  characteristics: Yup.string().required("Characteristics is required"),
   specification: Yup.string().required("Specification is required"),
   units: Yup.string()
     .required("Unit is required")
@@ -248,13 +246,13 @@ function AddInspectionCriteria({
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-2 col-md-6 my-2">
+          <div className="col-lg-2 col-md-6 mb-2">
             <CustomButton
               onButtonPress={handleSubmit}
               title={editData ? "Update" : "Submit"}
             />
           </div>
-          <div className="col-lg-2 col-md-6 my-2">
+          <div className="col-lg-2 col-md-6 mb-2">
             <CustomButton
               title="Cancel"
               onButtonPress={modalClose}

@@ -29,10 +29,22 @@
 import { Pagination } from "antd";
 import React from "react";
 
-function CustomPagination({ totalCount }) {
+function CustomPagination({
+  totalCount,
+  onShowSizeChange,
+  defaultCurrent,
+  showSizeChanger,
+  onChange,
+}) {
   return (
     <div>
-      <Pagination defaultCurrent={1} total={totalCount} />
+      <Pagination
+        defaultCurrent={defaultCurrent}
+        total={totalCount}
+        showSizeChanger={showSizeChanger}
+        onShowSizeChange={onShowSizeChange}
+        onChange={onChange}
+      />
     </div>
   );
 }

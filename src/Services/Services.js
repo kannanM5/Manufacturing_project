@@ -75,6 +75,10 @@ export const savedDataList = (data) => {
   return axios.post(`getsavedlogs`, data);
 };
 
+export const deleteSavedLogs = (data) => {
+  return axios.post(`deletesavedlogs`, data);
+};
+
 export const dummayone = (data) => {
   return axios.post(`dummyone`, data);
 };

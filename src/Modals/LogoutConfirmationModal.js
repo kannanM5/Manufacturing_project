@@ -3,19 +3,20 @@ import confirm_delete from "../Assets/Icons/Svg/confirmDelete.svg";
 import { CustomButton } from "../Components";
 import classes from "./Modal.module.css";
 import successIcon from "../Assets/Images/Jpg/Success.jpg";
+
 function LogoutConfirmationModal({
   msg,
-  onClose,
   onPositiveButtonPressed,
   onNegativeButtonPressed,
   positiveButtonText = "Logout",
   negativeButtonText = "Cancel",
   cancelBtn = true,
+  secondaryMsg,
 }) {
   return (
     <>
       <div className={classes.confirmModal}>
-        <div onClick={onClose} className={classes.deleteIcon}>
+        <div className={classes.deleteIcon}>
           <img src={cancelBtn ? confirm_delete : successIcon} alt="Delete" />
         </div>
 
@@ -27,6 +28,16 @@ function LogoutConfirmationModal({
         >
           {msg}
         </p>
+        {secondaryMsg && (
+          <p
+            className={classes.text}
+            style={{
+              fontSize: "16px",
+            }}
+          >
+            {secondaryMsg}
+          </p>
+        )}
         <div className={classes.confirm_Btns}>
           {cancelBtn && (
             <CustomButton

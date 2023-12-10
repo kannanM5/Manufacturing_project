@@ -24,6 +24,7 @@ import Commondate from "../../../Components/Commondate";
 import moment from "moment";
 import * as Yup from "yup";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   supplier_name: Yup.string().required("Name is required"),
@@ -42,6 +43,7 @@ export default function Emptypage() {
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [isShowModal, setIshowModal] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
     const encryptedData = urlParams.get("data");
@@ -131,6 +133,23 @@ export default function Emptypage() {
       rightData: values?.quantity,
     },
   ];
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isShowModal) {
+        const confirmationMessage =
+          "You have unsaved changes. Are you sure you want to leave?";
+        e.returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isShowModal]);
 
   const handleEditReport = () => {
     setloader(true);
@@ -408,6 +427,7 @@ export default function Emptypage() {
       <GlobalModal
         CustomWidth={500}
         isOpen={isShowModal}
+        closeIcon={false}
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
@@ -415,11 +435,14 @@ export default function Emptypage() {
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0
-              ? "saved successfully."
+              ? "saved successfully"
               : urlValues?.buttonStatus === "Edit" && saveStatus === 0
-              ? "updated successfully."
-              : "submitted successfully."
+              ? "updated successfully"
+              : "submitted successfully"
           }`}
+          secondaryMsg={
+            "After clicking the button Tab will be closed automatically"
+          }
           onPositiveButtonPressed={() => {
             CloseTab();
             setIshowModal(false);
@@ -447,17 +470,8 @@ export default function Emptypage() {
             <thead>
               <tr>
                 <th colSpan={18} className={classes.CompanyName}>
-                  VT ENTERPRISES
-                </th>
-              </tr>
-              <tr>
-                <td colSpan={16} rowSpan={2}>
                   <div className={classes.rowAlignment}>
-                    <div
-                      style={{
-                        paddingLeft: "10px",
-                      }}
-                    >
+                    <div>
                       <img
                         src={Logo}
                         alt="logo"
@@ -465,9 +479,22 @@ export default function Emptypage() {
                       />
                     </div>
                     <div className={classes.heading}>
-                      INCOMING INSPECTION REPORT
+                      V.T.ENTERPRISE - RADIEANT IMPEX PVT. LTD.
                     </div>
-                    <div></div>
+                    <div>
+                      <img
+                        src={RadiantLogo}
+                        alt="logo"
+                        style={{ width: 70, height: 50 }}
+                      />
+                    </div>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <td colSpan={16} rowSpan={2}>
+                  <div className={classes.heading}>
+                    INCOMING INSPECTION REPORT
                   </div>
                 </td>
                 <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>

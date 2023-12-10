@@ -25,6 +25,7 @@ import moment from "moment";
 import * as Yup from "yup";
 import { GlobalModal, Loader } from "..//../../Components";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   mvc_no: Yup.string().required("Machine number is required"),
@@ -414,6 +415,7 @@ function LineInspectionReport() {
       <GlobalModal
         CustomWidth={500}
         isOpen={isShowModal}
+        closeIcon={false}
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
@@ -421,11 +423,14 @@ function LineInspectionReport() {
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0
-              ? "saved successfully."
+              ? "saved successfully"
               : urlValues?.buttonStatus === "Edit" && saveStatus === 0
-              ? "updated successfully."
-              : "submitted successfully."
+              ? "updated successfully"
+              : "submitted successfully"
           }`}
+          secondaryMsg={
+            "After clicking the button Tab will be closed automatically"
+          }
           onPositiveButtonPressed={() => {
             CloseTab();
             setIshowModal(false);
@@ -454,17 +459,8 @@ function LineInspectionReport() {
               <thead>
                 <tr>
                   <th colSpan={16} className={classes.CompanyName}>
-                    VT ENTERPRISES
-                  </th>
-                </tr>
-                <tr>
-                  <td colSpan={14} rowSpan={2}>
                     <div className={classes.rowAlignment}>
-                      <div
-                        style={{
-                          paddingLeft: "10px",
-                        }}
-                      >
+                      <div>
                         <img
                           src={Logo}
                           alt="logo"
@@ -472,9 +468,22 @@ function LineInspectionReport() {
                         />
                       </div>
                       <div className={classes.heading}>
-                        LINE INSPECTION REPORT
+                        V.T.ENTERPRISE - RADIEANT IMPEX PVT. LTD.
                       </div>
-                      <div></div>
+                      <div>
+                        <img
+                          src={RadiantLogo}
+                          alt="logo"
+                          style={{ width: 70, height: 50 }}
+                        />
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <td colSpan={14} rowSpan={2}>
+                    <div className={classes.heading}>
+                      LINE INSPECTION REPORT
                     </div>
                   </td>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>

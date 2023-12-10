@@ -25,6 +25,7 @@ import dayjs from "dayjs";
 import moment from "moment";
 import * as Yup from "yup";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   mvc_no: Yup.string().required("Machine number is required"),
@@ -389,6 +390,7 @@ function SettingInspectionReport() {
       <GlobalModal
         CustomWidth={500}
         isOpen={isShowModal}
+        closeIcon={false}
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
@@ -396,11 +398,14 @@ function SettingInspectionReport() {
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0
-              ? "saved successfully."
+              ? "saved successfully"
               : urlValues?.buttonStatus === "Edit" && saveStatus === 0
-              ? "updated successfully."
-              : "submitted successfully."
+              ? "updated successfully"
+              : "submitted successfully"
           }`}
+          secondaryMsg={
+            "After clicking the button Tab will be closed automatically"
+          }
           onPositiveButtonPressed={() => {
             CloseTab();
             setIshowModal(false);
@@ -429,17 +434,8 @@ function SettingInspectionReport() {
               <thead>
                 <tr>
                   <th colSpan={18} className={classes.CompanyName}>
-                    VT ENTERPRISES
-                  </th>
-                </tr>
-                <tr>
-                  <td colSpan={16} rowSpan={2}>
                     <div className={classes.rowAlignment}>
-                      <div
-                        style={{
-                          paddingLeft: "10px",
-                        }}
-                      >
+                      <div>
                         <img
                           src={Logo}
                           alt="logo"
@@ -447,9 +443,22 @@ function SettingInspectionReport() {
                         />
                       </div>
                       <div className={classes.heading}>
-                        SETTING APPROVAL REPORT
+                        V.T.ENTERPRISE - RADIEANT IMPEX PVT. LTD.
                       </div>
-                      <div></div>
+                      <div>
+                        <img
+                          src={RadiantLogo}
+                          alt="logo"
+                          style={{ width: 70, height: 50 }}
+                        />
+                      </div>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <td colSpan={16} rowSpan={2}>
+                    <div className={classes.heading}>
+                      SETTING APPROVAL REPORT
                     </div>
                   </td>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>

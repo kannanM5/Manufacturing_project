@@ -7,7 +7,9 @@
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   /* background: rgb(251, 251, 252);
    */
-  background: var(--menuBg);
+  /* background: var(--menuBg);
+   */
+  background-color: white;
 }
 
 .tablist {

@@ -8,6 +8,7 @@ import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";
 import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
+import CustomToolTip from "../../Components/CustomToolTip";
 const validationSchema = Yup.object({
   reportType: Yup.string()
     .required("User type is required")
@@ -78,7 +79,7 @@ function Export() {
               <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
                 <CustomDropDown
                   placeholderText={"report type"}
-                  requiredText="*"
+                  // requiredText="*"
                   items={[...dropdownItem]}
                   value={
                     [...dropdownItem].find(
@@ -133,7 +134,7 @@ function Export() {
                     maxLength: 50,
                   }}
                   type={"text"}
-                  requiredText="*"
+                  // requiredText="*"
                   errorText={
                     touched.part_no && errors.part_no ? errors.part_no : ""
                   }
@@ -164,7 +165,7 @@ function Export() {
                     maxLength: 50,
                   }}
                   type={"text"}
-                  requiredText="*"
+                  // requiredText="*"
                   errorText={
                     touched.process && errors.process ? errors.process : ""
                   }
@@ -194,7 +195,7 @@ function Export() {
                     maxLength: 50,
                   }}
                   type={"text"}
-                  requiredText="*"
+                  // requiredText="*"
                   errorText={
                     touched.customer && errors.customer ? errors.customer : ""
                   }
@@ -235,7 +236,19 @@ function Export() {
                 <td>1</td>
                 <td>1</td>
                 <td>
-                  <img src={DownloadIcon} alt="Download icon" />
+                  <div className={classes.icons}>
+                    <CustomToolTip title={"Download"}>
+                      <img
+                        style={{
+                          width: "30px",
+                          height: "25",
+                          objectFit: "cover",
+                        }}
+                        src={DownloadIcon}
+                        alt="Download icon"
+                      />
+                    </CustomToolTip>
+                  </div>
                 </td>
               </tr>
             </tbody>

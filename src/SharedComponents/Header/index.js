@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import dash from "../../Assets/Icons/Svg/Dashboard.svg";
+import dash from "../../Assets/Icons/SvgIcons/dash.svg";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { GlobalModal, Loader } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
-import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_Icon.svg";
+import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
@@ -248,7 +248,6 @@ export default function Header() {
         };
       });
     }
-    console.log(value?.key, "KEYSSS");
   };
 
   useEffect(() => {
@@ -256,7 +255,7 @@ export default function Header() {
       setcurrentTab("1");
     } else if (pathname === "/inspection_criteria") {
       setcurrentTab("2");
-    } else if (pathname === "/Prepareinscepectionreport") {
+    } else if (pathname === "/prepare_inspection_report") {
       setcurrentTab("3");
     } else if (pathname === "/saved_logs") {
       setcurrentTab("4");
@@ -308,9 +307,8 @@ export default function Header() {
             <img src={menuIcon} alt="menuIcon" />
           </div>
           <div className={classes.sideMenuLogo}>
-            {/* <img src={CompanyLogo} alt="logo" /> */}
             <h5
-              style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
+              style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
             >
               V.T. ENTERPRISE
             </h5>
@@ -325,7 +323,11 @@ export default function Header() {
               <div className={classes.child3}>
                 <img
                   src={dummyIcon}
-                  style={{ width: "50px", height: "50px" }}
+                  style={{
+                    width: "50px",
+                    height: "50px",
+                    border: "1px solid black",
+                  }}
                 />
                 <p
                   style={{
@@ -346,7 +348,7 @@ export default function Header() {
                 style={{
                   width: "100%",
                   height: "1px",
-                  backgroundColor: "white",
+                  backgroundColor: "black",
                   marginTop: "20px",
                 }}
               ></div>
@@ -423,6 +425,7 @@ export default function Header() {
         </div>
         <div className={classes.content}>
           <div
+            onClick={() => navigate("/dashboard")}
             style={{
               height: "65px",
               display: "flex",
@@ -432,10 +435,14 @@ export default function Header() {
             <img
               src={CompanyLogo}
               alt="logo"
-              style={{ width: 50, height: 50 }}
+              style={{ width: 40, height: 40 }}
             />
             <h5
-              style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
+              style={{
+                marginLeft: "10px",
+                cursor: "pointer",
+                color: "black",
+              }}
             >
               V.T. ENTERPRISE
             </h5>
@@ -482,11 +489,13 @@ export default function Header() {
                         src={dummyIcon}
                         alt="Profile icon"
                         className={classes.dummyImage}
+                        style={{ border: "2px solid black" }}
                       />
 
                       <Space
                         style={{
-                          color: "white",
+                          // color: "white",
+                          color: "black",
                           padding: "0 10px",
                         }}
                       >

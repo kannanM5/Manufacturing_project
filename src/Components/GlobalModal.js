@@ -8,10 +8,12 @@ function GlobalModal({
   onCancel,
   children,
   CustomWidth = 1000,
+  closeIcon = true,
 }) {
   return (
     <div>
       <Modal
+        maskClosable={false}
         destroyOnClose
         title={
           <div className={classes.popup_head_left}>
@@ -26,6 +28,7 @@ function GlobalModal({
         centered
         footer={null}
         width={CustomWidth}
+        closeIcon={closeIcon}
       >
         {title && <div className={classes.ModalLine}></div>}
         <div className={classes.container}>{children}</div>
