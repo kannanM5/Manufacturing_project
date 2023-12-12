@@ -79,9 +79,11 @@ export const deleteSavedLogs = (data) => {
   return axios.post(`deletesavedlogs`, data);
 };
 
-export const dummayone = (data) => {
-  return axios.post(`dummyone`, data);
+// export
+
+export const getExportList = (data) => {
+  return axios.post(`getexportlist`, data);
 };
-export const dummaytwo = (data) => {
-  return axios.post(`dummytwo`, data);
+export const viewReports = (data) => {
+  return axios.post(`viewreport`, data);
 };

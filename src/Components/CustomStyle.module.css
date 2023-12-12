@@ -193,7 +193,7 @@
 .loader {
   border: 5px solid rgba(68, 66, 66, 0.5);
   border-radius: 50%;
-  border-top: 5px solid #f25922;
+  border-top: 5px solid var(--btnColor);
   width: 35px;
   height: 35px;
   animation: spin 2s linear infinite;
@@ -348,4 +348,56 @@
   font-family: var(--fontBold);
   font-size: var(--textXXl);
   font-weight: var(--fontweight);
+}
+/* react pagenate  */
+
+/* pagenation  */
+.pageContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 97%;
+  margin: 5px auto;
+}
+.pagination_container {
+  gap: 10px;
+  width: 97%;
+  margin: 5px auto;
+  justify-content: flex-end;
+  display: flex;
+}
+.pagenation {
+  height: 30px;
+}
+.pagenation li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 5px;
+  width: 25px;
+  height: 25px;
+}
+.active {
+  background: white;
+  color: #337ab7;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+  /* padding: 4px 8px; */
+}
+.labellink {
+  font-size: 13px;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: #fff;
+}
+.labellinkdisable {
+  font-size: 13px;
+  color: gray;
+  text-decoration: none;
+  background-color: #fff;
+}
+
+.currentpage {
+  color: white;
+  background-color: #337ab7;
 }

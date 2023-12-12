@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
+import {
+  CustomButton,
+  GlobalModal,
+  Loader,
+  TextInputBox,
+} from "../../Components";
 import AddInspectionCriteria from "../../Modals/AddInspectionCriteria";
-import EditIcon from "../../Assets/Icons/Svg/edit.svg";
+import EditIcon from "../../Assets/Icons/SvgIcons/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { criteriaListService } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
+import CustomPagination from "../../Components/CustomPagination";
+import NoDataFound from "../../Components/NoDataFound";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -18,9 +25,9 @@ const validationSchema = Yup.object({
 function InspectionCriteria() {
   const token = useToken();
   const userId = useEmployeeId();
+  const [page, setPage] = useState(0);
   const [loader, setloader] = useState(false);
   const [listInSpectionCriteria, setlistInSpectionCriteria] = useState();
-
   const [isShowModal, setIsShowModal] = useState({
     status: false,
     data: null,
@@ -60,10 +67,12 @@ function InspectionCriteria() {
     formData.append("process", data?.process);
     criteriaListService(page, formData)
       .then((response) => {
-        console.log(response?.data, "RESSSSSSS");
         if (response?.data?.status === 1) {
+          setPage(response?.data?.data?.page - 1);
           setlistInSpectionCriteria(response?.data?.data);
           // toast.success(response?.data?.msg);
+        } else if (response?.data?.status === 0) {
+          setlistInSpectionCriteria(null);
         }
       })
       .catch((err) => {
@@ -76,6 +85,7 @@ function InspectionCriteria() {
 
   return (
     <>
+      {loader ? <Loader /> : null}
       <PageHeader heading={"Inspection Criteria"} BtnTrue={true} />
       <div>
         <GlobalModal
@@ -209,37 +219,55 @@ function InspectionCriteria() {
                   </tr>
                 </thead>
                 <tbody>
-                  {listInSpectionCriteria?.items.map((products, index) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{products?.characteristics}</td>
-                      <td>{products?.specification}</td>
-                      <td>{products?.units}</td>
-                      <td>{products?.method_of_check}</td>
-                      <td>
-                        <img
-                          src={EditIcon}
-                          alt="edit_icon"
-                          style={{ width: 20, height: 20, cursor: "pointer" }}
-                          onClick={() => {
-                            setIsShowModal((prev) => {
-                              return {
-                                ...prev,
-                                data: products,
-                                status: true,
-                              };
-                            });
-                          }}
-                        />
+                  {listInSpectionCriteria?.items.length > 0 ? (
+                    listInSpectionCriteria?.items.map((products, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{products?.characteristics}</td>
+                        <td>{products?.specification}</td>
+                        <td>{products?.units}</td>
+                        <td>{products?.method_of_check}</td>
+                        <td>
+                          <img
+                            src={EditIcon}
+                            alt="edit_icon"
+                            style={{ width: 20, height: 20, cursor: "pointer" }}
+                            onClick={() => {
+                              setIsShowModal((prev) => {
+                                return {
+                                  ...prev,
+                                  data: products,
+                                  status: true,
+                                };
+                              });
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6}>
+                        <NoDataFound />
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
+      {listInSpectionCriteria?.totalPage > 1 && (
+        <CustomPagination
+          pageCount={listInSpectionCriteria?.totalPage}
+          currentpage={page}
+          forcePage={page}
+          onPageChange={(val) => {
+            handleListCriteriaService(val + 1, 10);
+          }}
+        />
+      )}
     </>
   );
 }

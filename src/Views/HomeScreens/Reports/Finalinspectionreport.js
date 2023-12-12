@@ -9,7 +9,7 @@ import {
   updateInspectionReportList,
 } from "../../../Services/Services";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   CloseTab,
@@ -18,10 +18,8 @@ import {
 } from "../../../Utility/GeneralUtils";
 import { useFormik } from "formik";
 import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
 import Commondate from "../../../Components/Commondate";
 import dayjs from "dayjs";
-import moment from "moment";
 import * as Yup from "yup";
 import { GlobalModal, Loader } from "../../../Components";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
@@ -32,10 +30,11 @@ const validationSchema = Yup.object({
 });
 var CryptoJS = require("crypto-js");
 
-function FinalInspectionReport() {
+function FinalInspectionReport({ viewReportData }) {
   const token = useToken();
   const location = useLocation();
   const userId = useEmployeeId();
+  const navigate = useNavigate();
   const [saveStatus, setsaveStatus] = useState(null);
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
@@ -90,16 +89,26 @@ function FinalInspectionReport() {
       .some((text) => text !== "");
     return getCode;
   };
+
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const encryptedData = urlParams.get("data");
+    if (!reportData) {
+      setReportData(viewReportData);
+    }
+  }, [viewReportData]);
 
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
-    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  useEffect(() => {
+    if (!viewReportData) {
+      const urlParams = new URLSearchParams(location.search);
+      const encryptedData = urlParams.get("data");
 
-    const decryptedData = JSON.parse(decryptedText);
-    setUrlValues(decryptedData);
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+
+      const decryptedData = JSON.parse(decryptedText);
+      setUrlValues(decryptedData);
+    }
   }, [location.search]);
+
   useEffect(() => {
     if (reportData) {
       let tempData = [...reportData?.processData];
@@ -137,7 +146,7 @@ function FinalInspectionReport() {
         report_id: reportData?.productData?.report_id,
       });
     }
-  }, [reportData]);
+  }, [reportData, viewReportData]);
   useEffect(() => {
     if (urlValues) {
       if (urlValues?.buttonStatus == "Edit") {
@@ -233,7 +242,7 @@ function FinalInspectionReport() {
       product_id: data?.product_id,
       process_id: data?.process_id,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      invoice_date: dayjs(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       customer: data?.customer,
@@ -297,7 +306,7 @@ function FinalInspectionReport() {
       product_id: data?.product_id,
       process_id: data?.process_id,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      invoice_date: dayjs(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       customer: data?.customer,
@@ -395,19 +404,30 @@ function FinalInspectionReport() {
       </GlobalModal>
       <div>
         <PageHeader
-          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
+          Btntitle={
+            viewReportData
+              ? "Back"
+              : urlValues?.buttonStatus === "Edit"
+              ? "Update"
+              : "Save"
+          }
           BtntitleOne={"Finish"}
+          secondBtn={viewReportData ? false : true}
           modal={() => {
             //save
-            setsaveStatus(0);
-            handleSubmit();
+            if (!viewReportData) {
+              setsaveStatus(0);
+              handleSubmit();
+            } else {
+              navigate(-1);
+            }
           }}
           //submit
           onPressOvertime={() => {
             setsaveStatus(1);
             handleSubmit();
           }}
-          heading={"Final inscepection Report"}
+          heading={"Final Inspection Report"}
         />
         <div className={classes.reportInsepection}>
           <div className={`table-responsive ${classes.Dashboard}`}>
@@ -453,6 +473,7 @@ function FinalInspectionReport() {
                   <th colSpan={2}>Inv No:</th>
                   <th colSpan={5}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       style={{
                         border:
                           errors.invoice_no && touched.invoice_no
@@ -481,6 +502,7 @@ function FinalInspectionReport() {
                   <th colSpan={2}>Inv Date:</th>
                   <th colSpan={5}>
                     <Commondate
+                      disabled={viewReportData ? true : false}
                       borderNone={false}
                       onChange={(value) => {
                         setFieldValue("invoice_date", value);
@@ -495,6 +517,7 @@ function FinalInspectionReport() {
                   <th colSpan={2}>Quantity:</th>
                   <th colSpan={5}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       style={{
                         border:
                           errors.quantity && touched.quantity
@@ -567,6 +590,7 @@ function FinalInspectionReport() {
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
                                 type="text"
@@ -589,6 +613,7 @@ function FinalInspectionReport() {
                         : [...Array(10)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 style={{
                                   color: "red",
                                 }}
@@ -612,6 +637,7 @@ function FinalInspectionReport() {
                           ))}
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -628,6 +654,7 @@ function FinalInspectionReport() {
                       </td>
                       <td colSpan={2}>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -650,6 +677,7 @@ function FinalInspectionReport() {
                   </td>
                   <td colSpan={5}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
                       maxLength={50}
                       type="text"
@@ -670,6 +698,7 @@ function FinalInspectionReport() {
                   </td>
                   <td colSpan={5}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
                       maxLength={50}
                       type="text"

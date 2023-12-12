@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { GlobalModal } from "../../Components";
+import { GlobalModal, Loader } from "../../Components";
 import AddEmployee from "../../Modals/AddEmployee";
 import EmployeeChangePassword from "../../Modals/EmployeeChangePassword";
 import { employeeList } from "../../Services/Services";
 import { getCookie } from "../../Store/Storage/Cookie";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import chagepassword_Icon from "../../Assets/Icons/SvgIcons/password_key.svg";
+import CustomPagination from "../../Components/CustomPagination";
+import NoDataFound from "../../Components/NoDataFound";
 function EmployeeList() {
   const [isShowModal, setIsShowModal] = useState({
     status: false,
     changePasswordStatus: false,
     id: "",
   });
+  const [page, setPage] = useState(0);
   const [listOfEmployees, setListOfEmployees] = useState();
+  const [loader, setloader] = useState(false);
   // const userType = [
   //   {
   //     value: "1",
@@ -28,7 +32,7 @@ function EmployeeList() {
   const cookieData = getCookie("vt_enterprise_login");
 
   const handleGetEmployeeList = (page = 1) => {
-    // setloader(true);
+    setloader(true);
     let formData = new FormData();
     formData.append("id", cookieData?.data?.user_id);
     formData.append("token", cookieData?.data?.token);
@@ -37,14 +41,17 @@ function EmployeeList() {
     employeeList(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {
+          setPage(response?.data?.data?.page - 1);
           setListOfEmployees(response?.data?.data);
+        } else if (response?.data?.status === 0) {
+          setListOfEmployees(null);
         }
       })
       .catch((err) => {
         getCatchMsg(err);
       })
       .finally(() => {
-        // setloader(false);
+        setloader(false);
       });
   };
   useEffect(() => {
@@ -52,6 +59,7 @@ function EmployeeList() {
   }, []);
   return (
     <>
+      {loader ? <Loader /> : null}
       <PageHeader
         secondBtn={false}
         heading={"Employee List"}
@@ -127,44 +135,53 @@ function EmployeeList() {
             </tr>
           </thead>
           <tbody>
-            {listOfEmployees?.items.map((emp, index) => (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{emp?.name}</td>
-                <td>{emp?.user_type}</td>
-                <td>{emp?.email}</td>
-                <td>
-                  <div className={classes.icons}>
-                    <img
-                      src={chagepassword_Icon}
-                      alt="edit_icon"
-                      onClick={() => {
-                        setIsShowModal((prev) => {
-                          return {
-                            ...prev,
-                            changePasswordStatus: true,
-                            id: emp?.id,
-                          };
-                        });
-                      }}
-                    />
-                  </div>
+            {listOfEmployees?.items.length > 0 ? (
+              listOfEmployees?.items.map((emp, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{emp?.name}</td>
+                  <td>{emp?.user_type}</td>
+                  <td>{emp?.email}</td>
+                  <td>
+                    <div className={classes.icons}>
+                      <img
+                        src={chagepassword_Icon}
+                        alt="edit_icon"
+                        onClick={() => {
+                          setIsShowModal((prev) => {
+                            return {
+                              ...prev,
+                              changePasswordStatus: true,
+                              id: emp?.id,
+                            };
+                          });
+                        }}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  <NoDataFound />
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-      {/* {listOfEmployees?.data?.items?.length ? (
+
+      {listOfEmployees?.totalPage > 1 && (
         <CustomPagination
-          page={page}
-          pageCount={deviceList?.data?.total_page}
-          handleFunction={(selected) => {
-            setPage(selected);
-            handleListOfDevice(selected);
+          pageCount={listOfEmployees?.totalPage}
+          currentpage={page}
+          forcePage={page}
+          onPageChange={(val) => {
+            handleGetEmployeeList(val + 1);
           }}
         />
-      ) : null} */}
+      )}
     </>
   );
 }

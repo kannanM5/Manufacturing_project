@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { CustomButton, GlobalModal, TextInputBox } from "../../Components";
-import EditIcon from "../../Assets/Icons/Svg/edit.svg";
+import {
+  CustomButton,
+  GlobalModal,
+  Loader,
+  TextInputBox,
+} from "../../Components";
+import EditIcon from "../../Assets/Icons/SvgIcons/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { deleteSavedLogs, savedDataList } from "../../Services/Services";
 import { useFormik } from "formik";
@@ -11,9 +16,10 @@ import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import CustomPagination from "../../Components/CustomPagination";
-import deleteIcon from "../../Assets/Icons/Svg/delete.svg";
+import deleteIcon from "../../Assets/Icons/SvgIcons/delete.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
+import NoDataFound from "../../Components/NoDataFound";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -31,7 +37,7 @@ function SavedData() {
     modal: false,
     data: "",
   });
-  const [listInSpectionCriteria, setlistInSpectionCriteria] = useState(null);
+  const [listInSpectionCriteria, setlistInSpectionCriteria] = useState();
 
   const {
     handleSubmit,
@@ -131,7 +137,7 @@ function SavedData() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setlistInSpectionCriteria(response?.data);
+          setlistInSpectionCriteria(response?.data?.data);
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -163,13 +169,14 @@ function SavedData() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setlistInSpectionCriteria(response?.data);
+          setlistInSpectionCriteria(response?.data?.data);
         } else if (response?.data?.status === 0) {
-          if (Array.isArray(response?.data?.msg)) {
-            getInvalidMsg(response?.data?.msg);
-          } else {
-            toast.error(response?.data?.msg);
-          }
+          setlistInSpectionCriteria(null);
+          // if (Array.isArray(response?.data?.msg)) {
+          //   getInvalidMsg(response?.data?.msg);
+          // } else {
+          //   toast.error(response?.data?.msg);
+          // }
         }
       })
       .catch((err) => {
@@ -179,6 +186,7 @@ function SavedData() {
         setloader(false);
       });
   };
+
   useEffect(() => {
     if (token) {
       listSavedDataApiCall();
@@ -232,6 +240,7 @@ function SavedData() {
 
   return (
     <>
+      {loader ? <Loader /> : null}
       <PageHeader heading={"Saved Logs"} BtnTrue={true} />
       <GlobalModal
         CustomWidth={500}
@@ -334,8 +343,8 @@ function SavedData() {
                 </tr>
               </thead>
               <tbody>
-                {listInSpectionCriteria &&
-                  listInSpectionCriteria?.data.map((products, index) => (
+                {listInSpectionCriteria?.items.length > 0 ? (
+                  listInSpectionCriteria?.items.map((products, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{products?.part_no}</td>
@@ -368,25 +377,33 @@ function SavedData() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>
+                      <NoDataFound />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      <CustomPagination
-        defaultCurrent={1}
-        showSizeChanger={true}
-        totalCount={listInSpectionCriteria?.totalCount}
-        onChange={(page) => {
-          setpageNo(page);
-          listSavedDataApiCall(page, 10);
-          console.log(page, "page");
-        }}
-        onShowSizeChange={(current, pageSize) => {
-          console.log(current, pageSize);
-        }}
-      />
+      {listInSpectionCriteria?.totalPage > 1 && (
+        <CustomPagination
+          defaultCurrent={1}
+          showSizeChanger={true}
+          totalCount={listInSpectionCriteria?.totalCount}
+          onChange={(page) => {
+            setpageNo(page);
+            listSavedDataApiCall(page, 10);
+          }}
+          onShowSizeChange={(current, pageSize) => {
+            console.log(current, pageSize);
+          }}
+        />
+      )}
     </>
   );
 }

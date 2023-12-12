@@ -6,8 +6,9 @@
   background-repeat: no-repeat;
   background-size: cover;
   height: calc(100vh - 65px);
-  background-image: url(../../Assets//Images//Png//Nuts\ and\ bolts\ Img.png);
+  background-image: url(../../Assets//Images//Png//nuts.png);
 }
+
 .DubpilcateDashboard p {
   font-family: var(--fontMedium);
   margin-left: 20px;
@@ -24,7 +25,7 @@ table .icons img {
   width: 27px;
   height: 27px;
   cursor: pointer;
-  padding: 6px;
+  padding: 3px;
   background-color: var(--inputBg);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
   border-radius: 5px;
@@ -43,9 +44,22 @@ table .icons img {
 }
 .listOfTable th {
   text-align: center;
-  background-color: rgb(197, 199, 199);
+  /* background-color: rgb(197, 199, 199);
+   */
   height: 40px;
+  background-color: rgba(0, 0, 0, 0.7);
 }
+
+.listOfTable tbody {
+  background-color: white;
+}
+
+.listOfTable tbody td {
+  border-bottom: 1px solid rgb(228, 226, 226) !important;
+  padding: 8px 0px;
+  border-right: 1px solid rgb(228, 226, 226) !important;
+}
+
 .listOfTable thead th:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -63,7 +77,8 @@ table .icons img {
   border-bottom-right-radius: 8px;
 }
 .listOfTable tbody tr:nth-child(even) {
-  background-color: rgb(228, 231, 225, 0.4);
+  /* background-color: rgb(228, 231, 225, 0.4); */
+  /* background-color: rgb(209, 205, 205); */
 }
 .reportInsepection {
   width: 97%;
@@ -78,6 +93,9 @@ table .icons img {
 }
 .Dashboard .NormalTable th {
   border: none;
+  color: whitesmoke;
+  padding: 15px 0px;
+  /* border-right: 1px solid whitesmoke !important; */
 }
 .Dashboard .heading {
   font-family: var(--fontBold);

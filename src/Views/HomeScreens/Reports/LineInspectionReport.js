@@ -16,12 +16,10 @@ import {
 } from "../../../Services/Services";
 import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
 import Commondate from "../../../Components/Commondate";
 import dayjs from "dayjs";
-import moment from "moment";
 import * as Yup from "yup";
 import { GlobalModal, Loader } from "..//../../Components";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
@@ -35,8 +33,9 @@ const validationSchema = Yup.object({
 });
 var CryptoJS = require("crypto-js");
 
-function LineInspectionReport() {
+function LineInspectionReport({ viewReportData }) {
   const token = useToken();
+  const navigate = useNavigate();
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
@@ -128,14 +127,20 @@ function LineInspectionReport() {
       .some((text) => text !== "");
     return getCode;
   };
-
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const encryptedData = urlParams.get("data");
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
-    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    const decryptedData = JSON.parse(decryptedText);
-    setUrlValues(decryptedData);
+    if (!reportData) {
+      setReportData(viewReportData);
+    }
+  }, [viewReportData]);
+  useEffect(() => {
+    if (!viewReportData) {
+      const urlParams = new URLSearchParams(location.search);
+      const encryptedData = urlParams.get("data");
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      const decryptedData = JSON.parse(decryptedText);
+      setUrlValues(decryptedData);
+    }
   }, [location.search]);
 
   useEffect(() => {
@@ -270,7 +275,7 @@ function LineInspectionReport() {
       product_id: data?.product_id,
       report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      report_header_date: dayjs(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
       report_id: data?.report_id,
       report_header_status: data?.report_header_status,
@@ -326,7 +331,7 @@ function LineInspectionReport() {
       product_id: data?.product_id,
       report_shift: data?.report_shift,
       invoice_no: data?.invoice_no,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      report_header_date: dayjs(data?.report_header_date).format("YYYY-MM-DD"),
       observationData: sendData,
       report_header_status: data?.report_header_status,
       checked_by: data?.checked_by ?? null,
@@ -439,12 +444,23 @@ function LineInspectionReport() {
       </GlobalModal>
       <div>
         <PageHeader
-          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
+          Btntitle={
+            viewReportData
+              ? "Back"
+              : urlValues?.buttonStatus === "Edit"
+              ? "Update"
+              : "Save"
+          }
           BtntitleOne={"Finish"}
+          secondBtn={viewReportData ? false : true}
           modal={() => {
             //save
-            setsaveStatus(0);
-            handleSubmit();
+            if (!viewReportData) {
+              setsaveStatus(0);
+              handleSubmit();
+            } else {
+              navigate(-1);
+            }
           }}
           //submit
           onPressOvertime={() => {
@@ -497,6 +513,7 @@ function LineInspectionReport() {
                     <th colSpan={10}>
                       {index === 0 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.mvc_no && touched.mvc_no
@@ -531,6 +548,7 @@ function LineInspectionReport() {
                     <th colSpan={4}>
                       {index === 0 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.operator_name && touched.operator_name
@@ -551,6 +569,7 @@ function LineInspectionReport() {
                         />
                       ) : index === 1 ? (
                         <Commondate
+                          disabled={viewReportData ? true : false}
                           borderNone={false}
                           onChange={(value) => {
                             setFieldValue("report_header_date", value);
@@ -561,6 +580,7 @@ function LineInspectionReport() {
                         />
                       ) : index === 2 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.report_shift && touched.report_shift
@@ -581,6 +601,7 @@ function LineInspectionReport() {
                         />
                       ) : (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.inspector_name && touched.inspector_name
@@ -653,6 +674,7 @@ function LineInspectionReport() {
                       <td>{ele?.method_of_check}</td>
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -671,6 +693,7 @@ function LineInspectionReport() {
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
                                 type="text"
@@ -693,6 +716,7 @@ function LineInspectionReport() {
                         : [...Array(8)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 // style={{
                                 //   color: getColor(index, inputIndex),
                                 // }}
@@ -717,6 +741,7 @@ function LineInspectionReport() {
 
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -733,6 +758,7 @@ function LineInspectionReport() {
                       </td>
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -759,6 +785,7 @@ function LineInspectionReport() {
                     values?.report_header_status.map((ele, index) => (
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={10}
                           type="text"
@@ -783,20 +810,22 @@ function LineInspectionReport() {
                       <p>Final Status</p>
                       <div className={classes.checkBoxContainer}>
                         <input
+                          disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
                           onClick={() => setisFinalstatus(1)}
                           checked={isFinalStatus == 1 ? true : false}
-                        ></input>
+                        />
                         <p>Accepted</p>
                       </div>
                       <div className={classes.checkBoxContainer}>
                         <input
+                          disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
                           checked={isFinalStatus == 0 ? true : false}
                           onClick={() => setisFinalstatus(0)}
-                        ></input>
+                        />
                         <p>Rejected</p>
                       </div>
                     </div>

@@ -20,7 +20,6 @@ function PageHeader({
           <div className={classes.line}></div>
           <div className={classes.heading}>{heading}</div>
         </div>
-
         {BtnTrue ? null : (
           <div className={classes.header_right}>
             {Btntitle && (

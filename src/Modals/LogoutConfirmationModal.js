@@ -1,5 +1,5 @@
 import React from "react";
-import confirm_delete from "../Assets/Icons/Svg/confirmDelete.svg";
+import confirm_delete from "../Assets/Icons/SvgIcons/confirmDelete.svg";
 import { CustomButton } from "../Components";
 import classes from "./Modal.module.css";
 import successIcon from "../Assets/Images/Jpg/Success.jpg";

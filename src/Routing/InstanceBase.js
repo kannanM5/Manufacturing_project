@@ -25,6 +25,7 @@ function InstanceBase() {
         setCookie("vt_enterprise_login", "");
         window.location.assign("/");
       }
+      console.log(response, "RESJIBIJBIH");
       return response;
     },
     function (error) {

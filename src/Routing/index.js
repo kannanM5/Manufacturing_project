@@ -15,6 +15,7 @@ import EmployeeList from "../Views/HomeScreens/EmployeeList";
 import { DashboardPrivateRoute } from "../Views/AuthScreens/PrivateRoute";
 import Dashboard from "../Views/HomeScreens/Dashboard";
 import SavedData from "../Views/HomeScreens/SavedData";
+import ViewReports from "../Views/HomeScreens/Reports/ViewReports";
 export const Indexroute = [
   {
     element: <AuthLayout />,
@@ -65,6 +66,10 @@ export const Indexroute = [
           {
             index: true,
             element: <Export />,
+          },
+          {
+            path: "view_reports",
+            element: <ViewReports />,
           },
         ],
       },

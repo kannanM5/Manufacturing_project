@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
 import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../Assets/Images/Png/VTLogo.jpg";
 import {
   addInspectionReportList,
   editInspectionReportList,
@@ -17,12 +16,11 @@ import {
 } from "../../../Utility/GeneralUtils";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import Commondate from "../../../Components/Commondate";
 import { GlobalModal, Loader } from "../../../Components";
 import dayjs from "dayjs";
-import moment from "moment";
 import * as Yup from "yup";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
@@ -36,11 +34,12 @@ const validationSchema = Yup.object({
 
 var CryptoJS = require("crypto-js");
 
-function SettingInspectionReport() {
+function SettingInspectionReport({ viewReportData }) {
   const token = useToken();
   const location = useLocation();
   const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
+  const navigate = useNavigate();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -129,12 +128,19 @@ function SettingInspectionReport() {
   ];
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const encryptedData = urlParams.get("data");
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
-    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    const decryptedData = JSON.parse(decryptedText);
-    setUrlValues(decryptedData);
+    if (!reportData) {
+      setReportData(viewReportData);
+    }
+  }, [viewReportData]);
+  useEffect(() => {
+    if (!viewReportData) {
+      const urlParams = new URLSearchParams(location.search);
+      const encryptedData = urlParams.get("data");
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      const decryptedData = JSON.parse(decryptedText);
+      setUrlValues(decryptedData);
+    }
   }, [location.search]);
 
   useEffect(() => {
@@ -265,7 +271,7 @@ function SettingInspectionReport() {
       mvc_no: data?.mvc_no,
       process_id: data?.process_id,
       setter_name: data?.setter_name,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      report_header_date: dayjs(data?.report_header_date).format("YYYY-MM-DD"),
       report_shift: data?.report_shift,
       inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,
@@ -319,7 +325,7 @@ function SettingInspectionReport() {
       mvc_no: data?.mvc_no,
       process_id: data?.process_id,
       setter_name: data?.setter_name,
-      report_header_date: moment(data?.report_header_date).format("YYYY-MM-DD"),
+      report_header_date: dayjs(data?.report_header_date).format("YYYY-MM-DD"),
       report_shift: data?.report_shift,
       inspector_name: data?.inspector_name,
       report_header_status: data?.report_header_status,
@@ -414,12 +420,23 @@ function SettingInspectionReport() {
       </GlobalModal>
       <div>
         <PageHeader
-          Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
+          Btntitle={
+            viewReportData
+              ? "Back"
+              : urlValues?.buttonStatus === "Edit"
+              ? "Update"
+              : "Save"
+          }
           BtntitleOne={"Finish"}
+          secondBtn={viewReportData ? false : true}
           modal={() => {
             //save
-            setsaveStatus(0);
-            handleSubmit();
+            if (!viewReportData) {
+              setsaveStatus(0);
+              handleSubmit();
+            } else {
+              navigate(-1);
+            }
           }}
           //submit
           onPressOvertime={() => {
@@ -472,6 +489,7 @@ function SettingInspectionReport() {
                     <th colSpan={11} className={classes.staticHeading}>
                       {index === 0 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.mvc_no && touched.mvc_no
@@ -504,6 +522,7 @@ function SettingInspectionReport() {
                     <th colSpan={3}>
                       {index === 0 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.setter_name && touched.setter_name
@@ -524,6 +543,7 @@ function SettingInspectionReport() {
                         />
                       ) : index === 1 ? (
                         <Commondate
+                          disabled={viewReportData ? true : false}
                           borderNone={false}
                           onChange={(value) => {
                             setFieldValue("report_header_date", value);
@@ -534,6 +554,7 @@ function SettingInspectionReport() {
                         />
                       ) : index === 2 ? (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.report_shift && touched.report_shift
@@ -554,6 +575,7 @@ function SettingInspectionReport() {
                         />
                       ) : (
                         <input
+                          readOnly={viewReportData ? true : false}
                           style={{
                             border:
                               errors.inspector_name && touched.inspector_name
@@ -618,6 +640,7 @@ function SettingInspectionReport() {
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
                                 type="text"
@@ -640,6 +663,7 @@ function SettingInspectionReport() {
                         : [...Array(5)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
+                                readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
@@ -660,6 +684,7 @@ function SettingInspectionReport() {
                           ))}
                       <td colSpan={10}>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
@@ -687,6 +712,7 @@ function SettingInspectionReport() {
                     values?.report_header_status.map((ele, index) => (
                       <td>
                         <input
+                          readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={10}
                           type="text"
@@ -710,20 +736,22 @@ function SettingInspectionReport() {
                       <p>Final Status</p>
                       <div className={classes.checkBoxContainer}>
                         <input
+                          disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
                           onClick={() => setisFinalstatus(1)}
                           checked={isFinalStatus == 1 ? true : false}
-                        ></input>
+                        />
                         <p>Accepted</p>
                       </div>
                       <div className={classes.checkBoxContainer}>
                         <input
+                          disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
                           checked={isFinalStatus == 0 ? true : false}
                           onClick={() => setisFinalstatus(0)}
-                        ></input>
+                        />
                         <p>Rejected</p>
                       </div>
                     </div>
@@ -733,6 +761,7 @@ function SettingInspectionReport() {
                   <td colSpan={4}>Checked BY</td>
                   <td colSpan={9}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
                       maxLength={50}
                       type="text"
@@ -751,6 +780,7 @@ function SettingInspectionReport() {
                   <td colSpan={4}>Appproved By</td>
                   <td colSpan={10}>
                     <input
+                      readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
                       maxLength={50}
                       type="text"

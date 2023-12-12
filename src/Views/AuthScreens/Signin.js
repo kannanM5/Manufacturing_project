@@ -10,8 +10,8 @@ import {
   handleStoreUserData,
   handleStoreUserToken,
 } from "../../Store/Reducers/LoginReducer";
-import img from "../../Assets/Images/Svg/loginimg.svg";
-// import img from "../../Assets/Images/Png/bolts4.jpg";
+// import img from "../../Assets/Images/Svg/loginimg.svg";
+import img from "../../Assets/Images/Svg/loginimg.jpg";
 import { setCookie } from "../../Store/Storage/Cookie";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import classes from "./AuthScreens.module.css";
@@ -31,6 +31,7 @@ function Signin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loader, setloader] = useState(false);
+
   const {
     handleSubmit,
     handleChange,
@@ -51,7 +52,9 @@ function Signin() {
       handleLogin(values);
     },
   });
+
   console.log(token, "CURRENTTOKEN");
+
   const handleLogin = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -77,6 +80,7 @@ function Signin() {
         setloader(false);
       });
   };
+
   const handleEnterLogin = (key) => {
     if (key === "Enter") {
       handleSubmit();
@@ -160,9 +164,6 @@ function Signin() {
             />
           </div>
 
-          {/* <div className={classes.forgotpassword}>
-            <Link to="forgot_password ">Forgot Password?</Link>
-          </div> */}
           <div className="my-3">
             <CustomButton title="Sign In" onButtonPress={handleSubmit} />
           </div>

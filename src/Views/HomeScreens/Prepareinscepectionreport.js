@@ -92,40 +92,31 @@ function PrepareInspectionReport() {
     },
   ];
   const getAndSetLoaclStorageDetails = (btnStatus) => {
-    console.log("TWO");
     const setData = {
       local_Process: values.process,
       local_Part_No: values.part_no,
       local_Report_Type: dropdownName,
     };
 
-    console.log(
-      setData?.local_Report_Type,
-      setData?.local_Part_No,
-      setData?.local_Part_No,
-      "report type"
-    );
-
-    const getLocalValue = JSON.parse(localStorage.getItem("ReportTypes"));
-    if (getLocalValue) {
-      console.log("THREE");
-      [...getLocalValue].map((ele) => {
-        if (
-          ele?.local_Part_No == values.part_no &&
-          ele?.local_Process == values.process &&
-          ele?.local_Report_Type == values.local_Report_Type
-        ) {
-          console.log("FOUR");
-
-          toast.error("Already Opened");
-        } else {
-          console.log(" else block");
-          handleClick(btnStatus);
-        }
+    const getLocalStorage = JSON.parse(sessionStorage.getItem("ReportTypes"));
+    if (getLocalStorage) {
+      const isDuplicate = getLocalStorage.some((ele) => {
+        return (
+          ele.local_Process === values.process &&
+          ele.local_Part_No === values.part_no &&
+          ele.local_Report_Type === dropdownName
+        );
       });
+      if (!isDuplicate) {
+        const temp = [...getLocalStorage, setData];
+        sessionStorage.setItem("ReportTypes", JSON.stringify(temp));
+        handleClick(btnStatus);
+      } else {
+        toast.error("This report alredy opened.");
+      }
     } else {
-      localStorage.setItem("ReportTypes", JSON.stringify([setData]));
-      console.log("FIVE");
+      const tempData = [setData];
+      sessionStorage.setItem("ReportTypes", JSON.stringify(tempData));
       handleClick(btnStatus);
     }
   };

@@ -8,7 +8,7 @@ import {
   updateInspectionReportList,
 } from "../../../Services/Services";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   CloseTab,
@@ -18,10 +18,8 @@ import {
 import { useFormik } from "formik";
 import { GlobalModal, Loader } from "../../../Components";
 import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-// import Logo from "../../../Assets/Images/Png/VTLogo.jpg";
 import dayjs from "dayjs";
 import Commondate from "../../../Components/Commondate";
-import moment from "moment";
 import * as Yup from "yup";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
@@ -33,24 +31,34 @@ const validationSchema = Yup.object({
 });
 var CryptoJS = require("crypto-js");
 
-export default function Emptypage() {
+export default function Emptypage({ viewReportData }) {
   const token = useToken();
+  const userId = useEmployeeId();
   const location = useLocation();
+  const navigate = useNavigate();
   const [urlValues, setUrlValues] = useState();
   const [saveStatus, setsaveStatus] = useState(null);
-  const userId = useEmployeeId();
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [isShowModal, setIshowModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const encryptedData = urlParams.get("data");
-    const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
-    const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-    const decryptedData = JSON.parse(decryptedText);
-    setUrlValues(decryptedData);
+    if (!reportData) {
+      setReportData(viewReportData);
+    }
+  }, [viewReportData]);
+
+  useEffect(() => {
+    if (!viewReportData) {
+      const urlParams = new URLSearchParams(location.search);
+      const encryptedData = urlParams.get("data");
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      const decryptedData = JSON.parse(decryptedText);
+      setUrlValues(decryptedData);
+    }
   }, [location.search]);
 
   useEffect(() => {
@@ -102,7 +110,24 @@ export default function Emptypage() {
       }
     },
   });
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      // Your code to handle tab close or page refresh
+      const message = "Are you sure you want to leave?"; // Custom message
 
+      // Standard for most browsers
+      event.returnValue = message;
+      // For Internet Explorer
+      return message;
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Clean up the event listener when the component is unmounted
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   const tableHeadData = [
     {
       id: 1,
@@ -134,22 +159,20 @@ export default function Emptypage() {
     },
   ];
 
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (isShowModal) {
-        const confirmationMessage =
-          "You have unsaved changes. Are you sure you want to leave?";
-        e.returnValue = confirmationMessage;
-        return confirmationMessage;
-      }
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e) => {
+  //     if (isShowModal) {
+  //       e.returnValue = true; // Set a truthy value to trigger the default browser prompt
+  //       setIshowModal(true);
+  //     }
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [isShowModal]);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, [isShowModal]);
 
   const handleEditReport = () => {
     setloader(true);
@@ -279,7 +302,7 @@ export default function Emptypage() {
       process_id: data?.process_id,
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      invoice_date: dayjs(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       supplier_name: data?.supplier_name,
@@ -342,7 +365,7 @@ export default function Emptypage() {
       process_id: data?.process_id,
       product_id: data?.product_id,
       invoice_no: data?.invoice_no,
-      invoice_date: moment(data?.invoice_date).format("YYYY-MM-DD"),
+      invoice_date: dayjs(data?.invoice_date).format("YYYY-MM-DD"),
       quantity: data?.quantity,
       observationData: sendData,
       supplier_name: data?.supplier_name,
@@ -450,12 +473,23 @@ export default function Emptypage() {
         />
       </GlobalModal>
       <PageHeader
-        Btntitle={urlValues?.buttonStatus === "Edit" ? "Update" : "Save"}
+        Btntitle={
+          viewReportData
+            ? "Back"
+            : urlValues?.buttonStatus === "Edit"
+            ? "Update"
+            : "Save"
+        }
         BtntitleOne={"Finish"}
+        secondBtn={viewReportData ? false : true}
         modal={() => {
           //save
-          setsaveStatus(0);
-          handleSubmit();
+          if (!viewReportData) {
+            setsaveStatus(0);
+            handleSubmit();
+          } else {
+            navigate(-1);
+          }
         }}
         //submit
         onPressOvertime={() => {
@@ -508,6 +542,7 @@ export default function Emptypage() {
                   <td colSpan={11} className={classes.staticHeading}>
                     {index === 0 ? (
                       <input
+                        readOnly={viewReportData ? true : false}
                         style={{
                           border:
                             errors.supplier_name && touched.supplier_name
@@ -550,6 +585,7 @@ export default function Emptypage() {
                       </span>
                     ) : index === 1 ? (
                       <input
+                        readOnly={viewReportData ? true : false}
                         style={{
                           border:
                             errors.invoice_no && touched.invoice_no
@@ -570,6 +606,7 @@ export default function Emptypage() {
                       />
                     ) : index === 2 ? (
                       <Commondate
+                        disabled={viewReportData ? true : false}
                         borderNone={false}
                         onChange={(value) => {
                           setFieldValue("invoice_date", value);
@@ -578,6 +615,7 @@ export default function Emptypage() {
                       />
                     ) : (
                       <input
+                        readOnly={viewReportData ? true : false}
                         style={{
                           border:
                             errors.quantity && touched.quantity
@@ -652,6 +690,7 @@ export default function Emptypage() {
                       ? ele?.observation.map((inputs, inputIndex) => (
                           <td>
                             <input
+                              readOnly={viewReportData ? true : false}
                               className={classes.observationInput}
                               maxLength={10}
                               type="text"
@@ -674,6 +713,7 @@ export default function Emptypage() {
                       : [...Array(10)].map((emptyInput, inputIndex) => (
                           <td key={inputIndex}>
                             <input
+                              readOnly={viewReportData ? true : false}
                               className={classes.observationInput}
                               type="text"
                               value={emptyInput ? emptyInput : ""}
@@ -694,6 +734,7 @@ export default function Emptypage() {
                         ))}
                     <td>
                       <input
+                        readOnly={viewReportData ? true : false}
                         className={classes.observationInput}
                         maxLength={20}
                         type="text"
@@ -710,6 +751,7 @@ export default function Emptypage() {
                     </td>
                     <td colSpan={2}>
                       <input
+                        readOnly={viewReportData ? true : false}
                         className={classes.observationInput}
                         maxLength={20}
                         type="text"
@@ -732,20 +774,22 @@ export default function Emptypage() {
                     <p>Final Status</p>
                     <div className={classes.checkBoxContainer}>
                       <input
+                        disabled={viewReportData ? true : false}
                         className={classes.checkBox}
                         type="checkbox"
                         onClick={() => setisFinalstatus(1)}
                         checked={isFinalStatus == 1 ? true : false}
-                      ></input>
+                      />
                       <p>Accepted</p>
                     </div>
                     <div className={classes.checkBoxContainer}>
                       <input
+                        disabled={viewReportData ? true : false}
                         className={classes.checkBox}
                         type="checkbox"
                         checked={isFinalStatus == 0 ? true : false}
                         onClick={() => setisFinalstatus(0)}
-                      ></input>
+                      />
                       <p>Rejected</p>
                     </div>
                   </div>
@@ -755,6 +799,7 @@ export default function Emptypage() {
                 <td colSpan={4}>Checked By</td>
                 <td colSpan={5}>
                   <input
+                    readOnly={viewReportData ? true : false}
                     className={classes.observationInput}
                     maxLength={50}
                     type="text"
@@ -770,6 +815,7 @@ export default function Emptypage() {
                 <td colSpan={4}>Approved By</td>
                 <td colSpan={5}>
                   <input
+                    readOnly={viewReportData ? true : false}
                     className={classes.observationInput}
                     maxLength={50}
                     type="text"

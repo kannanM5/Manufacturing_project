@@ -10,7 +10,6 @@ import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
-// import CompanyLogo from "../../Assets/Images/Png/VTLogo.jpg";
 import CompanyLogo from "../../Assets/Images/Png/VTLogo.svg";
 import create_account from "../../Assets/Icons/SvgIcons/create_account.svg";
 import change_password from "../../Assets/Icons/SvgIcons/change_password.svg";
@@ -20,17 +19,15 @@ import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
 import { Drawer, Tabs } from "antd";
 import TabPane from "antd/es/tabs/TabPane";
-import dummyIcon from "../../Assets/Images/Png/dummy.png";
+import dummyIcon from "../../Assets/Icons/SvgIcons/dummy.svg.svg";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { Dropdown, Space } from "antd";
 import {
-  DownOutlined,
   LockOutlined,
-  SmileOutlined,
   LogoutOutlined,
+  CaretDownOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
-import { UserOutlined } from "@ant-design/icons";
 
 export default function Header() {
   const token = useToken();
@@ -326,14 +323,14 @@ export default function Header() {
                   style={{
                     width: "50px",
                     height: "50px",
-                    border: "1px solid black",
                   }}
                 />
                 <p
                   style={{
-                    padding: "0 10px",
+                    padding: "0 2px",
                     textAlign: "center",
                     alignSelf: "center",
+                    fontFamily: "var(--fontMedium)",
                   }}
                 >
                   {userName}
@@ -489,18 +486,17 @@ export default function Header() {
                         src={dummyIcon}
                         alt="Profile icon"
                         className={classes.dummyImage}
-                        style={{ border: "2px solid black" }}
                       />
 
                       <Space
                         style={{
-                          // color: "white",
                           color: "black",
-                          padding: "0 10px",
+                          padding: "0 8px",
+                          fontFamily: "var(--fontMedium)",
                         }}
                       >
                         {userName}
-                        <DownOutlined />
+                        <CaretDownOutlined />
                       </Space>
                     </a>
                   </Dropdown>

@@ -1,7 +1,9 @@
 /* Login-Page And Signup page */
 
 .container1 {
-  background: var(--menuBg);
+  /* background: var(--menuBg); */
+  /* background-color: var(--btnColor); */
+  background-color: #e9eaea;
   width: 100%;
   min-height: 100vh;
   display: flex;
