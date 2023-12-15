@@ -10,7 +10,7 @@ import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
-import CompanyLogo from "../../Assets/Images/Png/VTLogo.svg";
+import CompanyLogo from "../../Assets/Images/VTLogo.svg";
 import create_account from "../../Assets/Icons/SvgIcons/create_account.svg";
 import change_password from "../../Assets/Icons/SvgIcons/change_password.svg";
 import logout from "../../Assets/Icons/SvgIcons/logout.svg";
@@ -43,10 +43,9 @@ export default function Header() {
     modal: false,
     id: "",
   });
-  const loginUserData = getCookie("mconnect_user_data")
-    ? JSON.parse(getCookie("mconnect_user_data"))?.permission
+  const loginUserData = getCookie("vt_enterprise_login")
+    ? getCookie("vt_enterprise_login")?.data
     : null;
-
   // const getManagementInitialRoute = () => {
   //   const loginUserData = getCookie("mconnect_user_data")
   //     ? JSON.parse(getCookie("mconnect_user_data"))?.permission
@@ -102,33 +101,40 @@ export default function Header() {
     {
       id: 1,
       name: "List Of Products",
-      naviagationPath: "/product_list",
+      naviagationPath:
+        loginUserData?.user_type !== 3 ? "/product_list" : "/dashboard",
+      isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
       id: 2,
       name: "Inspection Criteria",
-      naviagationPath: "/inspection_criteria",
+      naviagationPath:
+        loginUserData?.user_type !== 3 ? "/inspection_criteria" : "/dashboard",
+      isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
       id: 3,
       name: "Prepare Inspection Report",
       naviagationPath: "/prepare_inspection_report",
+      isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
       id: 4,
       name: "Saved Logs",
       naviagationPath: "/saved_logs",
+      isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
     {
       id: 5,
       name: "Export",
       naviagationPath: "/export_page",
+      isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
   ];
-  const items = [
+  const filteredItems = [
     {
       key: "1",
       label: "Create Account",
@@ -145,6 +151,9 @@ export default function Header() {
       icon: <LogoutOutlined />,
     },
   ];
+  const items =
+    loginUserData?.user_type !== 3 ? filteredItems : filteredItems.slice(2);
+
   const hamburgerData = [
     {
       id: 1,

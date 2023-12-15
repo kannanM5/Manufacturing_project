@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 import classes from "./Modal.module.css";
+import UpdateDeleteActions from "./UpdateDeleteActions";
+import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import { addProductService, editProductService } from "../Services/Services";
-import UpdateDeleteActions from "./UpdateDeleteActions";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required"),
@@ -116,7 +116,6 @@ function AddProducts({
         getCatchMsg(err);
       })
       .finally(() => {
-        console.log("finally", loader);
         setloader(false);
       });
   };

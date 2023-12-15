@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
-import {
-  addInspectionReportList,
-  editInspectionReportList,
-  getInspectionReportList,
-  savedDataList,
-  updateInspectionReportList,
-} from "../../../Services/Services";
+import Logo from "../../../Assets/Images/VTLogo.svg";
+import Commondate from "../../../Components/Commondate";
+import dayjs from "dayjs";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { GlobalModal, Loader } from "../../../Components";
 import {
   CloseTab,
   getCatchMsg,
   getInvalidMsg,
+  getObserVationColorCode,
 } from "../../../Utility/GeneralUtils";
-import { useFormik } from "formik";
-import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-import Commondate from "../../../Components/Commondate";
-import dayjs from "dayjs";
-import * as Yup from "yup";
-import { GlobalModal, Loader } from "../../../Components";
-import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import {
+  addInspectionReportList,
+  getInspectionReportList,
+  savedDataList,
+  updateInspectionReportList,
+} from "../../../Services/Services";
 
 const validationSchema = Yup.object({
   invoice_no: Yup.string().required("Name is required"),
@@ -434,12 +434,12 @@ function FinalInspectionReport({ viewReportData }) {
             <table>
               <thead>
                 <tr>
-                  <td colSpan={15} rowSpan={2}>
+                  <td style={{ paddingLeft: "5px" }} colSpan={15} rowSpan={2}>
                     <div className={classes.rowAlignment}>
                       <img
                         src={Logo}
                         alt="logo"
-                        style={{ width: 60, height: 70 }}
+                        style={{ width: 40, height: 40 }}
                       />
 
                       <div className={classes.heading}>
@@ -455,22 +455,20 @@ function FinalInspectionReport({ viewReportData }) {
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Supplier Name:</th>
-                  <th colSpan={10}>V.T. ENTERPRISE</th>
-                  <th colSpan={2} rowSpan={2}>
-                    Customer:
-                  </th>
+                  <th colSpan={11}>V.T. ENTERPRISE</th>
+                  <th rowSpan={2}>Customer:</th>
                   <th colSpan={6} rowSpan={2}>
                     {values?.tableHeadDataApi?.customer}
                   </th>
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Address:</th>
-                  <th colSpan={10}>CHENNAI</th>
+                  <th colSpan={11}>CHENNAI</th>
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Part No:</th>
-                  <th colSpan={10}>{values?.tableHeadDataApi?.part_no}</th>
-                  <th colSpan={2}>Inv No:</th>
+                  <th colSpan={11}>{values?.tableHeadDataApi?.part_no}</th>
+                  <th>Inv No:</th>
                   <th colSpan={5}>
                     <input
                       readOnly={viewReportData ? true : false}
@@ -496,11 +494,11 @@ function FinalInspectionReport({ viewReportData }) {
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Drg Issue No:</th>
-                  <th colSpan={10}>
+                  <th colSpan={11}>
                     {values?.tableHeadDataApi?.drawing_issue_no}
                   </th>
-                  <th colSpan={2}>Inv Date:</th>
-                  <th colSpan={5}>
+                  <th>Inv Date:</th>
+                  <th colSpan={5} style={{ paddingLeft: "0" }}>
                     <Commondate
                       disabled={viewReportData ? true : false}
                       borderNone={false}
@@ -513,8 +511,8 @@ function FinalInspectionReport({ viewReportData }) {
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Part Name:</th>
-                  <th colSpan={10}>{values?.tableHeadDataApi?.part_name}</th>
-                  <th colSpan={2}>Quantity:</th>
+                  <th colSpan={11}>{values?.tableHeadDataApi?.part_name}</th>
+                  <th>Quantity:</th>
                   <th colSpan={5}>
                     <input
                       readOnly={viewReportData ? true : false}
@@ -590,6 +588,12 @@ function FinalInspectionReport({ viewReportData }) {
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                style={{
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    inputs
+                                  ),
+                                }}
                                 readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
@@ -615,7 +619,10 @@ function FinalInspectionReport({ viewReportData }) {
                               <input
                                 readOnly={viewReportData ? true : false}
                                 style={{
-                                  color: "red",
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    emptyInput
+                                  ),
                                 }}
                                 className={classes.observationInput}
                                 type="text"

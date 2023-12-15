@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
+import CustomDropDown from "../../Components/CustomDropDown";
 import classes from "./Management.module.css";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import { ALPHA_NUM } from "../../Utility/Constants";
+import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
+import { useEmployeeId, useToken } from "../../Utility/StoreData";
+import {
+  getInspectionReportList,
+  savedDataList,
+} from "../../Services/Services";
 import {
   CustomButton,
   GlobalModal,
   Loader,
   TextInputBox,
 } from "../../Components";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { ALPHA_NUM } from "../../Utility/Constants";
-import {
-  getInspectionReportList,
-  savedDataList,
-} from "../../Services/Services";
-import toast from "react-hot-toast";
-import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
-import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
-import CustomDropDown from "../../Components/CustomDropDown";
 
 const validationSchema = Yup.object({
   part_no: Yup.string()
@@ -49,7 +49,6 @@ function PrepareInspectionReport() {
     setFieldError,
     setFieldTouched,
     handleSubmit,
-    // setFieldValue,
   } = useFormik({
     initialValues: {
       part_no: "",
@@ -59,13 +58,11 @@ function PrepareInspectionReport() {
     },
     validationSchema: validationSchema,
     onSubmit: () => {
-      console.log("ONE");
       if (buttonStatus === "Add") {
         handleGetProductsList();
       } else {
         handleEditReport();
       }
-      // getAndSetLoaclStorageDetails();
     },
   });
 

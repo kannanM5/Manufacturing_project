@@ -1,4 +1,3 @@
-import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
@@ -15,12 +14,6 @@ function ViewReports() {
   const { state } = useLocation();
   const [loader, setloader] = useState(false);
   const [reportList, setReportList] = useState();
-  //   console.log(state, "STATE");
-  // const {values} = useFormik({
-  //   initialValues: {
-  //     process
-  //   },
-  // });
 
   const handleGetViewReport = (data) => {
     let formData = new FormData();
@@ -33,7 +26,6 @@ function ViewReports() {
     viewReports(formData).then((response) => {
       if (response?.data?.status === 1) {
         setReportList(response?.data?.data);
-        console.log(response?.data?.data, "RESPONSE");
       }
     });
   };

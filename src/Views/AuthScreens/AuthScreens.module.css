@@ -1,8 +1,4 @@
-/* Login-Page And Signup page */
-
 .container1 {
-  /* background: var(--menuBg); */
-  /* background-color: var(--btnColor); */
   background-color: #e9eaea;
   width: 100%;
   min-height: 100vh;
@@ -10,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
+  /* padding: 20px 0; */
 }
 .desc {
   text-align: center;
@@ -27,14 +23,13 @@
 
 .container2 {
   display: flex;
-  /* background-color: var(--menuBg2);
-   */
   background-color: rgb(249, 249, 253);
   border-radius: 10px;
   padding: 30px;
   width: 100%;
   height: auto;
   max-width: 1100px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 .container2 .leftcontent {
   display: flex;
@@ -52,65 +47,19 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.06);
   background: #ffff;
-  padding: 55px 30px;
-  border-radius: 10px;
-}
-.rightcontent .forgotpassword {
-  font-family: var(--fontRegular);
-  font-size: var(--textXs);
-  font-weight: var(--fontWm);
-  line-height: 21px;
-  text-decoration-line: underline;
-  text-align: right;
-  color: var(--textcolor);
-  margin: 18px 0;
-}
-.rightcontent .forgotpassword a {
-  color: #262626;
-}
-.Remembercontent {
-  margin-top: 10px;
-  cursor: pointer;
-}
-.Remembercontent,
-.Remembercontent2 {
+  padding: 0 20px;
   display: flex;
-  justify-content: space-between;
-  font-family: var(--fontRegular);
-  font-size: var(--textXs);
-  color: var(--textcolor);
-  margin-left: 3px;
-}
-.Remembercontent2 .Remember {
-  margin-left: 8px;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.rightcontent .Signuplink {
-  text-align: right;
-}
-.rightcontent .Signuplink a {
-  font-family: var(--fontRegular);
-  font-size: var(--textXs);
-  color: var(--btnClr);
-}
 .err {
   color: var(--dangerColor);
   font-size: 12px;
   position: absolute;
   top: 74px;
 }
-.err1 {
-  color: var(--dangerColor);
-  font-size: 12px;
-  position: absolute;
-  top: 74px;
-  left: 14px;
-}
-.togglePasswordButton {
-  position: absolute;
-  top: 7px;
-  right: 10px;
-}
+
 @media (min-width: 992px) and (max-width: 1200px) {
   .container1 {
     padding: 50px;
@@ -123,8 +72,7 @@
   }
 }
 @media (min-width: 576px) and (max-width: 767px) {
-  .leftcontent img,
-  .leftcontent .desc,
+  /* .leftcontent img, */
   .leftcontent .title {
     display: none;
   }
@@ -134,34 +82,6 @@
   }
 }
 
-/* Signup page */
-.signupcontainer2 {
-  width: 100%;
-  background: var(--menuBg2);
-  border-radius: 10px;
-  padding: 20px 60px;
-  width: calc(100% - 200px);
-  max-height: 100%;
-  max-width: 1400px;
-}
-.signupcontainer2 .title,
-.otpverifycontainer2 .title {
-  width: 100%;
-  text-align: center;
-  font-family: var(--fontRegular);
-  font-size: var(--textXl2);
-  font-weight: var(--fontweight);
-  line-height: 42px;
-  margin-bottom: 20px;
-}
-.signupcontainer2 .signupinput {
-  display: flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-  align-items: center;
-  margin-top: 20px;
-}
 .inputfield2 input::placeholder {
   font-size: 14px;
 }
@@ -180,12 +100,7 @@
 .inputsection label span {
   color: var(--dangerColor);
 }
-.inputfield2:hover,
-.inputfield2:focus {
-  border: 1px solid #f25922;
-  border-radius: 8px;
-}
-.inputfield label,
+
 .inputsection label {
   color: var(--blackColor);
   font-family: var(--fontRegular);
@@ -199,73 +114,23 @@
   background: var(--inputBg);
   outline: unset;
 }
-.inputfield2 .captcha {
-  background-color: whitesmoke;
-  padding: 7px;
-  border-radius: 8px 0 0 8px;
-}
-.inputsection .captrefre {
-  display: flex;
-  align-items: center;
-  border-radius: 0 8px 8px 0;
-  width: 35px !important;
-  background: var(--inputBg);
-}
-.btncontent {
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
-}
-.btncontent .signupbtn {
-  width: 160px;
-}
+
 .SignupCompanyName {
   font-family: var(--fontBold);
   font-size: var(--textXl2);
-  color: white;
+  /* color: white;
+   */
+  color: black;
   letter-spacing: 2px;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
-@media (min-width: 1400px) {
-  .signupcontainer2 {
-    padding: 60px;
-  }
-}
-@media (min-width: 992px) and (max-width: 1199px) {
-  .inputfield2 .captcha img {
-    width: 50px !important;
-    object-fit: contain;
-  }
-}
+
 @media (min-width: 768px) and (max-width: 991px) {
-  .btncontent .signupbtn {
-    width: 30%;
-  }
   .container1 {
     padding: 20px;
   }
-  .inputfield2 .captcha img {
-    width: 50px !important;
-    object-fit: contain;
-  }
 }
 @media (min-width: 576px) and (max-width: 767px) {
-  .signupcontainer2 {
-    width: 100%;
-    height: fit-content;
-    padding: 10px 15px !important;
-    padding: 10px 30px;
-  }
-  .btncontent .signupbtn {
-    width: 100%;
-  }
-  .btncontent {
-    display: block;
-    width: 100%;
-  }
-  .btncontent .alreadyhvacc {
-    margin-left: 0px;
-  }
   .container1 {
     display: block !important;
     padding: 70px;
@@ -273,176 +138,11 @@
   }
 }
 
-/* OTPVerification page */
-
-.otpverifycontainer1 {
-  background: var(--menuBg);
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-}
-.otpverifycontainer2 {
-  width: 700px;
-  background: var(--menuBg2);
-  border-radius: 10px;
-  padding: 60px;
-  max-width: 100%;
-  height: fit-content;
-  margin: 35px;
-  align-self: center;
-}
-.otpverifycontainer2 .otpfield {
-  text-align: center;
-  position: relative;
-  float: left;
-  width: 100%;
-  margin-bottom: 15px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.desc a {
-  text-decoration: none;
-  color: var(--btnClr);
-  font-weight: var(--fontweight);
-}
-.otpverifycontainer2 .otpbtn {
-  width: 130px;
-  text-align: center;
-  margin: auto;
-  margin-top: 20px !important;
-}
-.otpfield > div {
-  width: 100%;
-  max-width: 400px;
-  margin-bottom: 10px !important;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-}
-.otpfield {
-  margin-top: 15px;
-}
-.otpfield p {
-  font-size: 12px;
-  position: absolute;
-  bottom: -10px;
-  color: var(--dangerColor);
-  max-width: "100%";
-}
-.otpdesc {
-  text-align: center;
-  font-family: var(--fontRegular);
-  font-size: var(--textXs);
-  color: var(--logindesccolor);
-  margin-top: 15px;
-}
-.otpdesc a {
-  text-decoration: none;
-  color: var(--btnClr);
-  font-weight: var(--fontweight);
-  margin-left: 5px;
-}
-.otpdesc span {
-  opacity: 0.5;
-  margin-right: 8px;
-}
-@media (min-width: 576px) and (max-width: 991px) {
-  .otpverifycontainer2 .otpbtn {
-    width: 20%;
-  }
-}
-
-/* Forgot Credentials */
-
-.otpverifycontainer2 .forgotPassword {
-  display: flex;
-  align-content: center;
-  width: 35%;
-  background-color: #ffffff;
-  border: var(--inputBorder);
-  border-radius: 15px;
-  padding: 10px 20px 10px 10px;
-  margin-top: 20px !important;
-  text-align: center;
-  width: 60%;
-  margin: auto;
-}
-.otpverifycontainer2 .forgoticon {
-  background-color: #f259221a;
-  padding: 15px 20px;
-  border-radius: 50px;
-  height: 60px;
-}
-.otpverifycontainer2 .forinfo {
-  margin: 10px 0 0 10px;
-}
-.otpverifycontainer2 .enternumemail {
-  font-family: var(--fontRegular);
-  font-size: var(--textXs1);
-  font-weight: var(--fontWs);
-  text-align: left;
-}
-.otpverifycontainer2 .forpassandorg {
-  font-family: var(--fontRegular);
-  font-size: var(--textXs2);
-  font-weight: var(--fontWm);
-  text-align: left;
-}
-.otpverifycontainer2 .forgotPassword:hover {
-  border: 1px solid #f25922;
-}
-.desc1content {
-  width: 100%;
-  text-align: center;
-}
-.otpnewinputfield {
-  width: 35px !important;
-  height: 35px !important;
-}
-.otpfield input {
-  width: 42px !important;
-  height: 45px !important;
-  border: 0.5px solid rgba(0, 0, 0, 0.25);
-  border-radius: 9px;
-  outline: unset;
-}
-.otpfield input:hover,
-.otpfield input:focus {
-  border: 1px solid #f25922;
-}
-@media (min-width: 576px) and (max-width: 768px) {
-  .otpverifycontainer2 .forgotPassword {
-    width: 70%;
-  }
-}
-
-/* Forgotpassword Credentials */
-.otpverifycontainer2 .fororginput {
-  width: 71%;
-  margin: auto;
-}
-
 .inputsection {
   margin-bottom: 14px;
   position: relative;
 }
-.inputContainer {
-  width: 100%;
-  display: flex;
-  background-color: var(--whiteColor);
-  border-radius: 8px;
-  height: 42px;
-  position: relative;
-  border: var(--inputBorder);
-}
 
-.inputContainer:hover,
-.inputContainer:focus {
-  border: 1px solid #f25922;
-}
 .input {
   border: none;
   width: 100%;
@@ -450,50 +150,6 @@
   padding: 3px 5px 5px;
   height: 40px;
   border-radius: 10px;
-}
-
-/* copy organization page */
-.orgcodedesc {
-  text-align: center;
-  font-family: var(--fontRegular);
-  font-size: 18px;
-  color: var(--logindesccolor);
-  margin-top: 15px;
-}
-.orgcodedesc span {
-  font-size: 14px;
-  cursor: pointer;
-}
-.orgcodedesc .circleicon {
-  color: #f25922;
-  margin-bottom: 80px;
-}
-.circleicon {
-  animation: blow 0.5s forwards;
-}
-.circleicon > svg {
-  animation: rotate 0.5s forwards;
-  animation-delay: 0.1s;
-  transform: rotateY(180deg);
-}
-@keyframes blow {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes rotate {
-  0% {
-    opacity: 0;
-    transform: rotateY(180deg);
-  }
-  100% {
-    opacity: 1;
-    transform: rotateY(0deg);
-  }
 }
 
 @media (max-width: 767px) {
@@ -514,15 +170,9 @@
     display: none;
   }
   .container2 {
-    padding: 10px 10px;
+    padding: 10px;
   }
-  .captcha {
-    width: 35%;
-  }
-  .inputfield2 .captcha img {
-    width: 100% !important;
-    object-fit: contain;
-  }
+
   .container2 .rightcontent {
     width: 100%;
     padding: 20px 10px;
@@ -531,19 +181,8 @@
     background: none !important;
     margin-left: 0px !important;
   }
-  .captrefre {
-    width: 15%;
-  }
-  .Remembercontent,
-  .Remembercontent2 {
-    flex-wrap: wrap;
-  }
-  .inputsection label,
-  .forgotpassword,
-  .Remembercontent2,
-  .dont,
-  .Signuplink a,
-  .signupcontainer2 .desc {
+
+  .inputsection label {
     font-size: 14px !important;
   }
   .inputContainer input::placeholder {
@@ -552,78 +191,7 @@
   .inputfield2 input::placeholder {
     font-size: 14px !important;
   }
-
-  /*signup page*/
-
-  .btncontent .signupbtn {
-    width: 100%;
-  }
-  .signupcontainer2 {
-    width: 100%;
-    height: fit-content;
-    padding: 10px 15px !important;
-  }
-  .btncontent {
-    display: block;
-    width: 100%;
-  }
-  .btncontent .alreadyhvacc {
-    margin-left: 5px;
-  }
   .container1 {
-    /* display: block !important; */
-    padding: 20px;
-    overflow-y: auto;
-  }
-  .alreadyhvacc {
-    margin-top: 10px;
-    font-size: 14px !important;
-  }
-  .signupcontainer2 .title {
-    font-size: 25px !important;
-  }
-
-  /* Otp page */
-
-  .otpbtn {
-    width: 35% !important;
-  }
-  .otpverifycontainer2 .desc {
-    font-size: 14px !important;
-  }
-
-  /* Forgot Credentials  */
-
-  .otpverifycontainer2 .forgotPassword {
-    width: 100%;
-  }
-  .otpverifycontainer2 .title {
-    font-size: 24px !important;
-  }
-  .otpverifycontainer2 .enternumemail {
-    font-size: 12px;
-  }
-  .otpverifycontainer2 .forpassandorg {
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  /* Forgotpassword Credentials */
-
-  .otpverifycontainer2 .fororginput {
-    width: 100%;
-  }
-  .otpverifycontainer2 .otpbtn {
-    width: 100%;
-  }
-  .otpverifycontainer2 {
-    padding: 60px 5px;
-    margin: 0px !important;
-  }
-  .otpverifycontainer1 {
-    padding: 35px 10px;
-  }
-  .otpverifycontainer2 .title {
-    font-size: 21px;
+    padding: 0 25px;
   }
 }

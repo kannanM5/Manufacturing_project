@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
-import Logo from "../../../Assets/Images/Png/VTLogo.svg";
+import Commondate from "../../../Components/Commondate";
+import Logo from "../../../Assets/Images/VTLogo.svg";
+import dayjs from "dayjs";
+import * as Yup from "yup";
+import toast from "react-hot-toast";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { GlobalModal, Loader } from "../../../Components";
 import {
   addInspectionReportList,
-  editInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
@@ -13,23 +22,15 @@ import {
   CloseTab,
   getCatchMsg,
   getInvalidMsg,
+  getObserVationColorCode,
 } from "../../../Utility/GeneralUtils";
-import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import Commondate from "../../../Components/Commondate";
-import { GlobalModal, Loader } from "../../../Components";
-import dayjs from "dayjs";
-import * as Yup from "yup";
-import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
-import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   mvc_no: Yup.string().required("Machine number is required"),
   setter_name: Yup.string().required("Name is required"),
   report_shift: Yup.string().required("Shift is required"),
   inspector_name: Yup.string().required("Inspector name is required"),
+  final_status: Yup.number().required("Final status is required"),
 });
 
 var CryptoJS = require("crypto-js");
@@ -67,7 +68,7 @@ function SettingInspectionReport({ viewReportData }) {
       report_shift: "",
       inspector_name: "",
       report_header_status: Array(5).fill(null),
-      final_status: isFinalStatus,
+      final_status: null,
       checked_by: "",
       approved_by: "",
       datas: "",
@@ -121,7 +122,7 @@ function SettingInspectionReport({ viewReportData }) {
     {
       id: 4,
       left: "Process:",
-      right: "Inspector Name",
+      right: "Inspector Name:",
       leftData: values?.process,
       rightData: values?.inspector_name,
     },
@@ -450,15 +451,17 @@ function SettingInspectionReport({ viewReportData }) {
             <table>
               <thead>
                 <tr>
-                  <th colSpan={18} className={classes.CompanyName}>
+                  <th
+                    style={{ paddingLeft: "5px" }}
+                    colSpan={20}
+                    className={classes.CompanyName}
+                  >
                     <div className={classes.rowAlignment}>
-                      <div>
-                        <img
-                          src={Logo}
-                          alt="logo"
-                          style={{ width: 50, height: 50 }}
-                        />
-                      </div>
+                      <img
+                        src={Logo}
+                        alt="logo"
+                        style={{ width: 40, height: 40 }}
+                      />
                       <div className={classes.heading}>
                         V.T.ENTERPRISE - RADIEANT IMPEX PVT. LTD.
                       </div>
@@ -473,7 +476,7 @@ function SettingInspectionReport({ viewReportData }) {
                   </th>
                 </tr>
                 <tr>
-                  <td colSpan={16} rowSpan={2}>
+                  <td colSpan={18} rowSpan={2}>
                     <div className={classes.heading}>
                       SETTING APPROVAL REPORT
                     </div>
@@ -485,8 +488,8 @@ function SettingInspectionReport({ viewReportData }) {
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
-                    <th colSpan={3}>{head?.left}</th>
-                    <th colSpan={11} className={classes.staticHeading}>
+                    <th colSpan={2}>{head?.left}</th>
+                    <th colSpan={15} className={classes.staticHeading}>
                       {index === 0 ? (
                         <input
                           readOnly={viewReportData ? true : false}
@@ -519,7 +522,7 @@ function SettingInspectionReport({ viewReportData }) {
                       )}
                     </th>
                     <th colSpan={1}>{head?.right}</th>
-                    <th colSpan={3}>
+                    <th style={{ paddingLeft: "0" }} colSpan={3}>
                       {index === 0 ? (
                         <input
                           readOnly={viewReportData ? true : false}
@@ -602,22 +605,22 @@ function SettingInspectionReport({ viewReportData }) {
                   <th colSpan={1} rowSpan={2} className={classes.serialNo}>
                     S.No
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={6} rowSpan={2}>
                     Characteristics
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2}>
                     Specifications
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2}>
                     Units
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2}>
                     Method Of Check
                   </th>
                   <th colSpan={5} className={classes.secondFourtColumn}>
                     Observations
                   </th>
-                  <th colSpan={10} rowSpan={2}>
+                  <th colSpan={6} rowSpan={2}>
                     Remarks
                   </th>
                 </tr>
@@ -632,14 +635,20 @@ function SettingInspectionReport({ viewReportData }) {
                   values?.datas.map((ele, index) => (
                     <tr>
                       <td>{index + 1}</td>
-                      <td colSpan={2}>{ele?.characteristics}</td>
-                      <td colSpan={1}>{ele?.specification}</td>
-                      <td colSpan={1}>{ele?.units}</td>
-                      <td colSpan={1}>{ele?.method_of_check}</td>
+                      <td colSpan={6}>{ele?.characteristics}</td>
+                      <td colSpan={2}>{ele?.specification}</td>
+                      <td colSpan={2}>{ele?.units}</td>
+                      <td colSpan={2}>{ele?.method_of_check}</td>
                       {ele?.observation !== ""
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                style={{
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    inputs
+                                  ),
+                                }}
                                 readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
@@ -647,15 +656,11 @@ function SettingInspectionReport({ viewReportData }) {
                                 value={inputs}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
+                                  // const alphabeticText = text.replace(
+                                  //   /[^A-Za-z0-9 ]/g,
+                                  //   ""
+                                  // );
+                                  handleChangeValues(text, index, inputIndex);
                                 }}
                               />
                             </td>
@@ -663,26 +668,28 @@ function SettingInspectionReport({ viewReportData }) {
                         : [...Array(5)].map((emptyInput, inputIndex) => (
                             <td key={inputIndex}>
                               <input
+                                style={{
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    emptyInput
+                                  ),
+                                }}
                                 readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
+                                  // const alphabeticText = text.replace(
+                                  //   /[^A-Za-z0-9 ]/g,
+                                  //   ""
+                                  // );
+                                  handleChangeValues(text, index, inputIndex);
                                 }}
                               />
                             </td>
                           ))}
-                      <td colSpan={10}>
+                      <td colSpan={5}>
                         <input
                           readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
@@ -704,7 +711,7 @@ function SettingInspectionReport({ viewReportData }) {
                 <tr>
                   <td
                     style={{ textAlign: "right", padding: "0 15px" }}
-                    colSpan={6}
+                    colSpan={13}
                   >
                     Status
                   </td>
@@ -739,7 +746,10 @@ function SettingInspectionReport({ viewReportData }) {
                           disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
-                          onClick={() => setisFinalstatus(1)}
+                          onClick={() => {
+                            setisFinalstatus(1);
+                            setFieldValue("final_status", 1);
+                          }}
                           checked={isFinalStatus == 1 ? true : false}
                         />
                         <p>Accepted</p>
@@ -750,11 +760,19 @@ function SettingInspectionReport({ viewReportData }) {
                           className={classes.checkBox}
                           type="checkbox"
                           checked={isFinalStatus == 0 ? true : false}
-                          onClick={() => setisFinalstatus(0)}
+                          onClick={() => {
+                            setisFinalstatus(0);
+                            setFieldValue("final_status", 0);
+                          }}
                         />
                         <p>Rejected</p>
                       </div>
                     </div>
+                    <p style={{ color: "red", padding: "0 90px" }}>
+                      {errors.final_status && touched.final_status
+                        ? errors.final_status
+                        : ""}
+                    </p>
                   </td>
                 </tr>
                 <tr>

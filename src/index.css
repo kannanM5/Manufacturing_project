@@ -33,7 +33,8 @@
   --gantchartBorder: 1px solid #ffffff;
   --dropdownBg: #ebebeb;
   --dropdownClr: #555555;
-  --btnColor: #1b08b2;
+  --btnColor: #1b08a9;
+  /* --btnColor: rgba(142, 162, 191); */
   --textxxs: 11px;
   --textXs1: 11px;
   --textXs: 14px;
@@ -201,7 +202,7 @@ body {
   border-bottom: 1px solid rgb(228, 226, 226) !important;
 }
 .ant-picker {
-  padding: 0px 8px 0 !important;
+  padding: 0px 12px 0 !important;
 }
 .ant-tabs .ant-tabs-tab-btn:focus:not(:focus-visible) {
   color: black;

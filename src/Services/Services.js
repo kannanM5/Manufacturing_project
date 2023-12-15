@@ -87,3 +87,7 @@ export const getExportList = (data) => {
 export const viewReports = (data) => {
   return axios.post(`viewreport`, data);
 };
+
+export const downloadEx = (data) => {
+  return axios.post(`exportcustomers`, data);
+};

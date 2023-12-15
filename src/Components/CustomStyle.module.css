@@ -360,7 +360,7 @@
 }
 .pagination_container {
   gap: 10px;
-  width: 97%;
+  width: 95%;
   margin: 5px auto;
   justify-content: flex-end;
   display: flex;
@@ -368,25 +368,28 @@
 .pagenation {
   height: 30px;
 }
+.pagenation li a {
+  padding: 5px;
+}
 .pagenation li {
   display: flex;
   justify-content: center;
   align-items: center;
   border: none;
   border-radius: 5px;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
 }
 .active {
   background: white;
-  color: #337ab7;
+  color: var(--btnColor);
   border: 1px solid #e0e0e0;
   font-size: 14px;
   /* padding: 4px 8px; */
 }
 .labellink {
   font-size: 13px;
-  color: #337ab7;
+  color: var(--btnColor);
   text-decoration: none;
   background-color: #fff;
 }
@@ -399,5 +402,5 @@
 
 .currentpage {
   color: white;
-  background-color: #337ab7;
+  background-color: var(--btnColor);
 }

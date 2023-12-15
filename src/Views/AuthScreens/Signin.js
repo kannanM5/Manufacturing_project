@@ -1,22 +1,20 @@
 import { useState } from "react";
+import classes from "./AuthScreens.module.css";
+import toast from "react-hot-toast";
+import img from "../../Assets/Images/loginimg.svg";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { userSignin } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { setCookie } from "../../Store/Storage/Cookie";
+import { Loader, TextInputBox, CustomButton } from "../../Components/index";
+import { EMAIL_REGEX } from "../../Utility/Constants";
 import {
   handleStoreUserData,
   handleStoreUserToken,
 } from "../../Store/Reducers/LoginReducer";
-// import img from "../../Assets/Images/Svg/loginimg.svg";
-import img from "../../Assets/Images/Svg/loginimg.jpg";
-import { setCookie } from "../../Store/Storage/Cookie";
-import { Loader, TextInputBox, CustomButton } from "../../Components/index";
-import classes from "./AuthScreens.module.css";
-import { EMAIL_REGEX } from "../../Utility/Constants";
-import { useToken } from "../../Utility/StoreData";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -26,8 +24,6 @@ const validationSchema = Yup.object({
 });
 
 function Signin() {
-  const token = useToken();
-  const { REACT_APP_SALT_KEY } = process.env;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loader, setloader] = useState(false);
@@ -35,7 +31,6 @@ function Signin() {
   const {
     handleSubmit,
     handleChange,
-    setValues,
     values,
     errors,
     touched,
@@ -53,8 +48,6 @@ function Signin() {
     },
   });
 
-  console.log(token, "CURRENTTOKEN");
-
   const handleLogin = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -62,7 +55,6 @@ function Signin() {
     formData.append("password", data?.password);
     userSignin(formData)
       .then((response) => {
-        console.log(response, "RESPONSE");
         if (response?.data?.status === 1) {
           navigate("/dashboard");
           toast.success(response?.data?.msg);
@@ -89,8 +81,8 @@ function Signin() {
 
   return (
     <div className={classes.container1}>
-      <p className={classes.SignupCompanyName}>V.T. ENTERPRISE</p>
       {loader ? <Loader /> : null}
+      <p className={classes.SignupCompanyName}>V.T. ENTERPRISE</p>
       <div className={classes.container2}>
         <div className={`col-lg-5 col-md-6 ${classes.leftcontent}`}>
           <div className={classes.title}>Welcome!</div>
@@ -106,7 +98,7 @@ function Signin() {
         <div
           className={`col-lg-6 offset-lg-1 col-md-6 ${classes.rightcontent}`}
         >
-          <div className={classes.inputsection}>
+          <div className={`mb-3 ${classes.inputsection}`}>
             <TextInputBox
               title="Email"
               value={values.email}
@@ -131,7 +123,7 @@ function Signin() {
               errorText={touched.email && errors.email ? errors.email : ""}
             />
           </div>
-          <div className={`mb-3 ${classes.inputsection}`}>
+          <div className={`mb-2 ${classes.inputsection}`}>
             <TextInputBox
               requiredText="*"
               type={"text"}
@@ -164,7 +156,7 @@ function Signin() {
             />
           </div>
 
-          <div className="my-3">
+          <div className="my-4">
             <CustomButton title="Sign In" onButtonPress={handleSubmit} />
           </div>
         </div>

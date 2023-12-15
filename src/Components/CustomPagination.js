@@ -29,6 +29,7 @@ function CustomPagination({ forcePage, pageCount, onPageChange, currentpage }) {
         }
         activeClassName={classes.currentpage}
         pageRangeDisplayed={2}
+        marginPagesDisplayed={2}
         onPageChange={(value) => onPageChange(value?.selected)}
         pageCount={pageCount ? Math.ceil(pageCount) : 1}
         previousLabel="<"

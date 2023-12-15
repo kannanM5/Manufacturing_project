@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
-import { CustomButton, Loader, TextInputBox } from "../../Components";
-import classes from "./Management.module.css";
-import * as Yup from "yup";
-import { useFormik } from "formik";
+import CustomPagination from "../../Components/CustomPagination";
+import NoDataFound from "../../Components/NoDataFound";
+import ViewIcons from "../../Assets/Icons/SvgIcons/view.svg";
 import Commondate from "../../Components/Commondate";
 import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";
 import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
+import classes from "./Management.module.css";
+import * as Yup from "yup";
+import { CustomButton, Loader, TextInputBox } from "../../Components";
+import { useFormik } from "formik";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { getExportList } from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { getTableSNO } from "../../Utility/Constants";
-import moment from "moment";
-import CustomPagination from "../../Components/CustomPagination";
-import NoDataFound from "../../Components/NoDataFound";
-import ViewIcons from "../../Assets/Icons/png/view.png";
 import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
@@ -51,7 +50,6 @@ const dropdownItem = [
 ];
 
 function Export() {
-  // const [dropdownName, setDropDownName] = useState(1);
   const [isOpen, setisOpen] = useState(false);
   const [loader, setloader] = useState(false);
   const token = useToken();
@@ -81,7 +79,7 @@ function Export() {
     },
     // validationSchema: validationSchema,
     onSubmit: () => {
-      handleGetExportDataList(page, 10, true);
+      handleGetExportDataList(1, 10, true);
     },
   });
 
@@ -110,7 +108,7 @@ function Export() {
     getExportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setPage(response?.data?.data?.page - 1);
+          setPage(parseInt(response?.data?.data?.page) - 1);
           setexportDataList(response?.data?.data);
         } else if (response?.data?.status === 0) {
           setexportDataList(null);
@@ -169,7 +167,6 @@ function Export() {
                   title="Date"
                   // placeholder="Select date"
                   onChange={(value) => {
-                    console.log(value, "DATEEEEEEEE");
                     setFieldValue("date", value);
                   }}
                   value={
@@ -307,7 +304,9 @@ function Export() {
               {exportDataList?.items.length > 0 ? (
                 exportDataList?.items.map((ele, ind) => (
                   <tr key={ind}>
-                    <td>{getTableSNO(exportDataList?.page, 10, ind)}</td>
+                    <td>
+                      {getTableSNO(parseInt(exportDataList?.page), 10, ind)}
+                    </td>
                     <td>{ele?.part_no ? ele?.part_no : "-"}</td>
                     <td>{ele?.process ? ele?.process : "-"}</td>
                     <td>{ele?.customer ? ele?.customer : "-"}</td>
@@ -315,17 +314,12 @@ function Export() {
                       {ele?.report_type ? reportType(ele?.report_type) : "-"}
                     </td>
                     <td>
-                      {ele?.date ? moment(ele?.date).format("YYYY-MM-DD") : "-"}
+                      {ele?.date ? dayjs(ele?.date).format("YYYY-MM-DD") : "-"}
                     </td>
                     <td>
                       <div className={classes.icons}>
                         <CustomToolTip title={"View"}>
                           <img
-                            // style={{
-                            //   width: "30px",
-                            //   height: "25",
-                            //   objectFit: "cover",
-                            // }}
                             onClick={() =>
                               navigate(
                                 { pathname: "view_reports" },
@@ -337,15 +331,7 @@ function Export() {
                           />
                         </CustomToolTip>
                         <CustomToolTip title={"Download"}>
-                          <img
-                            // style={{
-                            //   width: "30px",
-                            //   height: "25",
-                            //   objectFit: "cover",
-                            // }}
-                            src={DownloadIcon}
-                            alt="Download icon"
-                          />
+                          <img src={DownloadIcon} alt="Download icon" />
                         </CustomToolTip>
                       </div>
                     </td>

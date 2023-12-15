@@ -111,7 +111,6 @@ function SavedData() {
   };
 
   const handleClick = (data) => {
-    console.log(data);
     const getDetails = dropDownItem.find(
       (ele) => ele.key === parseInt(data.report_type)
     );
@@ -169,6 +168,7 @@ function SavedData() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
+          setpageNo(parseInt(response?.data?.data?.page) - 1);
           setlistInSpectionCriteria(response?.data?.data);
         } else if (response?.data?.status === 0) {
           setlistInSpectionCriteria(null);
@@ -396,8 +396,7 @@ function SavedData() {
           showSizeChanger={true}
           totalCount={listInSpectionCriteria?.totalCount}
           onChange={(page) => {
-            setpageNo(page);
-            listSavedDataApiCall(page, 10);
+            listSavedDataApiCall(page + 1, 10);
           }}
           onShowSizeChange={(current, pageSize) => {
             console.log(current, pageSize);

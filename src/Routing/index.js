@@ -1,7 +1,6 @@
 import AuthLayout from "../Layout/AuthLayout";
 import DashboardLayout from "../Layout/DashboardLayout";
 import ErrorElement from "../Error/ErrorElement";
-import { authroute } from "./AuthRouting";
 import ListOfProducts from "../Views/HomeScreens/ListOfProducts";
 import Prepareinscepectionreport from "../Views/HomeScreens/Prepareinscepectionreport";
 import LineInspectionReport from "../Views/HomeScreens/Reports/LineInspectionReport";
@@ -12,10 +11,15 @@ import InpectionCriteria from "../Views/HomeScreens/InspectionCriteria";
 import Export from "../Views/HomeScreens/Export";
 import ChangePassword from "../Views/Profile/ChangePassword";
 import EmployeeList from "../Views/HomeScreens/EmployeeList";
-import { DashboardPrivateRoute } from "../Views/AuthScreens/PrivateRoute";
 import Dashboard from "../Views/HomeScreens/Dashboard";
-import SavedData from "../Views/HomeScreens/SavedData";
 import ViewReports from "../Views/HomeScreens/Reports/ViewReports";
+import SavedData from "../Views/HomeScreens/SavedData";
+import { authroute } from "./AuthRouting";
+import {
+  DashboardPrivateRoute,
+  EmployeePrivateRoute,
+} from "../Views/AuthScreens/PrivateRoute";
+
 export const Indexroute = [
   {
     element: <AuthLayout />,
@@ -40,25 +44,37 @@ export const Indexroute = [
         ],
       },
       {
-        path: "/product_list",
-        element: <DashboardLayout />,
+        element: <EmployeePrivateRoute />,
         children: [
           {
-            index: true,
-            element: <ListOfProducts />,
+            path: "/product_list",
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <ListOfProducts />,
+              },
+            ],
           },
         ],
       },
+
       {
-        path: "/inspection_criteria",
-        element: <DashboardLayout />,
+        element: <EmployeePrivateRoute />,
         children: [
           {
-            index: true,
-            element: <InpectionCriteria />,
+            path: "/inspection_criteria",
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <InpectionCriteria />,
+              },
+            ],
           },
         ],
       },
+
       {
         path: "export_page",
         element: <DashboardLayout />,
@@ -100,26 +116,56 @@ export const Indexroute = [
         path: "final_inspection_report",
         element: <Finalinspectionreport />,
       },
+      // {
+      //   path: "/change_password",
+      //   element: <DashboardLayout />,
+      //   children: [
+      //     {
+      //       index: true,
+      //       element: <ChangePassword />,
+      //     },
+      //   ],
+      // },
       {
-        path: "/change_password",
-        element: <DashboardLayout />,
+        element: <EmployeePrivateRoute />,
         children: [
           {
-            index: true,
-            element: <ChangePassword />,
+            path: "/change_password",
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <ChangePassword />,
+              },
+            ],
           },
         ],
       },
       {
-        path: "/employee_list",
-        element: <DashboardLayout />,
+        element: <EmployeePrivateRoute />,
         children: [
           {
-            index: true,
-            element: <EmployeeList />,
+            path: "/employee_list",
+            element: <DashboardLayout />,
+            children: [
+              {
+                index: true,
+                element: <EmployeeList />,
+              },
+            ],
           },
         ],
       },
+      // {
+      //   path: "/employee_list",
+      //   element: <DashboardLayout />,
+      //   children: [
+      //     {
+      //       index: true,
+      //       element: <EmployeeList />,
+      //     },
+      //   ],
+      // },
       {
         path: "saved_logs",
         element: <DashboardLayout />,

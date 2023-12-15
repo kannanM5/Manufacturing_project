@@ -13,7 +13,8 @@ export const SPECIAL_CHARACTER_REGEX = /^[A-Za-z0-9+-/*\s]+$/;
 export const ALPHA_NUM = /^[A-Za-z0-9\s]+$/;
 export const NUMBERANDDOT = /^[0-9.]*$/;
 export const NAMES = /^[A-Za-z\s]+$/;
-export const REGEXNUMBERSPATTERN = /^[0-9]+[-+*/±][0-9]+$/;
+export const REGEXNUMBERSPATTERN =
+  /^[0-9]+(\.[0-9]+)?[-+*/±][0-9]+(\.[0-9]+)?|[0-9]+(\.[0-9]+)?$/;
 
 export const getTableSNO = (page, size, index) => {
   return (page - 1) * size + (index + 1);

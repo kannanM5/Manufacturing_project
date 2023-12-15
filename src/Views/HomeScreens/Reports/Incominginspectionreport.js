@@ -1,33 +1,35 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
+import dayjs from "dayjs";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
+import Logo from "../../../Assets/Images/VTLogo.svg";
+import Commondate from "../../../Components/Commondate";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
+import { useFormik } from "formik";
+import { GlobalModal, Loader } from "../../../Components";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  CloseTab,
+  getCatchMsg,
+  getInvalidMsg,
+  getObserVationColorCode,
+} from "../../../Utility/GeneralUtils";
 import {
   addInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
 } from "../../../Services/Services";
-import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import { useLocation, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import {
-  CloseTab,
-  getCatchMsg,
-  getInvalidMsg,
-} from "../../../Utility/GeneralUtils";
-import { useFormik } from "formik";
-import { GlobalModal, Loader } from "../../../Components";
-import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-import dayjs from "dayjs";
-import Commondate from "../../../Components/Commondate";
-import * as Yup from "yup";
-import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
-import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   supplier_name: Yup.string().required("Name is required"),
   invoice_no: Yup.string().required("Name is required"),
   quantity: Yup.string().required("Name is required"),
+  final_status: Yup.number().required("Final status is required"),
 });
 var CryptoJS = require("crypto-js");
 
@@ -91,7 +93,7 @@ export default function Emptypage({ viewReportData }) {
       process: "",
       invoice_no: "",
       invoice_date: new Date(),
-      final_status: isFinalStatus,
+      final_status: null,
       quantity: "",
       datas: "",
       report_id: "",
@@ -110,24 +112,21 @@ export default function Emptypage({ viewReportData }) {
       }
     },
   });
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      // Your code to handle tab close or page refresh
-      const message = "Are you sure you want to leave?"; // Custom message
 
-      // Standard for most browsers
-      event.returnValue = message;
-      // For Internet Explorer
-      return message;
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     const message = "Are you sure you want to leave?";
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  //     event.returnValue = message;
+  //     return message;
+  //   };
 
-    // Clean up the event listener when the component is unmounted
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
   const tableHeadData = [
     {
       id: 1,
@@ -159,6 +158,40 @@ export default function Emptypage({ viewReportData }) {
     },
   ];
 
+  // const getObserVationColorCode = (spec, val) => {
+  //   const check = (/\s+/g, " ");
+  //   let data = val?.replace(check, "");
+  //   const getSpecialChar = ["+", "-", "*", "/", "±"];
+  //   if (NAMES.test(spec)) {
+  //     return "black";
+  //   } else if (REGEXNUMBERSPATTERN.test(spec)) {
+  //     const containsSpecialChar = getSpecialChar
+  //       .filter((char) => spec.includes(char))
+  //       .find((ele) => ele);
+  //     const temp = spec.split(containsSpecialChar);
+  //     const valueOne = temp[0];
+  //     const valueTwo = temp[1];
+  //     const AddValue = Number(valueOne) + Number(valueTwo);
+  //     const SubractValue = Number(valueOne) - Number(valueTwo);
+  //     if (containsSpecialChar === "+" && Number(AddValue) === Number(data)) {
+  //       return "black";
+  //     } else if (
+  //       containsSpecialChar === "-" &&
+  //       Number(SubractValue) === Number(data)
+  //     ) {
+  //       return "black";
+  //     } else if (
+  //       containsSpecialChar === "±" &&
+  //       Number(AddValue) >= Number(data) &&
+  //       Number(data) >= Number(SubractValue)
+  //     ) {
+  //       return "black";
+  //     }
+  //     return "red";
+  //   } else {
+  //     return "black";
+  //   }
+  // };
   // useEffect(() => {
   //   const handleBeforeUnload = (e) => {
   //     if (isShowModal) {
@@ -503,13 +536,17 @@ export default function Emptypage({ viewReportData }) {
           <table>
             <thead>
               <tr>
-                <th colSpan={18} className={classes.CompanyName}>
+                <th
+                  style={{ padding: "0 5px" }}
+                  colSpan={18}
+                  className={classes.CompanyName}
+                >
                   <div className={classes.rowAlignment}>
                     <div>
                       <img
                         src={Logo}
                         alt="logo"
-                        style={{ width: 50, height: 50 }}
+                        style={{ width: 40, height: 40 }}
                       />
                     </div>
                     <div className={classes.heading}>
@@ -571,7 +608,7 @@ export default function Emptypage({ viewReportData }) {
                       </span>
                     )}
                   </td>
-                  <th colSpan={1} className={classes.secondRowThirdColumn}>
+                  <th className={classes.secondRowThirdColumn}>
                     {head?.right}
                   </th>
                   <td colSpan={3} className={classes.staticHeading}>
@@ -690,6 +727,12 @@ export default function Emptypage({ viewReportData }) {
                       ? ele?.observation.map((inputs, inputIndex) => (
                           <td>
                             <input
+                              style={{
+                                color: getObserVationColorCode(
+                                  ele?.specification,
+                                  inputs
+                                ),
+                              }}
                               readOnly={viewReportData ? true : false}
                               className={classes.observationInput}
                               maxLength={10}
@@ -697,15 +740,11 @@ export default function Emptypage({ viewReportData }) {
                               value={inputs}
                               onChange={(event) => {
                                 const text = event.target.value;
-                                const alphabeticText = text.replace(
-                                  /[^A-Za-z0-9 ]/g,
-                                  ""
-                                );
-                                handleChangeValues(
-                                  alphabeticText,
-                                  index,
-                                  inputIndex
-                                );
+                                // const alphabeticText = text.replace(
+                                //   /[^A-Za-z0-9. ]/g,
+                                //   ""
+                                // );
+                                handleChangeValues(text, index, inputIndex);
                               }}
                             />
                           </td>
@@ -713,21 +752,23 @@ export default function Emptypage({ viewReportData }) {
                       : [...Array(10)].map((emptyInput, inputIndex) => (
                           <td key={inputIndex}>
                             <input
+                              style={{
+                                color: getObserVationColorCode(
+                                  ele?.specification,
+                                  emptyInput
+                                ),
+                              }}
                               readOnly={viewReportData ? true : false}
                               className={classes.observationInput}
                               type="text"
                               value={emptyInput ? emptyInput : ""}
                               onChange={(event) => {
                                 const text = event.target.value;
-                                const alphabeticText = text.replace(
-                                  /[^A-Za-z0-9 ]/g,
-                                  ""
-                                );
-                                handleChangeValues(
-                                  alphabeticText,
-                                  index,
-                                  inputIndex
-                                );
+                                // const alphabeticText = text.replace(
+                                //   /[^A-Za-z0-9. ]/g,
+                                //   ""
+                                // );
+                                handleChangeValues(text, index, inputIndex);
                               }}
                             />
                           </td>
@@ -777,7 +818,10 @@ export default function Emptypage({ viewReportData }) {
                         disabled={viewReportData ? true : false}
                         className={classes.checkBox}
                         type="checkbox"
-                        onClick={() => setisFinalstatus(1)}
+                        onClick={() => {
+                          setisFinalstatus(1);
+                          setFieldValue("final_status", 1);
+                        }}
                         checked={isFinalStatus == 1 ? true : false}
                       />
                       <p>Accepted</p>
@@ -788,11 +832,19 @@ export default function Emptypage({ viewReportData }) {
                         className={classes.checkBox}
                         type="checkbox"
                         checked={isFinalStatus == 0 ? true : false}
-                        onClick={() => setisFinalstatus(0)}
+                        onClick={() => {
+                          setisFinalstatus(0);
+                          setFieldValue("final_status", 0);
+                        }}
                       />
                       <p>Rejected</p>
                     </div>
                   </div>
+                  <p style={{ color: "red", padding: "0 90px" }}>
+                    {errors.final_status && touched.final_status
+                      ? errors.final_status
+                      : ""}
+                  </p>
                 </td>
               </tr>
               <tr>

@@ -7,6 +7,7 @@ import { getCookie } from "../Store/Storage/Cookie";
 import toast from "react-hot-toast";
 import { getCatchMsg } from "../Utility/GeneralUtils";
 import { employeeChangePassword } from "../Services/Services";
+import { useEmployeeId, useToken } from "../Utility/StoreData";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -22,7 +23,8 @@ const validationSchema = Yup.object().shape({
 
 function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
   const [loader, setloader] = useState(false);
-
+  const token = useToken();
+  const userId = useEmployeeId();
   const {
     values,
     handleChange,
@@ -42,15 +44,14 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
       handleEmployeeChangePassword(values);
     },
   });
-  const cookieData = getCookie("vt_enterprise_login");
 
   const handleEmployeeChangePassword = (data) => {
     setloader(true);
     let formData = new FormData();
-    formData.append("token", cookieData?.data?.token);
+    formData.append("token", token);
     formData.append("password", data?.password);
     formData.append("confirm_password", data?.repeat_password);
-    formData.append("user_id", cookieData?.data?.user_id);
+    formData.append("user_id", userId);
     formData.append("id", employeeId);
     employeeChangePassword(formData)
       .then((response) => {

@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import classes from "./UserProfile.module.css";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
-import { getCookie } from "../../Store/Storage/Cookie";
 import { superAdminChangePassword } from "../../Services/Services";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
@@ -76,30 +75,6 @@ function ChangePassword() {
         setloader(false);
       });
   };
-  // change password
-  //   const handleChangePassword = () => {
-  //     setloader(true);
-  //     let formData = new FormData();
-  //     formData.append("token", token);
-  //     formData.append("old_password", values.old_password);
-  //     formData.append("new_password", values.new_password);
-  //     formData.append("repeat_password", values.repeat_password);
-  //     changepassword(formData)
-  //       .then((res) => {
-  //         if (res.data.status === 1) {
-  //           toast.success(res.data.msg);
-  //           navigate(-1);
-  //         } else {
-  //           toast.error(res.data.msg);
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         toast.error(getCatchMsg(err));
-  //       })
-  //       .finally(() => {
-  //         setloader(false);
-  //       });
-  //   };
 
   return (
     <>

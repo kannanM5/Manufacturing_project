@@ -6,7 +6,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   height: calc(100vh - 65px);
-  background-image: url(../../Assets//Images//Png//nuts.png);
+  background-image: url(../../Assets//Images//nuts.png);
 }
 
 .DubpilcateDashboard p {
@@ -18,12 +18,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 5px;
+  /* padding: 0 5px; */
 }
 table .icons img {
   margin: 0 2px 0 2px;
-  width: 27px;
-  height: 27px;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
   padding: 3px;
   background-color: var(--inputBg);
@@ -44,8 +44,6 @@ table .icons img {
 }
 .listOfTable th {
   text-align: center;
-  /* background-color: rgb(197, 199, 199);
-   */
   height: 40px;
   background-color: rgba(0, 0, 0, 0.7);
 }
@@ -75,10 +73,6 @@ table .icons img {
 .listOfTable tbody td:last-child {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
-}
-.listOfTable tbody tr:nth-child(even) {
-  /* background-color: rgb(228, 231, 225, 0.4); */
-  /* background-color: rgb(209, 205, 205); */
 }
 .reportInsepection {
   width: 97%;
@@ -175,7 +169,7 @@ th {
 }
 .Dashboard .CompanyName {
   text-align: center;
-  padding: 10px 0;
+  /* padding: 5px 0; */
 }
 .Dashboard table thead th input {
   width: 100%;
@@ -211,7 +205,6 @@ th {
   color: red;
 }
 th {
-  /* font-family: var(--fontBold); */
   font-size: var(--textXs);
 }
 td {
@@ -223,7 +216,6 @@ td {
   width: 30%;
   border-radius: 8px;
   margin: auto;
-  /* box-shadow: var(--shadow); */
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   border: var(--inputBorder);
   background: #ffff;
@@ -231,7 +223,6 @@ td {
 
 /* export page  */
 .serachOptionConatiner {
-  /* border: var(--inputBorder); */
   margin-bottom: 20px;
   padding: 10px;
   background-color: white;

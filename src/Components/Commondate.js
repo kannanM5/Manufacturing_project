@@ -9,20 +9,10 @@ export default function Commondate({
   onChange,
   disabled = false,
   styles,
-  isFuture = true,
   title,
-  errorText,
-  fromDateValue,
   requiredText,
   borderNone = true,
 }) {
-  const disableDates = (date) => {
-    // Disable dates before the selected "from date"
-    if (fromDateValue) {
-      return date.isBefore(dayjs(fromDateValue).startOf("day"));
-    }
-    return false;
-  };
   return (
     <div className={classes.datePicker}>
       <p className={classes.title}>
@@ -42,10 +32,7 @@ export default function Commondate({
           border: borderNone ? "var(--inputBorder)" : "none",
           background: disabled ? "rgb(216 216 216 / 44%)" : "#fff",
         }}
-        // className={classes.borderinput}
-        disabledDate={disableDates}
       />
-      {/* {errorText ? <ErrorText msg={errorText.toString()} /> : null} */}
     </div>
   );
 }

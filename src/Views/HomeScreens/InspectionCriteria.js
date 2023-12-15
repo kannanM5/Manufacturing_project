@@ -16,6 +16,7 @@ import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import CustomPagination from "../../Components/CustomPagination";
 import NoDataFound from "../../Components/NoDataFound";
+import { getTableSNO } from "../../Utility/Constants";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -37,14 +38,11 @@ function InspectionCriteria() {
   const {
     handleSubmit,
     handleChange,
-    setFieldValue,
     values,
     errors,
     touched,
-    resetForm,
     setFieldError,
     setFieldTouched,
-    setValues,
   } = useFormik({
     initialValues: {
       process: "",
@@ -68,7 +66,7 @@ function InspectionCriteria() {
     criteriaListService(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setPage(response?.data?.data?.page - 1);
+          setPage(parseInt(response?.data?.data?.page) - 1);
           setlistInSpectionCriteria(response?.data?.data);
           // toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
@@ -222,7 +220,13 @@ function InspectionCriteria() {
                   {listInSpectionCriteria?.items.length > 0 ? (
                     listInSpectionCriteria?.items.map((products, index) => (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        <td>
+                          {getTableSNO(
+                            parseInt(listInSpectionCriteria?.page),
+                            10,
+                            index
+                          )}
+                        </td>
                         <td>{products?.characteristics}</td>
                         <td>{products?.specification}</td>
                         <td>{products?.units}</td>

@@ -1,29 +1,22 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
-import { GlobalModal, Loader } from "../../Components";
 import EditIcon from "../../Assets/Icons/SvgIcons/edit.svg";
-import {
-  useEmployeeId,
-  useEmployeeType,
-  useToken,
-} from "../../Utility/StoreData";
+import NoDataFound from "../../Components/NoDataFound";
+import CustomPagination from "../../Components/CustomPagination";
+import AddProducts from "../../Modals/AddProducts";
+import CustomToolTip from "../../Components/CustomToolTip";
+import { GlobalModal, Loader } from "../../Components";
 import { productsList } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import AddProducts from "../../Modals/AddProducts";
-import CustomPagination from "../../Components/CustomPagination";
-import CustomToolTip from "../../Components/CustomToolTip";
-import {
-  NAMES,
-  REGEXNUMBERSPATTERN,
-  getTableSNO,
-} from "../../Utility/Constants";
-import NoDataFound from "../../Components/NoDataFound";
+import { getTableSNO } from "../../Utility/Constants";
+import { useEmployeeId, useToken } from "../../Utility/StoreData";
+import { EmployeePrivateRoute } from "../AuthScreens/PrivateRoute";
+import { getCookie } from "../../Store/Storage/Cookie";
 
 function ListOfProducts() {
   const token = useToken();
   const userId = useEmployeeId();
-  const userType = useEmployeeType();
   const [page, setPage] = useState(0);
   const [loader, setloader] = useState(false);
   const [listOfProducts, setListOfProducts] = useState();
@@ -51,6 +44,10 @@ function ListOfProducts() {
     },
   ];
 
+  const handleDownload = () => {
+    window.open("http://192.168.0.115/vtenterprise/uploads/example.xlsx");
+  };
+
   const handleGetProductsList = (page = 1, limit = 10) => {
     setloader(true);
     const formData = new FormData();
@@ -60,7 +57,7 @@ function ListOfProducts() {
     productsList(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setPage(response?.data?.data?.page - 1);
+          setPage(parseInt(response?.data?.data?.page) - 1);
           setListOfProducts(response?.data?.data);
           // toast.success(response?.data?.msg);
         }
@@ -73,44 +70,14 @@ function ListOfProducts() {
       });
   };
 
-  const handleCheck = (spec, data) => {
-    const getSpecialChar = ["+", "-", "*", "/", "±"];
-    if (NAMES.test(spec)) {
-      return "black";
-    } else if (REGEXNUMBERSPATTERN.test(spec)) {
-      const containsSpecialChar = getSpecialChar
-        .filter((char) => spec.includes(char))
-        .find((ele) => ele);
-      const temp = spec.split(containsSpecialChar);
-      const valueOne = temp[0];
-      const valueTwo = temp[1];
-      const AddValue = parseInt(valueOne) + parseInt(valueTwo);
-      console.log(containsSpecialChar, AddValue, "VALUEEEE");
-      const SubractValue = parseInt(valueOne) - parseInt(valueTwo);
-      if (
-        containsSpecialChar === "+" &&
-        parseInt(AddValue) === parseInt(data)
-      ) {
-        return "BLACK1";
-      } else if (
-        containsSpecialChar === "-" &&
-        parseInt(SubractValue) === parseInt(data)
-      ) {
-        return "BLACK2";
-      } else if (
-        containsSpecialChar === "±" &&
-        parseInt(AddValue) >= parseInt(data) &&
-        parseInt(data) >= parseInt(SubractValue)
-      ) {
-        return "BLACK3";
-      }
-      return "check red";
-    } else {
-      return "whole else";
-    }
-  };
+  // useEffect(() => {
+  //   const data = getCookie("vt_enterprise_login");
+  //   console.log(data, "DATA");
+  // }, []);
+
   return (
     <>
+      {/* <EmployeePrivateRoute /> */}
       {loader ? <Loader /> : null}
       <PageHeader
         secondBtn={false}
@@ -152,7 +119,7 @@ function ListOfProducts() {
           }}
         />
       </GlobalModal>
-      <div style={{ margin: "20px 0" }}>
+      <div className={classes.insepectionCreteria}>
         <div className={`table-responsive ${classes.Dashboard}`}>
           <table className={classes.listOfTable}>
             <thead className={classes.NormalTable}>
@@ -170,7 +137,9 @@ function ListOfProducts() {
               {listOfProducts?.items.length > 0 ? (
                 listOfProducts?.items.map((products, index) => (
                   <tr key={index}>
-                    <td>{getTableSNO(listOfProducts?.page, 10, index)}</td>
+                    <td>
+                      {getTableSNO(parseInt(listOfProducts?.page), 10, index)}
+                    </td>
                     <td>{products?.part_no}</td>
                     <td>{products?.part_name}</td>
                     <td>{products?.customer}</td>
@@ -208,6 +177,8 @@ function ListOfProducts() {
           </table>
         </div>
       </div>
+
+      <button onClick={handleDownload}>Download</button>
       {listOfProducts?.totalPage > 1 && (
         <CustomPagination
           pageCount={listOfProducts?.totalPage}
@@ -218,10 +189,6 @@ function ListOfProducts() {
           }}
         />
       )}
-      {handleCheck("10+2", 12)}
-      {handleCheck("10-2", 8)}
-      {handleCheck("10±2", 13)}
-      {handleCheck("10±2", 10)}
     </>
   );
 }

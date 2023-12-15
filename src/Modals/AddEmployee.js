@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
+import CustomDropDown from "../Components/CustomDropDown";
+import toast from "react-hot-toast";
 import * as Yup from "yup";
+import { useFormik } from "formik";
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import { EMAIL_REGEX } from "../Utility/Constants";
 import { userSignUp } from "../Services/Services";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
-import toast from "react-hot-toast";
 import { getCookie } from "../Store/Storage/Cookie";
-import CustomDropDown from "../Components/CustomDropDown";
+import { useEmployeeId, useEmployeeType, useToken } from "../Utility/StoreData";
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -33,6 +34,9 @@ const validationSchema = Yup.object({
 });
 
 function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
+  const token = useToken();
+  const userId = useEmployeeId();
+  const userType = useEmployeeType();
   const {
     handleSubmit,
     handleChange,
@@ -60,26 +64,26 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   });
 
   const [loader, setloader] = useState(false);
-  const userType = [
+  const Items = [
     {
-      key: 1,
+      key: 2,
       label: "Admin",
     },
     {
-      key: 2,
+      key: 3,
       label: "Line Inspector",
     },
   ];
-
-  const cookieData = getCookie("vt_enterprise_login");
-  console.log(cookieData?.data, "cookieData");
-
+  const loginUserData = getCookie("vt_enterprise_login")
+    ? getCookie("vt_enterprise_login")?.data
+    : null;
+  const userTypes = loginUserData?.user_type === 1 ? Items : Items.slice(1);
   const handleSignup = (data) => {
     setloader(true);
     let formData = new FormData();
-    formData.append("token", cookieData?.data?.token);
-    formData.append("id", cookieData?.data?.user_id);
-    formData.append("created_by", cookieData?.data?.user_type);
+    formData.append("token", token);
+    formData.append("id", userId);
+    formData.append("created_by", userType);
     formData.append("name", data?.name);
     formData.append("email", data?.email);
     formData.append("password", data?.password);
@@ -87,7 +91,6 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
     formData.append("user_type", data?.type);
     userSignUp(formData)
       .then((response) => {
-        console.log(response, "Response employee list");
         if (response?.data?.status === 1) {
           toast.success(response?.data?.msg);
           modalClose();
@@ -274,9 +277,9 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           <CustomDropDown
             placeholderText={"user type"}
             requiredText="*"
-            items={[...userType]}
+            items={[...userTypes]}
             value={
-              [...userType].find((ele) => ele.key === parseInt(values.type))
+              [...userTypes].find((ele) => ele.key === parseInt(values.type))
                 ?.label
             }
             title="User Type"

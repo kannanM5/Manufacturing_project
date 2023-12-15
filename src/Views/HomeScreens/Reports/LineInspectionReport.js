@@ -1,35 +1,36 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
+import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
+import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
+import Logo from "../../../Assets/Images/VTLogo.svg";
+import Commondate from "../../../Components/Commondate";
+import dayjs from "dayjs";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
+import { useLocation, useNavigate } from "react-router-dom";
+import { GlobalModal, Loader } from "..//../../Components";
 import {
   CloseTab,
   getCatchMsg,
   getInvalidMsg,
+  getObserVationColorCode,
 } from "../../../Utility/GeneralUtils";
-import toast from "react-hot-toast";
 import {
   addInspectionReportList,
-  editInspectionReportList,
   getInspectionReportList,
   savedDataList,
   updateInspectionReportList,
 } from "../../../Services/Services";
-import { useFormik } from "formik";
-import { useEmployeeId, useToken } from "../../../Utility/StoreData";
-import { useLocation, useNavigate } from "react-router-dom";
-import Logo from "../../../Assets/Images/Png/VTLogo.svg";
-import Commondate from "../../../Components/Commondate";
-import dayjs from "dayjs";
-import * as Yup from "yup";
-import { GlobalModal, Loader } from "..//../../Components";
-import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
-import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 
 const validationSchema = Yup.object({
   mvc_no: Yup.string().required("Machine number is required"),
   operator_name: Yup.string().required("Operator name is required"),
   report_shift: Yup.string().required("Shift is required"),
   inspector_name: Yup.string().required("Name is required"),
+  final_status: Yup.number().required("Final status is required"),
 });
 var CryptoJS = require("crypto-js");
 
@@ -69,7 +70,7 @@ function LineInspectionReport({ viewReportData }) {
       inspector_name: "",
       report_header_status: Array(8).fill(null),
       report_header_date: new Date(),
-      final_status: isFinalStatus,
+      final_status: null,
       quantity: "",
       report_id: "",
       datas: "",
@@ -474,13 +475,17 @@ function LineInspectionReport({ viewReportData }) {
             <table>
               <thead>
                 <tr>
-                  <th colSpan={16} className={classes.CompanyName}>
+                  <th
+                    style={{ paddingLeft: "5px" }}
+                    colSpan={16}
+                    className={classes.CompanyName}
+                  >
                     <div className={classes.rowAlignment}>
                       <div>
                         <img
                           src={Logo}
                           alt="logo"
-                          style={{ width: 50, height: 50 }}
+                          style={{ width: 40, height: 40 }}
                         />
                       </div>
                       <div className={classes.heading}>
@@ -525,27 +530,17 @@ function LineInspectionReport({ viewReportData }) {
                           value={head?.leftData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
+                            const alphabeticText =
+                              text.replace + (/[^A-Za-z0-9 ]/g, "");
                             handleChange("mvc_no")(alphabeticText);
                           }}
                         />
                       ) : (
-                        <span
-                          style={
-                            {
-                              // paddingLeft: "10px",
-                            }
-                          }
-                        >
-                          {head?.leftData}
-                        </span>
+                        <span>{head?.leftData}</span>
                       )}
                     </th>
                     <th colSpan={2}>{head?.right}</th>
-                    <th colSpan={4}>
+                    <th colSpan={4} style={{ paddingLeft: "0" }}>
                       {index === 0 ? (
                         <input
                           readOnly={viewReportData ? true : false}
@@ -625,18 +620,14 @@ function LineInspectionReport({ viewReportData }) {
                   </tr>
                 ))}
                 <tr className={classes.secondHead}>
-                  <th colSpan={1} rowSpan={2} className={classes.serialNo}>
+                  <th rowSpan={2} className={classes.serialNo}>
                     S.No
                   </th>
-                  <th colSpan={1} rowSpan={2}>
-                    Characteristics
-                  </th>
+                  <th rowSpan={2}>Characteristics</th>
                   <th colSpan={1} rowSpan={2}>
                     Specifications
                   </th>
-                  <th colSpan={1} rowSpan={2}>
-                    Units
-                  </th>
+                  <th rowSpan={2}>Units</th>
                   <th colSpan={1} rowSpan={2}>
                     Method Of
                     <br /> Check
@@ -674,6 +665,12 @@ function LineInspectionReport({ viewReportData }) {
                       <td>{ele?.method_of_check}</td>
                       <td>
                         <input
+                          style={{
+                            color: getObserVationColorCode(
+                              ele?.specification,
+                              ele?.first_half
+                            ),
+                          }}
                           readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
@@ -693,6 +690,12 @@ function LineInspectionReport({ viewReportData }) {
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
+                                style={{
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    inputs
+                                  ),
+                                }}
                                 readOnly={viewReportData ? true : false}
                                 className={classes.observationInput}
                                 maxLength={10}
@@ -700,15 +703,11 @@ function LineInspectionReport({ viewReportData }) {
                                 value={inputs}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
+                                  // const alphabeticText = text.replace(
+                                  //   /[^A-Za-z0-9 ]/g,
+                                  //   ""
+                                  // );
+                                  handleChangeValues(text, index, inputIndex);
                                 }}
                               />
                             </td>
@@ -717,30 +716,34 @@ function LineInspectionReport({ viewReportData }) {
                             <td key={inputIndex}>
                               <input
                                 readOnly={viewReportData ? true : false}
-                                // style={{
-                                //   color: getColor(index, inputIndex),
-                                // }}
+                                style={{
+                                  color: getObserVationColorCode(
+                                    ele?.specification,
+                                    emptyInput
+                                  ),
+                                }}
                                 className={classes.observationInput}
                                 type="text"
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
+                                  // const alphabeticText = text.replace(
+                                  //   /[^A-Za-z0-9 ]/g,
+                                  //   ""
+                                  // );
+                                  handleChangeValues(text, index, inputIndex);
                                 }}
                               />
                             </td>
                           ))}
-
                       <td>
                         <input
+                          style={{
+                            color: getObserVationColorCode(
+                              ele?.specification,
+                              ele?.last_half
+                            ),
+                          }}
                           readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
                           maxLength={20}
@@ -813,7 +816,10 @@ function LineInspectionReport({ viewReportData }) {
                           disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
-                          onClick={() => setisFinalstatus(1)}
+                          onClick={() => {
+                            setisFinalstatus(1);
+                            setFieldValue("final_status", 1);
+                          }}
                           checked={isFinalStatus == 1 ? true : false}
                         />
                         <p>Accepted</p>
@@ -824,11 +830,19 @@ function LineInspectionReport({ viewReportData }) {
                           className={classes.checkBox}
                           type="checkbox"
                           checked={isFinalStatus == 0 ? true : false}
-                          onClick={() => setisFinalstatus(0)}
+                          onClick={() => {
+                            setisFinalstatus(0);
+                            setFieldValue("final_status", 0);
+                          }}
                         />
                         <p>Rejected</p>
                       </div>
                     </div>
+                    <p style={{ color: "red", padding: "0 90px" }}>
+                      {errors.final_status && touched.final_status
+                        ? errors.final_status
+                        : ""}
+                    </p>
                   </td>
                 </tr>
                 <tr>
