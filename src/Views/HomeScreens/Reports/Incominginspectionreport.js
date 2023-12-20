@@ -45,13 +45,25 @@ export default function Emptypage({ viewReportData }) {
   const [reportData, setReportData] = useState(null);
   const [isShowModal, setIshowModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
-
+  // child tab close parent tab is refresh
+  useEffect(() => {
+    if (!viewReportData) {
+      const handleClose = () => {
+        window.opener.postMessage("childTabClosed", "*");
+      };
+      window.addEventListener("beforeunload", handleClose);
+      return () => {
+        window.removeEventListener("beforeunload", handleClose);
+      };
+    }
+  }, []);
+  //view report set data
   useEffect(() => {
     if (!reportData) {
       setReportData(viewReportData);
     }
   }, [viewReportData]);
-
+  // url crypto js get value
   useEffect(() => {
     if (!viewReportData) {
       const urlParams = new URLSearchParams(location.search);
@@ -62,10 +74,10 @@ export default function Emptypage({ viewReportData }) {
       setUrlValues(decryptedData);
     }
   }, [location.search]);
-
+  // when api call is edit/add
   useEffect(() => {
     if (urlValues) {
-      if (urlValues?.buttonStatus == "Edit") {
+      if (urlValues?.buttonStatus === "Edit") {
         handleEditReport();
       } else {
         handleGetProductsList();
@@ -127,6 +139,7 @@ export default function Emptypage({ viewReportData }) {
   //     window.removeEventListener("beforeunload", handleBeforeUnload);
   //   };
   // }, []);
+
   const tableHeadData = [
     {
       id: 1,
@@ -158,40 +171,6 @@ export default function Emptypage({ viewReportData }) {
     },
   ];
 
-  // const getObserVationColorCode = (spec, val) => {
-  //   const check = (/\s+/g, " ");
-  //   let data = val?.replace(check, "");
-  //   const getSpecialChar = ["+", "-", "*", "/", "±"];
-  //   if (NAMES.test(spec)) {
-  //     return "black";
-  //   } else if (REGEXNUMBERSPATTERN.test(spec)) {
-  //     const containsSpecialChar = getSpecialChar
-  //       .filter((char) => spec.includes(char))
-  //       .find((ele) => ele);
-  //     const temp = spec.split(containsSpecialChar);
-  //     const valueOne = temp[0];
-  //     const valueTwo = temp[1];
-  //     const AddValue = Number(valueOne) + Number(valueTwo);
-  //     const SubractValue = Number(valueOne) - Number(valueTwo);
-  //     if (containsSpecialChar === "+" && Number(AddValue) === Number(data)) {
-  //       return "black";
-  //     } else if (
-  //       containsSpecialChar === "-" &&
-  //       Number(SubractValue) === Number(data)
-  //     ) {
-  //       return "black";
-  //     } else if (
-  //       containsSpecialChar === "±" &&
-  //       Number(AddValue) >= Number(data) &&
-  //       Number(data) >= Number(SubractValue)
-  //     ) {
-  //       return "black";
-  //     }
-  //     return "red";
-  //   } else {
-  //     return "black";
-  //   }
-  // };
   // useEffect(() => {
   //   const handleBeforeUnload = (e) => {
   //     if (isShowModal) {
@@ -221,6 +200,7 @@ export default function Emptypage({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
+          CloseTab();
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
           } else {
@@ -235,7 +215,7 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
-
+  // edit or add api call and get resport data set values in formik
   useEffect(() => {
     if (reportData) {
       let tempData = [...reportData?.processData];
@@ -248,11 +228,17 @@ export default function Emptypage({ viewReportData }) {
               typeof ele?.observation !== "string"
                 ? ele?.observation
                 : JSON.parse(ele?.observation),
+            status: ele?.status ?? null,
+            remark: ele?.remark ?? null,
           };
         } else {
           return {
             ...ele,
-            observation: ele?.observation ? ele?.observation : "",
+            observation: ele?.observation
+              ? ele?.observation
+              : Array(10).fill(null),
+            status: ele?.status ?? null,
+            remark: ele?.remark ?? null,
           };
         }
       });
@@ -272,6 +258,7 @@ export default function Emptypage({ viewReportData }) {
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
         report_id: reportData?.productData?.report_id,
+        final_status: reportData?.productData?.final_status ?? null,
       });
       setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
@@ -291,7 +278,12 @@ export default function Emptypage({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          CloseTab();
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -324,7 +316,7 @@ export default function Emptypage({ viewReportData }) {
         status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -387,7 +379,7 @@ export default function Emptypage({ viewReportData }) {
         status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -723,56 +715,28 @@ export default function Emptypage({ viewReportData }) {
                     <td>{ele?.specification}</td>
                     <td>{ele?.units}</td>
                     <td>{ele?.method_of_check}</td>
-                    {ele?.observation !== ""
-                      ? ele?.observation.map((inputs, inputIndex) => (
-                          <td>
-                            <input
-                              style={{
-                                color: getObserVationColorCode(
-                                  ele?.specification,
-                                  inputs
-                                ),
-                              }}
-                              readOnly={viewReportData ? true : false}
-                              className={classes.observationInput}
-                              maxLength={10}
-                              type="text"
-                              value={inputs}
-                              onChange={(event) => {
-                                const text = event.target.value;
-                                // const alphabeticText = text.replace(
-                                //   /[^A-Za-z0-9. ]/g,
-                                //   ""
-                                // );
-                                handleChangeValues(text, index, inputIndex);
-                              }}
-                            />
-                          </td>
-                        ))
-                      : [...Array(10)].map((emptyInput, inputIndex) => (
-                          <td key={inputIndex}>
-                            <input
-                              style={{
-                                color: getObserVationColorCode(
-                                  ele?.specification,
-                                  emptyInput
-                                ),
-                              }}
-                              readOnly={viewReportData ? true : false}
-                              className={classes.observationInput}
-                              type="text"
-                              value={emptyInput ? emptyInput : ""}
-                              onChange={(event) => {
-                                const text = event.target.value;
-                                // const alphabeticText = text.replace(
-                                //   /[^A-Za-z0-9. ]/g,
-                                //   ""
-                                // );
-                                handleChangeValues(text, index, inputIndex);
-                              }}
-                            />
-                          </td>
-                        ))}
+                    {ele?.observation.map((inputs, inputIndex) => (
+                      <td>
+                        <input
+                          style={{
+                            color: getObserVationColorCode(
+                              ele?.specification,
+                              inputs
+                            ),
+                          }}
+                          readOnly={viewReportData ? true : false}
+                          className={classes.observationInput}
+                          maxLength={10}
+                          type="text"
+                          value={inputs}
+                          onChange={(event) => {
+                            const text = event.target.value;
+
+                            handleChangeValues(text, index, inputIndex);
+                          }}
+                        />
+                      </td>
+                    ))}
                     <td>
                       <input
                         readOnly={viewReportData ? true : false}
@@ -822,7 +786,7 @@ export default function Emptypage({ viewReportData }) {
                           setisFinalstatus(1);
                           setFieldValue("final_status", 1);
                         }}
-                        checked={isFinalStatus == 1 ? true : false}
+                        checked={parseInt(isFinalStatus) === 1 ? true : false}
                       />
                       <p>Accepted</p>
                     </div>
@@ -831,7 +795,7 @@ export default function Emptypage({ viewReportData }) {
                         disabled={viewReportData ? true : false}
                         className={classes.checkBox}
                         type="checkbox"
-                        checked={isFinalStatus == 0 ? true : false}
+                        checked={parseInt(isFinalStatus) === 0 ? true : false}
                         onClick={() => {
                           setisFinalstatus(0);
                           setFieldValue("final_status", 0);

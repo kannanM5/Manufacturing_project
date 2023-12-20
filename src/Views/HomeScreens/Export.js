@@ -10,12 +10,17 @@ import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
 import classes from "./Management.module.css";
 import * as Yup from "yup";
+import toast from "react-hot-toast";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
 import { useFormik } from "formik";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import { getExportList } from "../../Services/Services";
+import {
+  exportReportService,
+  getExportList,
+  unlinkExcelTableReport,
+} from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { getTableSNO } from "../../Utility/Constants";
+import { DOWNLOAD_URL, getTableSNO } from "../../Utility/Constants";
 import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
@@ -36,7 +41,7 @@ const dropdownItem = [
     label: "Incoming Inspection Report",
   },
   {
-    id: 2,
+    key: 2,
     label: "Setting Approval Report",
   },
   {
@@ -56,6 +61,7 @@ function Export() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const userId = useEmployeeId();
+  console.log(userId, "User ID");
   const [exportDataList, setexportDataList] = useState();
 
   const {
@@ -86,6 +92,7 @@ function Export() {
   useEffect(() => {
     if (token) handleGetExportDataList();
   }, [token]);
+
   const handleGetExportDataList = (
     page = 1,
     limit = 10,
@@ -121,9 +128,60 @@ function Export() {
         setloader(false);
       });
   };
+
   const reportType = (id) => {
-    return [...dropdownItem].find((ele) => ele.key === parseInt(id))?.label;
+    console.log(id, "IDDDDD");
+    let obj = [...dropdownItem].find((ele) => ele.key === parseInt(id));
+    return obj?.label;
   };
+
+  const handleUnLinkDownloadExportReport = (data) => {
+    const formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("filename", data);
+    unlinkExcelTableReport(formData)
+      .then((response) => {
+        console.log("Success");
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDownloadExportReport = (data) => {
+    setloader(true);
+    const formData = new FormData();
+    formData.append("token", token);
+    formData.append("user_id", userId);
+    formData.append("process_id", data?.process_id);
+    formData.append("product_id", data?.product_id);
+    formData.append("report_id", data?.report_id);
+    formData.append("report_type", data?.report_type);
+    console.log(formData, "FORMDATRA");
+    exportReportService(formData)
+      .then((response) => {
+        if (response?.data?.status === 1) {
+          let downloadUrl = `${DOWNLOAD_URL}${response?.data?.filename}`;
+
+          if (downloadUrl) {
+            const linkSource = downloadUrl;
+            const downloadLink = document.createElement("a");
+            downloadLink.href = linkSource;
+            downloadLink.click();
+            // window.open(downloadUrl);
+          }
+          handleUnLinkDownloadExportReport(response?.data?.filename);
+        } else if (response?.data?.status === 0) {
+          toast.error(response?.data?.msg);
+        }
+      })
+      .catch((err) => {
+        getCatchMsg(err);
+      })
+      .finally(() => {
+        setloader(false);
+      });
+  };
+
   return (
     <>
       <PageHeader
@@ -331,7 +389,11 @@ function Export() {
                           />
                         </CustomToolTip>
                         <CustomToolTip title={"Download"}>
-                          <img src={DownloadIcon} alt="Download icon" />
+                          <img
+                            src={DownloadIcon}
+                            alt="Download icon"
+                            onClick={() => handleDownloadExportReport(ele)}
+                          />
                         </CustomToolTip>
                       </div>
                     </td>

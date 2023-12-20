@@ -4,21 +4,11 @@
   top: 0;
   z-index: 100;
   width: 100%;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; */
   background-color: white;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
-.tablist {
-  height: 55px;
-  display: flex;
-  margin: 0 10px;
-  align-items: center;
-}
-.tablist p {
-  padding: 0 10px;
-  color: black;
-  font-family: var(--fontRegular);
-}
 .content .child2 {
   height: 65px;
   align-items: center;
@@ -34,16 +24,7 @@
 .content img {
   cursor: pointer;
 }
-.item {
-  padding: 12px 15px;
-  position: relative;
-}
-.item:active {
-  background-color: rgb(237 237 237) !important;
-}
-.item:active p {
-  color: black !important;
-}
+
 .borderBottom {
   width: 83%;
   height: 1px;
@@ -52,45 +33,12 @@
   position: absolute;
   z-index: 10000;
 }
-.perofile_icons {
-  display: flex;
-}
-.perofile_icons img,
-.profileLogout img {
-  margin-right: 10px;
-}
-.perofile_icons p,
-.profileLogout p {
-  font-size: var(--textXs);
-  font-weight: var(--fontWs);
-  font-family: var(--fontRegular);
-}
-.userDropdown {
-  background: transparent !important;
-  border: none !important;
-  margin-top: 21px !important;
-}
-.dropdown button {
-  display: flex !important;
-  height: 50px !important;
-  margin-top: 0px !important;
-}
-.userDropdown {
-  background: transparent !important;
-  border: none !important;
-  margin-top: 21px !important;
-}
-.user_image {
-  margin: 1px 8px 0 0;
-  border-radius: 50%;
-  width: 40px;
-  pointer-events: none;
-  height: 40px;
-}
+
 .child3 {
   display: flex;
   font-family: var(--fontRegular);
   margin-bottom: 0px;
+  justify-content: space-between;
 }
 .user_name {
   padding-left: 10px;
@@ -99,12 +47,7 @@
   font-family: var(--fontRegular);
   color: white;
 }
-.user_id {
-  font-size: 16px;
-  font-weight: var(--fontWs);
-  font-family: var(--fontRegular);
-  color: black;
-}
+
 .nameContainer {
   justify-content: center;
   display: flex;
@@ -134,17 +77,6 @@
   color: #fff !important;
 }
 
-/* .tabContent:hover {
-  background-color: rgb(243, 239, 239) !important;
-  border-radius: 10px !important;
-  color: white;
-} */
-.profileLogout {
-  display: flex;
-  flex-direction: column;
-  border-bottom: none;
-  padding-bottom: 0;
-}
 .menu {
   display: none;
 }
@@ -177,17 +109,11 @@
   height: 23px;
   margin-right: 10px;
 }
-.menubar_dropdown img {
-  margin-left: 25px;
-}
 
-.menuContainer li {
-  padding-top: 10px !important;
-  padding-bottom: 10px !important;
-}
 .menu h4 {
   margin-bottom: 0 !important;
 }
+
 @media (min-width: 992px) {
   .header .child2 {
     margin-right: 0;
@@ -268,5 +194,11 @@
   .child3 img {
     border-radius: 50%;
     border: 2px solid white;
+  }
+}
+
+@media (min-width: 991px) and (max-width: 1200px) {
+  .content h5 {
+    display: none;
   }
 }

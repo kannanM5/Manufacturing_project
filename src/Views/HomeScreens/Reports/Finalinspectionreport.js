@@ -81,9 +81,22 @@ function FinalInspectionReport({ viewReportData }) {
       }
     },
   });
+
+  // child tab close parent tab is refresh
+  useEffect(() => {
+    if (!viewReportData) {
+      const handleClose = () => {
+        window.opener.postMessage("childTabClosed", "*");
+      };
+      window.addEventListener("beforeunload", handleClose);
+      return () => {
+        window.removeEventListener("beforeunload", handleClose);
+      };
+    }
+  }, []);
+
   const getColor = () => {
     const tempData = [...values.datas];
-
     const getCode = tempData
       .map((ele) => ele?.observation)
       .some((text) => text !== "");
@@ -119,11 +132,17 @@ function FinalInspectionReport({ viewReportData }) {
           return {
             ...ele,
             observation: JSON.parse(ele?.observation),
+            status: ele?.status ?? "",
+            remark: ele?.remark ?? "",
           };
         } else {
           return {
             ...ele,
-            observation: ele?.observation ? ele?.observation : "",
+            observation: ele?.observation
+              ? ele?.observation
+              : Array(10).fill(null),
+            status: ele?.status ?? "",
+            remark: ele?.remark ?? "",
           };
         }
       });
@@ -149,7 +168,7 @@ function FinalInspectionReport({ viewReportData }) {
   }, [reportData, viewReportData]);
   useEffect(() => {
     if (urlValues) {
-      if (urlValues?.buttonStatus == "Edit") {
+      if (urlValues?.buttonStatus === "Edit") {
         handleEditReport();
       } else {
         handleGetProductsList();
@@ -170,6 +189,7 @@ function FinalInspectionReport({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
+          CloseTab();
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
           } else {
@@ -198,7 +218,12 @@ function FinalInspectionReport({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          CloseTab();
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -231,7 +256,7 @@ function FinalInspectionReport({ viewReportData }) {
         status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -295,7 +320,7 @@ function FinalInspectionReport({ viewReportData }) {
         status: ele?.status ? ele?.status : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -584,64 +609,35 @@ function FinalInspectionReport({ viewReportData }) {
                       <td>{ele?.specification}</td>
                       <td>{ele?.units}</td>
                       <td>{ele?.method_of_check}</td>
-                      {ele?.observation !== ""
-                        ? ele?.observation.map((inputs, inputIndex) => (
-                            <td>
-                              <input
-                                style={{
-                                  color: getObserVationColorCode(
-                                    ele?.specification,
-                                    inputs
-                                  ),
-                                }}
-                                readOnly={viewReportData ? true : false}
-                                className={classes.observationInput}
-                                maxLength={10}
-                                type="text"
-                                value={inputs}
-                                onChange={(event) => {
-                                  const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
-                                }}
-                              />
-                            </td>
-                          ))
-                        : [...Array(10)].map((emptyInput, inputIndex) => (
-                            <td key={inputIndex}>
-                              <input
-                                readOnly={viewReportData ? true : false}
-                                style={{
-                                  color: getObserVationColorCode(
-                                    ele?.specification,
-                                    emptyInput
-                                  ),
-                                }}
-                                className={classes.observationInput}
-                                type="text"
-                                value={emptyInput ? emptyInput : ""}
-                                onChange={(event) => {
-                                  const text = event.target.value;
-                                  const alphabeticText = text.replace(
-                                    /[^A-Za-z0-9 ]/g,
-                                    ""
-                                  );
-                                  handleChangeValues(
-                                    alphabeticText,
-                                    index,
-                                    inputIndex
-                                  );
-                                }}
-                              />
-                            </td>
-                          ))}
+                      {ele?.observation.map((inputs, inputIndex) => (
+                        <td>
+                          <input
+                            style={{
+                              color: getObserVationColorCode(
+                                ele?.specification,
+                                inputs
+                              ),
+                            }}
+                            readOnly={viewReportData ? true : false}
+                            className={classes.observationInput}
+                            maxLength={10}
+                            type="text"
+                            value={inputs}
+                            onChange={(event) => {
+                              const text = event.target.value;
+                              const alphabeticText = text.replace(
+                                /[^A-Za-z0-9 ]/g,
+                                ""
+                              );
+                              handleChangeValues(
+                                alphabeticText,
+                                index,
+                                inputIndex
+                              );
+                            }}
+                          />
+                        </td>
+                      ))}
                       <td>
                         <input
                           readOnly={viewReportData ? true : false}

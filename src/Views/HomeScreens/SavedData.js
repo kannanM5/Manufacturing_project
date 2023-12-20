@@ -62,11 +62,11 @@ function SavedData() {
   });
 
   const getReportType = (type) => {
-    if (type == 1) {
+    if (parseInt(type) === 1) {
       return "Incoming Inspection Report";
-    } else if (type == 2) {
+    } else if (parseInt(type) === 2) {
       return "Setting Approval Report";
-    } else if (type == 3) {
+    } else if (parseInt(type) === 3) {
       return "Line Inspection Report";
     } else {
       return "'Final Inspection Report";
@@ -237,6 +237,18 @@ function SavedData() {
         });
       });
   };
+  //child tab is close parent is refresh function
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data === "childTabClosed") {
+        window.location.reload();
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   return (
     <>

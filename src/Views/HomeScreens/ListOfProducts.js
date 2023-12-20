@@ -11,8 +11,6 @@ import { productsList } from "../../Services/Services";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { getTableSNO } from "../../Utility/Constants";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { EmployeePrivateRoute } from "../AuthScreens/PrivateRoute";
-import { getCookie } from "../../Store/Storage/Cookie";
 
 function ListOfProducts() {
   const token = useToken();
@@ -28,25 +26,6 @@ function ListOfProducts() {
   useEffect(() => {
     if (token) handleGetProductsList();
   }, [token]);
-
-  const dropData = [
-    {
-      key: "1",
-      label: "employee",
-    },
-    {
-      key: "2",
-      label: "change",
-    },
-    {
-      key: "3",
-      label: "logout",
-    },
-  ];
-
-  const handleDownload = () => {
-    window.open("http://192.168.0.115/vtenterprise/uploads/example.xlsx");
-  };
 
   const handleGetProductsList = (page = 1, limit = 10) => {
     setloader(true);
@@ -70,14 +49,8 @@ function ListOfProducts() {
       });
   };
 
-  // useEffect(() => {
-  //   const data = getCookie("vt_enterprise_login");
-  //   console.log(data, "DATA");
-  // }, []);
-
   return (
     <>
-      {/* <EmployeePrivateRoute /> */}
       {loader ? <Loader /> : null}
       <PageHeader
         secondBtn={false}
@@ -178,7 +151,6 @@ function ListOfProducts() {
         </div>
       </div>
 
-      <button onClick={handleDownload}>Download</button>
       {listOfProducts?.totalPage > 1 && (
         <CustomPagination
           pageCount={listOfProducts?.totalPage}

@@ -19,10 +19,12 @@ export default function Commondate({
         {title} <span className={classes.star}>{requiredText}</span>
       </p>
       <DatePicker
+        inputReadOnly
         popupStyle={{ zIndex: 11000 }}
         placeholder={placeholder}
-        value={value ? dayjs(value) : null}
+        value={value ? dayjs(value) : new Date()}
         onChange={onChange}
+        allowClear={false}
         disabled={disabled}
         format={"YYYY-MM-DD"}
         style={{
@@ -30,7 +32,7 @@ export default function Commondate({
           width: "100%",
           height: "42px",
           border: borderNone ? "var(--inputBorder)" : "none",
-          background: disabled ? "rgb(216 216 216 / 44%)" : "#fff",
+          background: disabled ? "transparent" : "#fff",
         }}
       />
     </div>

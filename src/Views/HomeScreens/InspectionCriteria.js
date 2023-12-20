@@ -9,13 +9,13 @@ import {
 } from "../../Components";
 import AddInspectionCriteria from "../../Modals/AddInspectionCriteria";
 import EditIcon from "../../Assets/Icons/SvgIcons/edit.svg";
+import NoDataFound from "../../Components/NoDataFound";
+import CustomPagination from "../../Components/CustomPagination";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { criteriaListService } from "../../Services/Services";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
-import CustomPagination from "../../Components/CustomPagination";
-import NoDataFound from "../../Components/NoDataFound";
 import { getTableSNO } from "../../Utility/Constants";
 
 const validationSchema = Yup.object({

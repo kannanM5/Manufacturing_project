@@ -18,7 +18,6 @@ import { useEmployeeId, useToken, useUserName } from "../../Utility/StoreData";
 import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
 import { Drawer, Tabs } from "antd";
-import TabPane from "antd/es/tabs/TabPane";
 import dummyIcon from "../../Assets/Icons/SvgIcons/dummy.svg.svg";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { Dropdown, Space } from "antd";
@@ -43,40 +42,10 @@ export default function Header() {
     modal: false,
     id: "",
   });
+
   const loginUserData = getCookie("vt_enterprise_login")
     ? getCookie("vt_enterprise_login")?.data
     : null;
-  // const getManagementInitialRoute = () => {
-  //   const loginUserData = getCookie("mconnect_user_data")
-  //     ? JSON.parse(getCookie("mconnect_user_data"))?.permission
-  //     : null;
-  //   const manageSubheadingData = [
-  //     {
-  //       pathname: "/dashboard/management/device",
-  //       isVisible: loginUserData?.device === 1 ? true : false,
-  //     },
-  //     {
-  //       pathname: "/dashboard/management/machine",
-  //       isVisible: loginUserData?.machine === 1 ? true : false,
-  //     },
-  //     {
-  //       pathname: "/dashboard/management/employee_management",
-  //       isVisible: loginUserData?.employee === 1 ? true : false,
-  //     },
-  //     {
-  //       pathname: "/dashboard/management/shift",
-  //       isVisible: loginUserData?.shift === 1 ? true : false,
-  //     },
-  //     {
-  //       pathname: "/dashboard/management/work_shedule",
-  //       isVisible: loginUserData?.work_orders === 1 ? true : false,
-  //     },
-  //   ];
-
-  //   let refData = [...manageSubheadingData];
-  //   refData = refData.filter((ele) => ele.isVisible);
-  //   return refData.length > 0 ? refData?.[0]?.pathname : "/dashboard";
-  // };
 
   const userInformation = [
     {
@@ -99,41 +68,42 @@ export default function Header() {
   ];
   const menuData = [
     {
-      id: 1,
-      name: "List Of Products",
+      key: "1",
+      label: "List Of Products",
       naviagationPath:
         loginUserData?.user_type !== 3 ? "/product_list" : "/dashboard",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
-      id: 2,
-      name: "Inspection Criteria",
+      key: "2",
+      label: "Inspection Criteria",
       naviagationPath:
         loginUserData?.user_type !== 3 ? "/inspection_criteria" : "/dashboard",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
-      id: 3,
-      name: "Prepare Inspection Report",
+      key: "3",
+      label: "Prepare Inspection Report",
       naviagationPath: "/prepare_inspection_report",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
 
     {
-      id: 4,
-      name: "Saved Logs",
+      key: "4",
+      label: "Saved Logs",
       naviagationPath: "/saved_logs",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
     {
-      id: 5,
-      name: "Export",
+      key: "5",
+      label: "Export",
       naviagationPath: "/export_page",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
   ];
+
   const filteredItems = [
     {
       key: "1",
@@ -234,10 +204,11 @@ export default function Header() {
       "mconnect_user_data" + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
     navigate("/");
   };
+
   const handleNavigateTabs = (data) => {
-    setcurrentTab(data);
+    setcurrentTab(parseInt(data));
     const getPath = menuData.find(
-      (ele) => ele?.id === parseInt(data)
+      (ele) => parseInt(ele?.key) === parseInt(data)
     )?.naviagationPath;
     navigate(getPath);
   };
@@ -287,7 +258,8 @@ export default function Header() {
         }}
       >
         <LogoutConfirmationModal
-          msg={"Are you sure do you want to logout."}
+          msg={"Are you sure do you want to logout"}
+          closeIcon={false}
           onClose={() => {
             setdeleteModal((prev) => {
               return {
@@ -327,27 +299,32 @@ export default function Header() {
               closeIcon={false}
             >
               <div className={classes.child3}>
-                <img
-                  src={dummyIcon}
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                  }}
-                />
-                <p
-                  style={{
-                    padding: "0 2px",
-                    textAlign: "center",
-                    alignSelf: "center",
-                    fontFamily: "var(--fontMedium)",
-                  }}
-                >
-                  {userName}
-                </p>
+                <div style={{ display: "flex" }}>
+                  <img
+                    src={dummyIcon}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                    }}
+                  />
+                  <p
+                    style={{
+                      padding: "0 5px",
+                      textAlign: "center",
+                      alignSelf: "center",
+                      fontFamily: "var(--fontMedium)",
+                    }}
+                  >
+                    {userName}
+                  </p>
+                </div>
                 <button
                   onClick={toggleShow}
                   className="btn-close"
-                  style={{ width: "10px", height: "10px" }}
+                  style={{
+                    width: "10px",
+                    height: "10px",
+                  }}
                 />
               </div>
               <div
@@ -390,7 +367,7 @@ export default function Header() {
                             ></img>
                             <p
                               onClick={() =>
-                                ele.name == "Logout" &&
+                                ele.name === "Logout" &&
                                 setdeleteModal((prev) => {
                                   return {
                                     ...prev,
@@ -455,18 +432,20 @@ export default function Header() {
           </div>
           <div className={classes.child2}>
             <Tabs
-              activeKey={currenetTab ? currenetTab : ""}
-              onChange={(value) => handleNavigateTabs(value)}
+              items={menuData}
+              activeKey={
+                currenetTab
+                  ? currenetTab
+                  : pathname === "/export_page/view_reports"
+                  ? "5"
+                  : ""
+              }
+              onChange={(value) => {
+                handleNavigateTabs(value);
+                setcurrentTab(parseFloat(value));
+              }}
               tabBarStyle={{ marginBottom: 0 }}
-            >
-              {menuData.map((item) => (
-                <TabPane
-                  tab={item?.name}
-                  key={item.id}
-                  style={{ margin: 0, color: "white" }}
-                />
-              ))}
-            </Tabs>
+            />
           </div>
           <div>
             <div

@@ -116,16 +116,6 @@ export const Indexroute = [
         path: "final_inspection_report",
         element: <Finalinspectionreport />,
       },
-      // {
-      //   path: "/change_password",
-      //   element: <DashboardLayout />,
-      //   children: [
-      //     {
-      //       index: true,
-      //       element: <ChangePassword />,
-      //     },
-      //   ],
-      // },
       {
         element: <EmployeePrivateRoute />,
         children: [
@@ -156,16 +146,6 @@ export const Indexroute = [
           },
         ],
       },
-      // {
-      //   path: "/employee_list",
-      //   element: <DashboardLayout />,
-      //   children: [
-      //     {
-      //       index: true,
-      //       element: <EmployeeList />,
-      //     },
-      //   ],
-      // },
       {
         path: "saved_logs",
         element: <DashboardLayout />,
@@ -178,100 +158,6 @@ export const Indexroute = [
       },
     ],
   },
-  // {
-  //   path: "/dasboard",
-  //   element: <DashboardPrivateRoute />,
-  //   children: [
-  //     {
-  //       element: <DashboardLayout />,
-  //       children:[
-  //         {
-  //           index:true,
-  //           element: <EmptyPage />
-  //         }
-  //       ]
-  //     },
-  //   ]
-  // },
-  // {
-  //   element: <DashboardPrivateRoute />,
-  //   children: [
-  //      {
-  //       path: "/product_list",
-  //       element: <DashboardLayout />,
-  //       children: [
-
-  //         {
-  //           index:true,
-  //           element: <ListOfProducts />,
-  //         },
-  //         {
-  //           path: "LineInspectionReport",
-  //           element: <LineInspectionReport />,
-  //         },
-  //         {
-  //           path: "management",
-  //           element: <ManagementLayout type={1} />,
-  //           children: managementRoute,
-  //         },
-
-  //       ],
-  //     },
-  //   ],
-  // },
-  // {
-  //   element: <DashboardLayout />,
-  //   children: [
-  //     {
-  //       path: "/product_list",
-  //       element: <ListOfProducts />,
-  //     },
-
-  //     {
-  //       path: "inspection_criteria",
-  //       element: <InpectionCriteria />,
-  //     },
-  //     {
-  //       path: "export_page",
-  //       element: <Export />,
-  //     },
-  //     {
-  //       path: "/Prepareinscepectionreport",
-  //       element: <ManagementLayout />,
-  //       children: [
-  //         {
-  //           index: true,
-  //           element: <Prepareinscepectionreport />,
-  //         },
-  //         {
-  //           path: "incoming_inspection_report",
-  //           element: <Incominginspectionreport />,
-  //         },
-  //         {
-  //           path: "setting_approval_report",
-  //           element: <Settingapprovalreport />,
-  //         },
-  //         {
-  //           path: "line_inspection_report",
-  //           element: <LineInspectionReport />,
-  //         },
-
-  //         {
-  //           path: "final_inspection_report",
-  //           element: <Finalinspectionreport />,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       path: "/change_password",
-  //       element: <ChangePassword />,
-  //     },
-  //     {
-  //       path: "/employee_list",
-  //       element: <EmployeeList />,
-  //     },
-  //   ],
-  // },
 
   {
     path: "*",

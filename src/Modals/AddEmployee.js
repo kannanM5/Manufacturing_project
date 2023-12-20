@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import CustomDropDown from "../Components/CustomDropDown";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { CustomButton, Loader, TextInputBox } from "../Components";
+import {
+  CustomButton,
+  CustomDropDown,
+  Loader,
+  TextInputBox,
+} from "../Components";
 import { EMAIL_REGEX } from "../Utility/Constants";
 import { userSignUp } from "../Services/Services";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";

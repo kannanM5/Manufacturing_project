@@ -91,3 +91,10 @@ export const viewReports = (data) => {
 export const downloadEx = (data) => {
   return axios.post(`exportcustomers`, data);
 };
+
+export const exportReportService = (data) => {
+  return axios.post(`exportreport`, data);
+};
+export const unlinkExcelTableReport = (data) => {
+  return axios.post(`unlinkfile`, data);
+};

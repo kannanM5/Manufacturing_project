@@ -1,15 +1,19 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../../SharedComponents/Header";
-import classes from "./DashboardLayout.module.css";
 
 export default function DashboardLayout() {
   const { pathname } = useLocation();
   return (
     <>
-      <div className={classes.container}>
+      <div
+        style={{
+          backgroundColor:
+            pathname === "/export_page/view_reports" ? "White" : "white",
+          minHeight: "100vh",
+        }}
+      >
         <Header />
         <div
-          className={classes.bg_img}
           style={{
             padding:
               pathname === "/dashboard"

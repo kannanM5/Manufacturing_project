@@ -11,15 +11,3 @@ export default function Loader({ isVisible = true }) {
     </>
   );
 }
-
-export function NodataLoader({ isVisible = true }) {
-  return (
-    <>
-      {isVisible ? (
-        <div className={classes.nodataParent}>
-          <div className={classes.loader1}></div>
-        </div>
-      ) : null}
-    </>
-  );
-}

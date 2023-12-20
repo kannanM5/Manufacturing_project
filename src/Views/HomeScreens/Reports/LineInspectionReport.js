@@ -68,7 +68,7 @@ function LineInspectionReport({ viewReportData }) {
       process: "",
       invoice_no: "",
       inspector_name: "",
-      report_header_status: Array(8).fill(null),
+      report_header_status: null,
       report_header_date: new Date(),
       final_status: null,
       quantity: "",
@@ -89,6 +89,18 @@ function LineInspectionReport({ viewReportData }) {
       }
     },
   });
+  // child tab close parent tab is refresh
+  useEffect(() => {
+    if (!viewReportData) {
+      const handleClose = () => {
+        window.opener.postMessage("childTabClosed", "*");
+      };
+      window.addEventListener("beforeunload", handleClose);
+      return () => {
+        window.removeEventListener("beforeunload", handleClose);
+      };
+    }
+  }, []);
   const tableHeadData = [
     {
       id: 1,
@@ -146,7 +158,7 @@ function LineInspectionReport({ viewReportData }) {
 
   useEffect(() => {
     if (urlValues) {
-      if (urlValues?.buttonStatus == "Edit") {
+      if (urlValues?.buttonStatus === "Edit") {
         handleEditReport();
       } else {
         handleGetProductsList();
@@ -168,6 +180,7 @@ function LineInspectionReport({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
+          CloseTab();
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
           } else {
@@ -192,11 +205,19 @@ function LineInspectionReport({ viewReportData }) {
           return {
             ...ele,
             observation: JSON.parse(ele?.observation),
+            first_half: ele?.first_half ?? null,
+            last_half: ele?.last_half ?? null,
+            remark: ele?.remark ?? null,
           };
         } else {
           return {
             ...ele,
-            observation: ele?.observation ? ele?.observation : "",
+            observation: ele?.observation
+              ? ele?.observation
+              : Array(8).fill(null),
+            first_half: ele?.first_half ?? null,
+            last_half: ele?.last_half ?? null,
+            remark: ele?.remark ?? null,
           };
         }
       });
@@ -220,6 +241,9 @@ function LineInspectionReport({ viewReportData }) {
         quantity: reportData?.productData?.quantity,
         process_id: reportData?.productData?.process_id,
         report_id: reportData?.productData?.report_id,
+        final_status: reportData?.productData?.final_status ?? null,
+        report_header_status:
+          reportData?.productData?.report_header_status ?? Array(8).fill(null),
       });
       setisFinalstatus(reportData?.productData?.final_status ?? null);
     }
@@ -239,7 +263,12 @@ function LineInspectionReport({ viewReportData }) {
         if (response?.data?.status === 1) {
           setReportData(response?.data?.data);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          CloseTab();
+          if (Array.isArray(response?.data?.msg)) {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -262,7 +291,7 @@ function LineInspectionReport({ viewReportData }) {
         first_half: ele?.first_half ? ele?.first_half : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -318,7 +347,7 @@ function LineInspectionReport({ viewReportData }) {
         first_half: ele?.first_half ? ele?.first_half : null,
         remark: ele?.remark ? ele?.remark : null,
         observationData:
-          ele?.observation == ""
+          ele?.observation === ""
             ? emptyObserveData
             : ele?.observation.map((observe) => (observe ? observe : null)),
       };
@@ -530,8 +559,10 @@ function LineInspectionReport({ viewReportData }) {
                           value={head?.leftData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText =
-                              text.replace + (/[^A-Za-z0-9 ]/g, "");
+                            const alphabeticText = text.replace(
+                              /[^A-Za-z0-9 ]/g,
+                              ""
+                            );
                             handleChange("mvc_no")(alphabeticText);
                           }}
                         />
@@ -545,6 +576,7 @@ function LineInspectionReport({ viewReportData }) {
                         <input
                           readOnly={viewReportData ? true : false}
                           style={{
+                            paddingLeft: "10px",
                             border:
                               errors.operator_name && touched.operator_name
                                 ? "2px solid red"
@@ -577,6 +609,7 @@ function LineInspectionReport({ viewReportData }) {
                         <input
                           readOnly={viewReportData ? true : false}
                           style={{
+                            paddingLeft: "10px",
                             border:
                               errors.report_shift && touched.report_shift
                                 ? "2px solid red"
@@ -598,6 +631,7 @@ function LineInspectionReport({ viewReportData }) {
                         <input
                           readOnly={viewReportData ? true : false}
                           style={{
+                            paddingLeft: "10px",
                             border:
                               errors.inspector_name && touched.inspector_name
                                 ? "2px solid red"
@@ -686,7 +720,7 @@ function LineInspectionReport({ viewReportData }) {
                           }}
                         />
                       </td>
-                      {ele?.observation !== ""
+                      {/* {ele?.observation !== ""
                         ? ele?.observation.map((inputs, inputIndex) => (
                             <td>
                               <input
@@ -703,10 +737,7 @@ function LineInspectionReport({ viewReportData }) {
                                 value={inputs}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  // const alphabeticText = text.replace(
-                                  //   /[^A-Za-z0-9 ]/g,
-                                  //   ""
-                                  // );
+                               
                                   handleChangeValues(text, index, inputIndex);
                                 }}
                               />
@@ -727,15 +758,34 @@ function LineInspectionReport({ viewReportData }) {
                                 value={emptyInput ? emptyInput : ""}
                                 onChange={(event) => {
                                   const text = event.target.value;
-                                  // const alphabeticText = text.replace(
-                                  //   /[^A-Za-z0-9 ]/g,
-                                  //   ""
-                                  // );
+                               
                                   handleChangeValues(text, index, inputIndex);
                                 }}
                               />
                             </td>
-                          ))}
+                          ))} */}
+                      {ele?.observation.map((inputs, inputIndex) => (
+                        <td>
+                          <input
+                            style={{
+                              color: getObserVationColorCode(
+                                ele?.specification,
+                                inputs
+                              ),
+                            }}
+                            readOnly={viewReportData ? true : false}
+                            className={classes.observationInput}
+                            maxLength={10}
+                            type="text"
+                            value={inputs}
+                            onChange={(event) => {
+                              const text = event.target.value;
+
+                              handleChangeValues(text, index, inputIndex);
+                            }}
+                          />
+                        </td>
+                      ))}
                       <td>
                         <input
                           style={{
@@ -820,7 +870,7 @@ function LineInspectionReport({ viewReportData }) {
                             setisFinalstatus(1);
                             setFieldValue("final_status", 1);
                           }}
-                          checked={isFinalStatus == 1 ? true : false}
+                          checked={parseInt(isFinalStatus) === 1 ? true : false}
                         />
                         <p>Accepted</p>
                       </div>
@@ -829,7 +879,7 @@ function LineInspectionReport({ viewReportData }) {
                           disabled={viewReportData ? true : false}
                           className={classes.checkBox}
                           type="checkbox"
-                          checked={isFinalStatus == 0 ? true : false}
+                          checked={parseInt(isFinalStatus) === 0 ? true : false}
                           onClick={() => {
                             setisFinalstatus(0);
                             setFieldValue("final_status", 0);

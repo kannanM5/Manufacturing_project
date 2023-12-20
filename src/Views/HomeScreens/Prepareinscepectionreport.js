@@ -151,8 +151,8 @@ function PrepareInspectionReport() {
     getInspectionReportList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          // handleClick("Add");
-          getAndSetLoaclStorageDetails("Add");
+          handleClick("Add");
+          // getAndSetLoaclStorageDetails("Add");
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         } else if (response.data.status === 2) {
@@ -178,8 +178,8 @@ function PrepareInspectionReport() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          // handleClick("Edit");
-          getAndSetLoaclStorageDetails("Edit");
+          handleClick("Edit");
+          // getAndSetLoaclStorageDetails("Edit");
         } else if (response?.data?.status === 0) {
           if (Array.isArray(response?.data?.msg)) {
             getInvalidMsg(response?.data?.msg);
@@ -236,7 +236,7 @@ function PrepareInspectionReport() {
       <PageHeader BtnTrue={true} heading={"Prepare Inspection Report"} />
       <div className={classes.PrepareInspectionReport}>
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-lg-12 my-2">
             <TextInputBox
               title="Part Number"
               value={values.part_no}
@@ -263,7 +263,7 @@ function PrepareInspectionReport() {
               }
             />
           </div>
-          <div className="col-lg-12">
+          <div className="col-lg-12 my-2">
             <TextInputBox
               title="Process"
               value={values.process}
@@ -291,7 +291,7 @@ function PrepareInspectionReport() {
             />
           </div>
         </div>
-        <div className="col-lg-12 mt-3">
+        <div className="col-lg-12  my-2">
           <CustomDropDown
             placeholderText={"report type"}
             requiredText="*"
