@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PageHeader from "../../ManagementLayoutHeader/PageHeader";
 import classes from "../Management.module.css";
 import Logo from "../../../Assets/Images/VTLogo.svg";
-import Commondate from "../../../Components/Commondate";
+import { Commondate } from "../../../Components/index";
 import dayjs from "dayjs";
 import * as Yup from "yup";
 import toast from "react-hot-toast";

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import CustomPagination from "../../Components/CustomPagination";
-import NoDataFound from "../../Components/NoDataFound";
 import ViewIcons from "../../Assets/Icons/SvgIcons/view.svg";
-import Commondate from "../../Components/Commondate";
+import { Commondate, NoDataFound } from "../../Components/index";
 import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";
 import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
@@ -169,7 +168,7 @@ function Export() {
             downloadLink.click();
             // window.open(downloadUrl);
           }
-          handleUnLinkDownloadExportReport(response?.data?.filename);
+          // handleUnLinkDownloadExportReport(response?.data?.filename);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }

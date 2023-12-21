@@ -153,10 +153,6 @@ function SavedData() {
       });
   };
 
-  // useEffect(() => {
-  //   listSavedDataApiCall();
-  // }, []);
-
   const listSavedDataApiCall = (page = pageNo, limit = 10) => {
     setloader(true);
     let formData = new FormData();

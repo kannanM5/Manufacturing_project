@@ -4,7 +4,7 @@ import classes from "../Management.module.css";
 import LogoutConfirmationModal from "../../../Modals/LogoutConfirmationModal";
 import RadiantLogo from "../../../Assets/Icons/SvgIcons/radiant Impex logo.svg";
 import Logo from "../../../Assets/Images/VTLogo.svg";
-import Commondate from "../../../Components/Commondate";
+import { Commondate } from "../../../Components/index";
 import dayjs from "dayjs";
 import toast from "react-hot-toast";
 import * as Yup from "yup";

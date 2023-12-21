@@ -6,8 +6,7 @@ import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { GlobalModal, Loader } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
-// import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
-import incoming_icon from "../../Assets/Icons/SvgIcons/change_password.svg";
+import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
@@ -279,6 +278,7 @@ export default function Header() {
               onClose={toggleShow}
               placement="left"
               closeIcon={false}
+              width={270}
             >
               <div className={classes.child3}>
                 <div style={{ display: "flex" }}>
