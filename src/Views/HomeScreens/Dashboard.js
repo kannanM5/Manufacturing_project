@@ -14,7 +14,7 @@ function Dashboard() {
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "space-evenly",
             alignItems: "center",
           }}
         >
@@ -35,7 +35,8 @@ function Dashboard() {
               <img src={Slider5} />
             </span>
           </div>
-          <div>
+
+          <div className={classes.DashboardContent}>
             <p className={classes.title}>Click to add</p>
             <p style={{ fontSize: "var(--textXs)", textAlign: "center" }}>
               " Quality means doing it right when
