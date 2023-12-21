@@ -47,25 +47,6 @@ export default function Header() {
     ? getCookie("vt_enterprise_login")?.data
     : null;
 
-  const userInformation = [
-    {
-      key: 1,
-      label: "Create Account",
-      photo: create_account,
-      pathname: "/employee_list",
-    },
-    {
-      key: 2,
-      label: "Change Password",
-      photo: change_password,
-      pathname: "/change_password",
-    },
-    {
-      key: 3,
-      label: "Logout",
-      photo: logout,
-    },
-  ];
   const menuData = [
     {
       key: "1",
@@ -306,6 +287,7 @@ export default function Header() {
                       width: "50px",
                       height: "50px",
                     }}
+                    alt="icon"
                   />
                   <p
                     style={{

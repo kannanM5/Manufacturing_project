@@ -20,19 +20,19 @@ function Dashboard() {
         >
           <div className={classes.slider}>
             <span style={{ "--i": 1 }}>
-              <img src={Slider1} />
+              <img src={Slider1} alt="slider image" />
             </span>
             <span style={{ "--i": 2 }}>
-              <img src={Slider2} />
+              <img src={Slider2} alt="slider image" />
             </span>
             <span style={{ "--i": 3 }}>
-              <img src={Slider3} />
+              <img src={Slider3} alt="slider image" />
             </span>
             <span style={{ "--i": 4 }}>
-              <img src={Slider4} />
+              <img src={Slider4} alt="slider image" />
             </span>
             <span style={{ "--i": 5 }}>
-              <img src={Slider5} />
+              <img src={Slider5} alt="slider image" />
             </span>
           </div>
 
