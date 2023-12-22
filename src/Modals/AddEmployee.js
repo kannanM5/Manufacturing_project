@@ -15,25 +15,17 @@ import { getCookie } from "../Store/Storage/Cookie";
 import { useEmployeeId, useEmployeeType, useToken } from "../Utility/StoreData";
 
 const validationSchema = Yup.object({
-  name: Yup.string()
-    .required("Name is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+  name: Yup.string().required("Name is required"),
   email: Yup.string()
     .matches(EMAIL_REGEX, "Invalid email address")
     .required("Email is required"),
   confirm_email: Yup.string()
     .oneOf([Yup.ref("email")], "Emails must match")
     .required("Confirm email is required"),
-  password: Yup.string()
-    .required("Password is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+  password: Yup.string().required("Password is required"),
   confirm_password: Yup.string()
     .required("Confirm password is required")
-    .oneOf([Yup.ref("password")], "Passwords must match")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .oneOf([Yup.ref("password")], "Passwords must match"),
   type: Yup.string().required("User type is required"),
 });
 
@@ -78,20 +70,23 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
       label: "Line Inspector",
     },
   ];
+
   const loginUserData = getCookie("vt_enterprise_login")
     ? getCookie("vt_enterprise_login")?.data
     : null;
+
   const userTypes = loginUserData?.user_type === 1 ? Items : Items.slice(1);
+
   const handleSignup = (data) => {
     setloader(true);
     let formData = new FormData();
     formData.append("token", token);
     formData.append("id", userId);
     formData.append("created_by", userType);
-    formData.append("name", data?.name);
-    formData.append("email", data?.email);
-    formData.append("password", data?.password);
-    formData.append("confirm_password", data?.confirm_password);
+    formData.append("name", data?.name.trim());
+    formData.append("email", data?.email.trim());
+    formData.append("password", data?.password.trim());
+    formData.append("confirm_password", data?.confirm_password.trim());
     formData.append("user_type", data?.type);
     userSignUp(formData)
       .then((response) => {
@@ -157,7 +152,6 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
             errorText={touched.name && errors.name ? errors.name : ""}
           />
         </div>
-
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3">
           <TextInputBox
             title="Email"

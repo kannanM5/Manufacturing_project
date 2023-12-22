@@ -131,15 +131,15 @@ function LineInspectionReport({ viewReportData }) {
       rightData: values?.inspector_name,
     },
   ];
-
   const getColor = () => {
     const tempData = [...values.datas];
-
     const getCode = tempData
       .map((ele) => ele?.observation)
       .some((text) => text !== "");
+
     return getCode;
   };
+
   useEffect(() => {
     if (!reportData) {
       setReportData(viewReportData);

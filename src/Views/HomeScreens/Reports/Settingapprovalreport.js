@@ -702,11 +702,11 @@ function SettingInspectionReport({ viewReportData }) {
                           value={ele?.remark}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleRemarkChange(index, alphabeticText);
+                            // const alphabeticText = text.replace(
+                            //   /[^A-Za-z0-9 ]/g,
+                            //   ""
+                            // );
+                            handleRemarkChange(index, text);
                           }}
                         />
                       </td>

@@ -88,35 +88,35 @@ function PrepareInspectionReport() {
       path: "/#/final_inspection_report",
     },
   ];
-  const getAndSetLoaclStorageDetails = (btnStatus) => {
-    const setData = {
-      local_Process: values.process,
-      local_Part_No: values.part_no,
-      local_Report_Type: dropdownName,
-    };
+  // const getAndSetLoaclStorageDetails = (btnStatus) => {
+  //   const setData = {
+  //     local_Process: values.process,
+  //     local_Part_No: values.part_no,
+  //     local_Report_Type: dropdownName,
+  //   };
 
-    const getLocalStorage = JSON.parse(sessionStorage.getItem("ReportTypes"));
-    if (getLocalStorage) {
-      const isDuplicate = getLocalStorage.some((ele) => {
-        return (
-          ele.local_Process === values.process &&
-          ele.local_Part_No === values.part_no &&
-          ele.local_Report_Type === dropdownName
-        );
-      });
-      if (!isDuplicate) {
-        const temp = [...getLocalStorage, setData];
-        sessionStorage.setItem("ReportTypes", JSON.stringify(temp));
-        handleClick(btnStatus);
-      } else {
-        toast.error("This report alredy opened.");
-      }
-    } else {
-      const tempData = [setData];
-      sessionStorage.setItem("ReportTypes", JSON.stringify(tempData));
-      handleClick(btnStatus);
-    }
-  };
+  //   const getLocalStorage = JSON.parse(sessionStorage.getItem("ReportTypes"));
+  //   if (getLocalStorage) {
+  //     const isDuplicate = getLocalStorage.some((ele) => {
+  //       return (
+  //         ele.local_Process === values.process &&
+  //         ele.local_Part_No === values.part_no &&
+  //         ele.local_Report_Type === dropdownName
+  //       );
+  //     });
+  //     if (!isDuplicate) {
+  //       const temp = [...getLocalStorage, setData];
+  //       sessionStorage.setItem("ReportTypes", JSON.stringify(temp));
+  //       handleClick(btnStatus);
+  //     } else {
+  //       toast.error("This report alredy opened.");
+  //     }
+  //   } else {
+  //     const tempData = [setData];
+  //     sessionStorage.setItem("ReportTypes", JSON.stringify(tempData));
+  //     handleClick(btnStatus);
+  //   }
+  // };
   const handleClick = (data) => {
     // getAndSetLoaclStorageDetails();
     // setloader(true)

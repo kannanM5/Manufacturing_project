@@ -15,12 +15,10 @@ import { ALPHA_NUM } from "../Utility/Constants";
 const validationSchema = Yup.object({
   characteristics: Yup.string().required("Characteristics is required"),
   specification: Yup.string().required("Specification is required"),
-  units: Yup.string()
-    .required("Unit is required")
-    .matches(ALPHA_NUM, "Enter valid unit"),
-  method_of_check: Yup.string()
-    .required("Method of check is required")
-    .matches(ALPHA_NUM, "Enter valid method of check"),
+  units: Yup.string().required("Unit is required"),
+  // .matches(ALPHA_NUM, "Enter valid unit"),
+  method_of_check: Yup.string().required("Method of check is required"),
+  // .matches(ALPHA_NUM, "Enter valid method of check"),
 });
 
 function AddInspectionCriteria({
@@ -57,6 +55,7 @@ function AddInspectionCriteria({
       }
     },
   });
+
   const [loader, setloader] = useState(false);
   const token = useToken();
   const userId = useEmployeeId();
@@ -89,6 +88,7 @@ function AddInspectionCriteria({
         setloader(false);
       });
   };
+
   const handleUpdateInspectionCriteria = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -118,6 +118,7 @@ function AddInspectionCriteria({
         setloader(false);
       });
   };
+
   return (
     <div>
       {loader ? <Loader /> : null}
@@ -126,7 +127,7 @@ function AddInspectionCriteria({
           <div className="col-lg-6 mb-3 ">
             <TextInputBox
               title="Characteristics"
-              placeHolder="Enter Characteristics"
+              placeHolder="Enter characteristics"
               value={values.characteristics}
               onChangeText={handleChange("characteristics")}
               name="characteristics"
@@ -158,7 +159,7 @@ function AddInspectionCriteria({
           <div className="col-lg-6 mb-3 ">
             <TextInputBox
               title="Specifications"
-              placeHolder="Enter Specifications"
+              placeHolder="Enter specifications"
               value={values.specification}
               onChangeText={handleChange("specification")}
               name="specification"
@@ -190,7 +191,7 @@ function AddInspectionCriteria({
           <div className="col-lg-6 mb-3 ">
             <TextInputBox
               title="Unit"
-              placeHolder="Enter Unit"
+              placeHolder="Enter unit"
               value={values.units}
               onChangeText={handleChange("units")}
               name="units"

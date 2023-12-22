@@ -26,7 +26,6 @@ const validationSchema = Yup.object({
   reportType: Yup.string()
     .required("User type is required")
     .test("one of", "User type is required", function (value) {
-      const { reportType } = this.parent;
       if (value === "-- None --") {
         return false;
       }
@@ -60,7 +59,6 @@ function Export() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const userId = useEmployeeId();
-  console.log(userId, "User ID");
   const [exportDataList, setexportDataList] = useState();
 
   const {
@@ -77,7 +75,7 @@ function Export() {
   } = useFormik({
     initialValues: {
       reportType: "",
-      date: "",
+      date: null,
       part_no: "",
       process: "",
       customer: "",
@@ -129,7 +127,6 @@ function Export() {
   };
 
   const reportType = (id) => {
-    console.log(id, "IDDDDD");
     let obj = [...dropdownItem].find((ele) => ele.key === parseInt(id));
     return obj?.label;
   };
@@ -189,7 +186,7 @@ function Export() {
         Btntitle={isOpen ? "Close" : "Search"}
         modal={() => {
           setisOpen((prev) => !prev);
-          resetForm();
+          // resetForm();
         }}
         secondBtn={false}
       />
@@ -226,11 +223,8 @@ function Export() {
                   onChange={(value) => {
                     setFieldValue("date", value);
                   }}
-                  value={
-                    values?.date
-                      ? dayjs(values?.date).format("YYYY-MM-DD")
-                      : null
-                  }
+                  placeholder={"Select date"}
+                  value={values?.date}
                   // errorText={
                   //   errors?.to_date && touched?.to_date ? errors?.to_date : ""
                   // }

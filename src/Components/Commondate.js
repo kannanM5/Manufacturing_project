@@ -13,6 +13,7 @@ export default function Commondate({
   requiredText,
   borderNone = true,
 }) {
+  console.log(value, "VALUEE");
   return (
     <div className={classes.datePicker}>
       <p className={classes.title}>
@@ -22,7 +23,7 @@ export default function Commondate({
         inputReadOnly
         popupStyle={{ zIndex: 11000 }}
         placeholder={placeholder}
-        value={value ? dayjs(value) : new Date()}
+        value={value ? dayjs(value) : null}
         onChange={onChange}
         allowClear={false}
         disabled={disabled}

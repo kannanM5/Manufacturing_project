@@ -19,7 +19,8 @@ import {
 const validationSchema = Yup.object({
   email: Yup.string()
     .required("Email is required")
-    .matches(EMAIL_REGEX, "Enter valid email"),
+    .matches(EMAIL_REGEX, "Enter valid email")
+    .trim(),
   password: Yup.string().required("Password is required"),
 });
 
@@ -51,7 +52,7 @@ function Signin() {
   const handleLogin = (data) => {
     setloader(true);
     let formData = new FormData();
-    formData.append("email", data?.email);
+    formData.append("email", data?.email.trim());
     formData.append("password", data?.password);
     userSignin(formData)
       .then((response) => {

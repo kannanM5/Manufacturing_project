@@ -11,19 +11,11 @@ import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
-  old_password: Yup.string()
-    .required("Current password is required")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
-  new_password: Yup.string()
-    .required("Please enter new password")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+  old_password: Yup.string().required("Current password is required"),
+  new_password: Yup.string().required("New password is required"),
   repeat_password: Yup.string()
-    .required("Please enter confirm password")
-    .oneOf([Yup.ref("new_password")], "Passwords must match")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .required("Confirm password is required")
+    .oneOf([Yup.ref("new_password")], "Passwords must match"),
 });
 
 function ChangePassword() {
@@ -56,9 +48,9 @@ function ChangePassword() {
     let formData = new FormData();
     formData.append("id", userId);
     formData.append("token", token);
-    formData.append("current_password", data?.old_password);
-    formData.append("password", data?.new_password);
-    formData.append("confirm_password", data?.repeat_password);
+    formData.append("current_password", data?.old_password.trim());
+    formData.append("password", data?.new_password.trim());
+    formData.append("confirm_password", data?.repeat_password.trim());
     superAdminChangePassword(formData)
       .then((response) => {
         if (response?.data?.status === 1) {

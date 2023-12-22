@@ -45,6 +45,7 @@ export default function Emptypage({ viewReportData }) {
   const [reportData, setReportData] = useState(null);
   const [isShowModal, setIshowModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
+
   // child tab close parent tab is refresh
   useEffect(() => {
     if (!viewReportData) {
@@ -57,12 +58,14 @@ export default function Emptypage({ viewReportData }) {
       };
     }
   }, []);
+
   //view report set data
   useEffect(() => {
     if (!reportData) {
       setReportData(viewReportData);
     }
   }, [viewReportData]);
+
   // url crypto js get value
   useEffect(() => {
     if (!viewReportData) {
@@ -125,21 +128,6 @@ export default function Emptypage({ viewReportData }) {
     },
   });
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     const message = "Are you sure you want to leave?";
-
-  //     event.returnValue = message;
-  //     return message;
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
-
   const tableHeadData = [
     {
       id: 1,
@@ -171,21 +159,6 @@ export default function Emptypage({ viewReportData }) {
     },
   ];
 
-  // useEffect(() => {
-  //   const handleBeforeUnload = (e) => {
-  //     if (isShowModal) {
-  //       e.returnValue = true; // Set a truthy value to trigger the default browser prompt
-  //       setIshowModal(true);
-  //     }
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, [isShowModal]);
-
   const handleEditReport = () => {
     setloader(true);
     let formData = new FormData();
@@ -215,6 +188,7 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
+
   // edit or add api call and get resport data set values in formik
   useEffect(() => {
     if (reportData) {
@@ -583,11 +557,11 @@ export default function Emptypage({ viewReportData }) {
                         value={head?.leftData}
                         onChange={(event) => {
                           const text = event.target.value;
-                          const alphabeticText = text.replace(
-                            /[^A-Za-z0-9 ]/g,
-                            ""
-                          );
-                          handleChange("supplier_name")(alphabeticText);
+                          // const alphabeticText = text.replace(
+                          //   /[^A-Za-z0-9 ]/g,
+                          //   ""
+                          // );
+                          handleChange("supplier_name")(text);
                         }}
                       />
                     ) : (

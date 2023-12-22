@@ -10,15 +10,10 @@ import { employeeChangePassword } from "../Services/Services";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string()
-    .required("Please enter new password")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+  password: Yup.string().required("New password is required"),
   repeat_password: Yup.string()
     .oneOf([Yup.ref("password")], "Passwords must match")
-    .required("Please enter confirm password")
-    .trim("Remove leading and trailing spaces")
-    .strict(true),
+    .required("Confirm password is required"),
 });
 
 function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
@@ -49,8 +44,8 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
     setloader(true);
     let formData = new FormData();
     formData.append("token", token);
-    formData.append("password", data?.password);
-    formData.append("confirm_password", data?.repeat_password);
+    formData.append("password", data?.password.trim());
+    formData.append("confirm_password", data?.repeat_password.trim());
     formData.append("user_id", userId);
     formData.append("id", employeeId);
     employeeChangePassword(formData)
