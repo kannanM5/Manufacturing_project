@@ -133,10 +133,9 @@ function LineInspectionReport({ viewReportData }) {
   ];
   const getColor = () => {
     const tempData = [...values.datas];
-    const getCode = tempData
-      .map((ele) => ele?.observation)
-      .some((text) => text !== "");
-
+    const getCode = tempData.some((ele) =>
+      ele.observation.some((value) => value)
+    );
     return getCode;
   };
 
@@ -397,7 +396,7 @@ function LineInspectionReport({ viewReportData }) {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(8).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(8).fill("");
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -544,7 +543,12 @@ function LineInspectionReport({ viewReportData }) {
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
-                    <th colSpan={10}>
+                    <th
+                      colSpan={10}
+                      style={{
+                        paddingLeft: "0",
+                      }}
+                    >
                       {index === 0 ? (
                         <input
                           readOnly={viewReportData ? true : false}
@@ -553,21 +557,24 @@ function LineInspectionReport({ viewReportData }) {
                               errors.mvc_no && touched.mvc_no
                                 ? "2px solid red"
                                 : "",
+                            paddingLeft: "10px",
                           }}
                           maxLength={50}
                           type="text"
                           value={head?.leftData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("mvc_no")(alphabeticText);
+                            handleChange("mvc_no")(text);
                           }}
                         />
                       ) : (
-                        <span>{head?.leftData}</span>
+                        <span
+                          style={{
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {head?.leftData}
+                        </span>
                       )}
                     </th>
                     <th colSpan={2}>{head?.right}</th>
@@ -587,11 +594,7 @@ function LineInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("operator_name")(alphabeticText);
+                            handleChange("operator_name")(text);
                           }}
                         />
                       ) : index === 1 ? (
@@ -620,11 +623,7 @@ function LineInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("report_shift")(alphabeticText);
+                            handleChange("report_shift")(text);
                           }}
                         />
                       ) : (
@@ -642,11 +641,7 @@ function LineInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("inspector_name")(alphabeticText);
+                            handleChange("inspector_name")(text);
                           }}
                         />
                       )}
@@ -691,7 +686,7 @@ function LineInspectionReport({ viewReportData }) {
               <tbody>
                 {values?.datas &&
                   values?.datas.map((ele, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{ele?.characteristics}</td>
                       <td>{ele?.specification}</td>
@@ -712,60 +707,12 @@ function LineInspectionReport({ viewReportData }) {
                           value={ele?.first_half}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleFirstOfChange(index, alphabeticText);
+                            handleFirstOfChange(index, text);
                           }}
                         />
                       </td>
-                      {/* {ele?.observation !== ""
-                        ? ele?.observation.map((inputs, inputIndex) => (
-                            <td>
-                              <input
-                                style={{
-                                  color: getObserVationColorCode(
-                                    ele?.specification,
-                                    inputs
-                                  ),
-                                }}
-                                readOnly={viewReportData ? true : false}
-                                className={classes.observationInput}
-                                maxLength={10}
-                                type="text"
-                                value={inputs}
-                                onChange={(event) => {
-                                  const text = event.target.value;
-                               
-                                  handleChangeValues(text, index, inputIndex);
-                                }}
-                              />
-                            </td>
-                          ))
-                        : [...Array(8)].map((emptyInput, inputIndex) => (
-                            <td key={inputIndex}>
-                              <input
-                                readOnly={viewReportData ? true : false}
-                                style={{
-                                  color: getObserVationColorCode(
-                                    ele?.specification,
-                                    emptyInput
-                                  ),
-                                }}
-                                className={classes.observationInput}
-                                type="text"
-                                value={emptyInput ? emptyInput : ""}
-                                onChange={(event) => {
-                                  const text = event.target.value;
-                               
-                                  handleChangeValues(text, index, inputIndex);
-                                }}
-                              />
-                            </td>
-                          ))} */}
                       {ele?.observation.map((inputs, inputIndex) => (
-                        <td>
+                        <td key={inputIndex}>
                           <input
                             style={{
                               color: getObserVationColorCode(
@@ -801,11 +748,7 @@ function LineInspectionReport({ viewReportData }) {
                           value={ele?.last_half}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleLastOfChange(index, alphabeticText);
+                            handleLastOfChange(index, text);
                           }}
                         />
                       </td>
@@ -818,11 +761,7 @@ function LineInspectionReport({ viewReportData }) {
                           value={ele?.remark}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleRemarkChange(index, alphabeticText);
+                            handleRemarkChange(index, text);
                           }}
                         />
                       </td>
@@ -836,7 +775,7 @@ function LineInspectionReport({ viewReportData }) {
                   <td colSpan={2}>Status</td>
                   {values?.report_header_status &&
                     values?.report_header_status.map((ele, index) => (
-                      <td>
+                      <td key={index}>
                         <input
                           readOnly={viewReportData ? true : false}
                           className={classes.observationInput}
@@ -906,17 +845,12 @@ function LineInspectionReport({ viewReportData }) {
                       value={values?.checked_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("checked_by")(alphabeticText);
+                        handleChange("checked_by")(text);
                       }}
                     />
                   </td>
                   <td colSpan={4}>Appproved By</td>
                   <td colSpan={4}>
-                    {" "}
                     <input
                       className={classes.observationInput}
                       maxLength={50}
@@ -925,11 +859,7 @@ function LineInspectionReport({ viewReportData }) {
                       value={values?.approved_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("approved_by")(alphabeticText);
+                        handleChange("approved_by")(text);
                       }}
                     />
                   </td>

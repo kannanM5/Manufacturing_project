@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import toast from "react-hot-toast";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import CustomPagination from "../../Components/CustomPagination";
 import ViewIcons from "../../Assets/Icons/SvgIcons/view.svg";
 import { Commondate, NoDataFound } from "../../Components/index";
-import dayjs from "dayjs";
 import CustomDropDown from "../../Components/CustomDropDown";
 import DownloadIcon from "../../Assets/Icons/SvgIcons/download_icon.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
 import classes from "./Management.module.css";
-import * as Yup from "yup";
-import toast from "react-hot-toast";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
-import { useFormik } from "formik";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import {
   exportReportService,
@@ -20,18 +20,6 @@ import {
 } from "../../Services/Services";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { DOWNLOAD_URL, getTableSNO } from "../../Utility/Constants";
-import { useNavigate } from "react-router-dom";
-
-const validationSchema = Yup.object({
-  reportType: Yup.string()
-    .required("User type is required")
-    .test("one of", "User type is required", function (value) {
-      if (value === "-- None --") {
-        return false;
-      }
-      return true;
-    }),
-});
 
 const dropdownItem = [
   {
@@ -61,30 +49,19 @@ function Export() {
   const userId = useEmployeeId();
   const [exportDataList, setexportDataList] = useState();
 
-  const {
-    // handleSubmit,
-    handleChange,
-    setFieldValue,
-    values,
-    handleSubmit,
-    errors,
-    touched,
-    resetForm,
-    setFieldError,
-    setFieldTouched,
-  } = useFormik({
-    initialValues: {
-      reportType: "",
-      date: null,
-      part_no: "",
-      process: "",
-      customer: "",
-    },
-    // validationSchema: validationSchema,
-    onSubmit: () => {
-      handleGetExportDataList(1, 10, true);
-    },
-  });
+  const { handleChange, setFieldValue, values, handleSubmit, resetForm } =
+    useFormik({
+      initialValues: {
+        reportType: "",
+        date: null,
+        part_no: "",
+        process: "",
+        customer: "",
+      },
+      onSubmit: () => {
+        handleGetExportDataList(1, 10, true);
+      },
+    });
 
   useEffect(() => {
     if (token) handleGetExportDataList();
@@ -186,7 +163,7 @@ function Export() {
         Btntitle={isOpen ? "Close" : "Search"}
         modal={() => {
           setisOpen((prev) => !prev);
-          // resetForm();
+          resetForm();
         }}
         secondBtn={false}
       />
@@ -195,10 +172,9 @@ function Export() {
         {isOpen && (
           <div className={classes.serachOptionConatiner}>
             <div className="row">
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 ">
                 <CustomDropDown
                   placeholderText={"report type"}
-                  // requiredText="*"
                   items={[...dropdownItem]}
                   value={
                     [...dropdownItem].find(
@@ -209,28 +185,19 @@ function Export() {
                   onSelect={(val) => {
                     setFieldValue("reportType", val);
                   }}
-                  errorText={
-                    errors?.reportType && touched?.reportType
-                      ? errors?.reportType
-                      : ""
-                  }
                 />
               </div>
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 ">
                 <Commondate
                   title="Date"
-                  // placeholder="Select date"
                   onChange={(value) => {
                     setFieldValue("date", value);
                   }}
                   placeholder={"Select date"}
                   value={values?.date}
-                  // errorText={
-                  //   errors?.to_date && touched?.to_date ? errors?.to_date : ""
-                  // }
                 />
               </div>
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 ">
                 <TextInputBox
                   title="Part Number"
                   placeHolder="Enter part number"
@@ -238,30 +205,12 @@ function Export() {
                   onChangeText={handleChange("part_no")}
                   name="part_no"
                   customInputProps={{
-                    onBlur: () => {
-                      try {
-                        validationSchema.validateSyncAt(
-                          "part_no",
-                          values.part_no
-                        );
-                      } catch (error) {
-                        if (error instanceof Error) {
-                          setFieldTouched("part_no", true);
-                          setFieldError("part_no", error.message);
-                        }
-                      }
-                    },
                     maxLength: 50,
                   }}
                   type={"text"}
-                  // requiredText="*"
-                  errorText={
-                    touched.part_no && errors.part_no ? errors.part_no : ""
-                  }
                 />
               </div>
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 "></div>
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 ">
                 <TextInputBox
                   title="Process"
                   placeHolder="Enter process"
@@ -269,29 +218,12 @@ function Export() {
                   onChangeText={handleChange("process")}
                   name="process"
                   customInputProps={{
-                    onBlur: () => {
-                      try {
-                        validationSchema.validateSyncAt(
-                          "process",
-                          values.process
-                        );
-                      } catch (error) {
-                        if (error instanceof Error) {
-                          setFieldTouched("process", true);
-                          setFieldError("process", error.message);
-                        }
-                      }
-                    },
                     maxLength: 50,
                   }}
                   type={"text"}
-                  // requiredText="*"
-                  errorText={
-                    touched.process && errors.process ? errors.process : ""
-                  }
                 />
               </div>
-              <div className="col-lg-3 col-md-6 col-sm-12 mb-3 ">
+              <div className="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-3 ">
                 <TextInputBox
                   title="Customer"
                   placeHolder="Enter customer"
@@ -299,40 +231,26 @@ function Export() {
                   onChangeText={handleChange("customer")}
                   name="customer"
                   customInputProps={{
-                    onBlur: () => {
-                      try {
-                        validationSchema.validateSyncAt(
-                          "customer",
-                          values.customer
-                        );
-                      } catch (error) {
-                        if (error instanceof Error) {
-                          setFieldTouched("customer", true);
-                          setFieldError("customer", error.message);
-                        }
-                      }
-                    },
                     maxLength: 50,
                   }}
                   type={"text"}
-                  // requiredText="*"
-                  errorText={
-                    touched.customer && errors.customer ? errors.customer : ""
-                  }
                 />
               </div>
-
-              <div className="col-lg-1 mt-4">
+              <div
+                className={`col-lg-2 col-xl-1 col-md-3 col-3 mt-4 ${classes.exportBtns}`}
+              >
                 <CustomButton title="Search" onButtonPress={handleSubmit} />
               </div>
-              <div className="col-lg-1 mt-4">
+              <div
+                className={`col-lg-2 col-xl-1 col-md-3 col-3 mt-4 ${classes.exportBtns}`}
+              >
                 <CustomButton
                   title="Reset"
                   onButtonPress={() => {
                     handleGetExportDataList(1, 10, false);
                     resetForm();
                   }}
-                  customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                  customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
                 />
               </div>
             </div>

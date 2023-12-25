@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
+import { useFormik } from "formik";
 import classes from "./Modal.module.css";
 import UpdateDeleteActions from "./UpdateDeleteActions";
-import { useFormik } from "formik";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 import { CustomButton, Loader, TextInputBox } from "../Components";
 import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
@@ -16,6 +16,7 @@ const validationSchema = Yup.object({
   customer_part_no: Yup.string().required("Customer part number is required"),
   drawing_issue_no: Yup.string().required("Drawing issue number is required"),
 });
+
 function AddProducts({
   onClose,
   heading,
@@ -26,8 +27,6 @@ function AddProducts({
 }) {
   const token = useToken();
   const userId = useEmployeeId();
-  // const userType = useEmployeeType();
-  // const [page, setPage] = useState(1);
   const [loader, setloader] = useState(false);
 
   const {
@@ -61,6 +60,7 @@ function AddProducts({
       }
     },
   });
+
   const handleAddProduct = (data) => {
     setloader(true);
     const formData = new FormData();
@@ -79,8 +79,11 @@ function AddProducts({
           modalClose();
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
-          // getInvalidMsg(response?.data?.msg);
-          getInvalidMsg(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -90,6 +93,7 @@ function AddProducts({
         setloader(false);
       });
   };
+
   const handleUpdateproduct = (data) => {
     setloader(true);
     const formData = new FormData();
@@ -109,7 +113,11 @@ function AddProducts({
           modalClose();
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {

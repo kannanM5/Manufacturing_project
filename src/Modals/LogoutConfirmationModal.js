@@ -19,7 +19,6 @@ function LogoutConfirmationModal({
         <div className={classes.deleteIcon}>
           <img src={cancelBtn ? confirm_delete : successIcon} alt="Delete" />
         </div>
-
         <p
           className={classes.text}
           style={{

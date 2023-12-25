@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Drawer, Tabs } from "antd";
+import { Dropdown, Space } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import dash from "../../Assets/Icons/SvgIcons/dash.svg";
 import { getCookie, setCookie } from "../../Store/Storage/Cookie";
 import { GlobalModal, Loader } from "../../Components";
 import export_icon from "../../Assets/Icons/SvgIcons/export_icon.svg";
 import prepare_report_icon from "../../../src/Assets/Icons/SvgIcons/prepare_report_icon.svg";
-// import incoming_icon from "../../Assets/Icons/SvgIcons/incoming_icon.svg";
 import incoming_icon from "../../Assets/Icons/SvgIcons/change_password.svg";
 import menuIcon from "../../Assets/Icons/SvgIcons/menuIcon.svg";
 import classes from "./header.module.css";
@@ -18,10 +19,9 @@ import logout from "../../Assets/Icons/SvgIcons/logout.svg";
 import { useEmployeeId, useToken, useUserName } from "../../Utility/StoreData";
 import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
-import { Drawer, Tabs } from "antd";
 import dummyIcon from "../../Assets/Icons/SvgIcons/dummy.svg.svg";
-import { getCatchMsg } from "../../Utility/GeneralUtils";
-import { Dropdown, Space } from "antd";
+import { getCatchMsg, getTrimString } from "../../Utility/GeneralUtils";
+import saved_logsIcon from "../../Assets/Icons/SvgIcons/saved_logsIcon.svg";
 import {
   LockOutlined,
   LogoutOutlined,
@@ -56,7 +56,6 @@ export default function Header() {
         loginUserData?.user_type !== 3 ? "/product_list" : "/dashboard",
       isVisible: loginUserData?.user_type !== 3 ? true : false,
     },
-
     {
       key: "2",
       label: "Inspection Criteria",
@@ -110,7 +109,8 @@ export default function Header() {
     {
       id: 1,
       name: "List of Products",
-      naviagationPath: "/product_list",
+      naviagationPath:
+        loginUserData?.user_type !== 3 ? "/product_list" : "/dashboard",
       icon: dash,
       isVisible: true,
       privatePermission: true,
@@ -118,7 +118,8 @@ export default function Header() {
     {
       id: 2,
       name: "Inspection Criteria",
-      naviagationPath: "/inspection_criteria",
+      naviagationPath:
+        loginUserData?.user_type !== 3 ? "/inspection_criteria" : "/dashboard",
       icon: incoming_icon,
       isVisible: true,
     },
@@ -132,9 +133,17 @@ export default function Header() {
       isVisible: loginUserData?.work_orders === 1 ? true : false,
     },
     {
+      id: 8,
+      name: "Saved Logs",
+      naviagationPath: "/saved_logs",
+      icon: saved_logsIcon,
+      isVisible: true,
+    },
+    {
       id: 4,
       name: "Export",
-      naviagationPath: "/export_page",
+      naviagationPath:
+        loginUserData?.user_type !== 3 ? "/export_page" : "/dashboard",
       icon: export_icon,
       isVisible: true,
     },
@@ -194,6 +203,7 @@ export default function Header() {
     )?.naviagationPath;
     navigate(getPath);
   };
+
   const onClick = (value) => {
     if (parseInt(value.key) === 1) {
       navigate("/employee_list");
@@ -224,6 +234,7 @@ export default function Header() {
       setcurrentTab(null);
     }
   }, [pathname]);
+
   return (
     <>
       {loader ? <Loader /> : null}
@@ -299,7 +310,7 @@ export default function Header() {
                       fontFamily: "var(--fontMedium)",
                     }}
                   >
-                    {userName}
+                    {getTrimString(userName, 15)}
                   </p>
                 </div>
                 <button
@@ -319,7 +330,6 @@ export default function Header() {
                   marginTop: "20px",
                 }}
               ></div>
-
               <div className={classes.child2}>
                 {hamburgerData.map((ele, i) => {
                   return (
@@ -348,7 +358,7 @@ export default function Header() {
                               }}
                               src={ele?.icon}
                               alt="icons"
-                            ></img>
+                            />
                             <p
                               onClick={() =>
                                 ele.name === "Logout" &&
@@ -449,11 +459,7 @@ export default function Header() {
               >
                 <div className={classes.nameContainer}>
                   <Dropdown menu={{ items, onClick }} trigger={["click"]}>
-                    <a
-                      onClick={(e) => {
-                        console.log(e, "EEEEEE");
-                      }}
-                    >
+                    <a>
                       <img
                         src={dummyIcon}
                         alt="Profile icon"
@@ -461,13 +467,14 @@ export default function Header() {
                       />
 
                       <Space
+                        className="headerUsername"
                         style={{
                           color: "black",
                           padding: "0 8px",
                           fontFamily: "var(--fontMedium)",
                         }}
                       >
-                        {userName}
+                        {getTrimString(userName, 10)}
                         <CaretDownOutlined />
                       </Space>
                     </a>

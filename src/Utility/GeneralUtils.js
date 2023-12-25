@@ -20,11 +20,10 @@ export function getCatchMsg(error) {
     return "Something went wrong!";
   }
 }
+
 export function getInvalidMsg(data) {
   if (data) {
     const msg = Object.values(data)[0];
-    console.log(msg[0], "data");
-
     toast.error(msg[0]);
   }
 }
@@ -55,13 +54,17 @@ export const getObserVationColorCode = (specification, data) => {
     const containsSpecialChar = getSpecialChar
       .filter((char) => spec.includes(char))
       .find((ele) => ele);
-    // console.log(containsSpecialChar, "containsSpecialChar");
     const temp = spec.split(containsSpecialChar);
     const valueOne = temp[0];
     const valueTwo = temp[1];
     const AddValue = Number(valueOne) + Number(valueTwo);
     const SubractValue = Number(valueOne) - Number(valueTwo);
-    if (containsSpecialChar === "+" && Number(AddValue) === Number(data)) {
+    if (!valueTwo) {
+      return "black";
+    } else if (
+      containsSpecialChar === "+" &&
+      Number(AddValue) === Number(data)
+    ) {
       return "black";
     } else if (
       containsSpecialChar === "-" &&

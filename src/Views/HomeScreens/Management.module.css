@@ -45,6 +45,13 @@
   border-radius: 10px;
   object-fit: contain;
   transition: 2s;
+  /* box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; */
+
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px; */
 }
 
 /* .slider span:hover img {
@@ -91,12 +98,15 @@ table .icons img {
 }
 .listOfTable th {
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.7);
+  /* background-color: rgba(0, 0, 0, 0.7); */
   height: 40px;
+  background-color: rgba(27, 8, 169, 0.6);
 }
 
 .listOfTable tbody {
-  background-color: rgba(227, 225, 225, 0.4);
+  /* background-color: rgba(227, 225, 225, 0.4);
+   */
+  background-color: white;
 }
 
 .listOfTable tbody td {
@@ -108,8 +118,8 @@ table .icons img {
   border-top-left-radius: 8px;
 }
 .listOfTable tbody tr:hover {
-  /* background-color: rgb(248, 245, 245); */
-  background-color: rgb(208, 208, 216);
+  /* background-color: rgb(208, 208, 216); */
+  background-color: rgb(249, 249, 249);
 }
 .listOfTable thead th:last-child {
   border-top-right-radius: 8px;
@@ -265,12 +275,10 @@ td {
 .serachOptionConatiner {
   margin-bottom: 20px;
   padding: 10px;
-  background-color: white;
+  /* background-color: white; */
   border-radius: 5px;
-  box-shadow: var(--shadow);
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  border: var(--inputBorder);
 }
+
 @media (max-width: 1200px) {
   .PrepareInspectionReport {
     width: 40%;
@@ -306,6 +314,12 @@ td {
   .DubpilcateDashboard p {
     font-size: 50px;
   }
+  .savedLogsProcess {
+    margin-top: 20px;
+  }
+  .exportBtns {
+    margin-top: 5px !important;
+  }
 }
 @media (max-width: 575px) {
   .listOfTable {
@@ -322,6 +336,9 @@ td {
   }
   .slider {
     display: none;
+  }
+  .exportBtns {
+    margin-top: 5px !important;
   }
 }
 

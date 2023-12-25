@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import {
@@ -10,11 +14,7 @@ import {
 import EditIcon from "../../Assets/Icons/SvgIcons/edit.svg";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { deleteSavedLogs, savedDataList } from "../../Services/Services";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
-import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
 import CustomPagination from "../../Components/CustomPagination";
 import deleteIcon from "../../Assets/Icons/SvgIcons/delete.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
@@ -168,11 +168,6 @@ function SavedData() {
           setlistInSpectionCriteria(response?.data?.data);
         } else if (response?.data?.status === 0) {
           setlistInSpectionCriteria(null);
-          // if (Array.isArray(response?.data?.msg)) {
-          //   getInvalidMsg(response?.data?.msg);
-          // } else {
-          //   toast.error(response?.data?.msg);
-          // }
         }
       })
       .catch((err) => {
@@ -233,6 +228,7 @@ function SavedData() {
         });
       });
   };
+
   //child tab is close parent is refresh function
   useEffect(() => {
     const handleMessage = (event) => {
@@ -305,7 +301,7 @@ function SavedData() {
               }
             />
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className={`col-lg-3 col-md-6 ${classes.savedLogsProcess}`}>
             <TextInputBox
               title="Process"
               placeHolder="Enter process"
@@ -333,7 +329,7 @@ function SavedData() {
             />
           </div>
 
-          <div className="col-lg-1 col-md-6 col-3 mt-4">
+          <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
             <CustomButton title="Search" onButtonPress={handleSubmit} />
           </div>
         </div>

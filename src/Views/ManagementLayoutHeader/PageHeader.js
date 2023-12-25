@@ -8,9 +8,6 @@ function PageHeader({
   BtntitleOne,
   onPressOvertime,
   BtnTrue = false,
-  downloadBtn = false,
-  closeIcon = false,
-  closeClick,
   secondBtn = true,
 }) {
   return (

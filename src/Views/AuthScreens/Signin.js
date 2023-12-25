@@ -1,16 +1,16 @@
 import { useState } from "react";
-import classes from "./AuthScreens.module.css";
 import toast from "react-hot-toast";
-import img from "../../Assets/Images/loginimg.svg";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { userSignin } from "../../Services/Services";
-import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { setCookie } from "../../Store/Storage/Cookie";
+import img from "../../Assets/Images/loginimg.svg";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
 import { EMAIL_REGEX } from "../../Utility/Constants";
+import classes from "./AuthScreens.module.css";
 import {
   handleStoreUserData,
   handleStoreUserToken,
@@ -63,7 +63,11 @@ function Signin() {
           dispatch(handleStoreUserData(response?.data?.data));
           setCookie("vt_enterprise_login", response?.data);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -85,20 +89,16 @@ function Signin() {
       {loader ? <Loader /> : null}
       <p className={classes.SignupCompanyName}>V.T. ENTERPRISE</p>
       <div className={classes.container2}>
-        <div className={`col-lg-5 col-md-6 ${classes.leftcontent}`}>
-          <div className={classes.title}>Welcome!</div>
-          <div className={classes.desc}>Sign in with your email</div>
+        <div className={`col-lg-6 col-md-6 ${classes.leftcontent}`}>
           <div>
             <img
               src={img}
-              alt="login_img"
+              alt="login"
               style={{ width: "100%", height: "100%" }}
-            ></img>
+            />
           </div>
         </div>
-        <div
-          className={`col-lg-6 offset-lg-1 col-md-6 ${classes.rightcontent}`}
-        >
+        <div className={`col-lg-6 col-12 col-md-6 ${classes.rightcontent}`}>
           <div className={`mb-3 ${classes.inputsection}`}>
             <TextInputBox
               title="Email"
@@ -157,8 +157,12 @@ function Signin() {
             />
           </div>
 
-          <div className="my-4">
-            <CustomButton title="Sign In" onButtonPress={handleSubmit} />
+          <div className="my-2">
+            <CustomButton
+              title="Sign In"
+              onButtonPress={handleSubmit}
+              // onButtonPress={() => navigate("/dashboard")}
+            />
           </div>
         </div>
       </div>

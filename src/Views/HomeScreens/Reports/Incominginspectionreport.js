@@ -188,7 +188,7 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
-
+  console.log(values.datas, "DDDDDDD");
   // edit or add api call and get resport data set values in formik
   useEffect(() => {
     if (reportData) {
@@ -400,7 +400,7 @@ export default function Emptypage({ viewReportData }) {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(10).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(10).fill("");
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -414,10 +414,9 @@ export default function Emptypage({ viewReportData }) {
 
   const getColor = () => {
     const tempData = [...values.datas];
-
-    const getCode = tempData
-      .map((ele) => ele?.observation)
-      .some((text) => text !== "");
+    const getCode = tempData.some((ele) =>
+      ele.observation.some((value) => value)
+    );
     return getCode;
   };
 
@@ -557,10 +556,6 @@ export default function Emptypage({ viewReportData }) {
                         value={head?.leftData}
                         onChange={(event) => {
                           const text = event.target.value;
-                          // const alphabeticText = text.replace(
-                          //   /[^A-Za-z0-9 ]/g,
-                          //   ""
-                          // );
                           handleChange("supplier_name")(text);
                         }}
                       />
@@ -600,11 +595,7 @@ export default function Emptypage({ viewReportData }) {
                         value={head?.rightData}
                         onChange={(event) => {
                           const text = event.target.value;
-                          const alphabeticText = text.replace(
-                            /[^A-Za-z0-9 ]/g,
-                            ""
-                          );
-                          handleChange("invoice_no")(alphabeticText);
+                          handleChange("invoice_no")(text);
                         }}
                       />
                     ) : index === 2 ? (
@@ -630,8 +621,7 @@ export default function Emptypage({ viewReportData }) {
                         value={head?.rightData}
                         onChange={(event) => {
                           const text = event.target.value;
-                          const alphabeticText = text.replace(/[^0-9]/g, "");
-                          handleChange("quantity")(alphabeticText);
+                          handleChange("quantity")(text);
                         }}
                       />
                     )}
@@ -683,14 +673,14 @@ export default function Emptypage({ viewReportData }) {
             <tbody>
               {values?.datas &&
                 values?.datas.map((ele, index) => (
-                  <tr>
+                  <tr key={index}>
                     <td>{index + 1}</td>
                     <td colSpan={2}>{ele?.characteristics}</td>
                     <td>{ele?.specification}</td>
                     <td>{ele?.units}</td>
                     <td>{ele?.method_of_check}</td>
                     {ele?.observation.map((inputs, inputIndex) => (
-                      <td>
+                      <td key={inputIndex}>
                         <input
                           style={{
                             color: getObserVationColorCode(
@@ -705,7 +695,6 @@ export default function Emptypage({ viewReportData }) {
                           value={inputs}
                           onChange={(event) => {
                             const text = event.target.value;
-
                             handleChangeValues(text, index, inputIndex);
                           }}
                         />
@@ -720,11 +709,7 @@ export default function Emptypage({ viewReportData }) {
                         value={ele?.status}
                         onChange={(event) => {
                           const text = event.target.value;
-                          const alphabeticText = text.replace(
-                            /[^A-Za-z0-9 ]/g,
-                            ""
-                          );
-                          handleStatusChange(index, alphabeticText);
+                          handleStatusChange(index, text);
                         }}
                       />
                     </td>
@@ -737,11 +722,7 @@ export default function Emptypage({ viewReportData }) {
                         value={ele?.remark}
                         onChange={(event) => {
                           const text = event.target.value;
-                          const alphabeticText = text.replace(
-                            /[^A-Za-z0-9 ]/g,
-                            ""
-                          );
-                          handleRemarkChange(index, alphabeticText);
+                          handleRemarkChange(index, text);
                         }}
                       />
                     </td>
@@ -797,8 +778,7 @@ export default function Emptypage({ viewReportData }) {
                     value={values?.checked_by}
                     onChange={(event) => {
                       const text = event.target.value;
-                      const alphabeticText = text.replace(/[^A-Za-z0-9 ]/g, "");
-                      handleChange("checked_by")(alphabeticText);
+                      handleChange("checked_by")(text);
                     }}
                   />
                 </td>
@@ -813,8 +793,7 @@ export default function Emptypage({ viewReportData }) {
                     value={values?.approved_by}
                     onChange={(event) => {
                       const text = event.target.value;
-                      const alphabeticText = text.replace(/[^A-Za-z0-9 ]/g, "");
-                      handleChange("approved_by")(alphabeticText);
+                      handleChange("approved_by")(text);
                     }}
                   />
                 </td>

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import toast from "react-hot-toast";
-import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
-import CustomDropDown from "../../Components/CustomDropDown";
-import classes from "./Management.module.css";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+import PageHeader from "../ManagementLayoutHeader/PageHeader";
+import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
+import CustomDropDown from "../../Components/CustomDropDown";
+import classes from "./Management.module.css";
 import { ALPHA_NUM } from "../../Utility/Constants";
 import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
@@ -88,35 +88,7 @@ function PrepareInspectionReport() {
       path: "/#/final_inspection_report",
     },
   ];
-  // const getAndSetLoaclStorageDetails = (btnStatus) => {
-  //   const setData = {
-  //     local_Process: values.process,
-  //     local_Part_No: values.part_no,
-  //     local_Report_Type: dropdownName,
-  //   };
 
-  //   const getLocalStorage = JSON.parse(sessionStorage.getItem("ReportTypes"));
-  //   if (getLocalStorage) {
-  //     const isDuplicate = getLocalStorage.some((ele) => {
-  //       return (
-  //         ele.local_Process === values.process &&
-  //         ele.local_Part_No === values.part_no &&
-  //         ele.local_Report_Type === dropdownName
-  //       );
-  //     });
-  //     if (!isDuplicate) {
-  //       const temp = [...getLocalStorage, setData];
-  //       sessionStorage.setItem("ReportTypes", JSON.stringify(temp));
-  //       handleClick(btnStatus);
-  //     } else {
-  //       toast.error("This report alredy opened.");
-  //     }
-  //   } else {
-  //     const tempData = [setData];
-  //     sessionStorage.setItem("ReportTypes", JSON.stringify(tempData));
-  //     handleClick(btnStatus);
-  //   }
-  // };
   const handleClick = (data) => {
     // getAndSetLoaclStorageDetails();
     // setloader(true)
@@ -133,12 +105,14 @@ function PrepareInspectionReport() {
       }
     }
   };
+
   const getReportType = () => {
     const getDetails = dropDownItem.find(
       (ele) => ele.key === parseInt(dropdownName)
     )?.label;
     return getDetails;
   };
+
   const handleGetProductsList = () => {
     setloader(true);
     const formData = new FormData();
@@ -166,6 +140,7 @@ function PrepareInspectionReport() {
         setloader(false);
       });
   };
+
   const handleEditReport = () => {
     setloader(true);
     let formData = new FormData();
@@ -208,10 +183,6 @@ function PrepareInspectionReport() {
     setbuttonStatus(null);
     return encrypted;
   };
-
-  useEffect(() => {
-    resetForm();
-  }, []);
 
   return (
     <>
@@ -322,7 +293,7 @@ function PrepareInspectionReport() {
           <div className="col-lg-4 col-6 mb-2 mt-3">
             <CustomButton
               title="Edit report"
-              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
               onButtonPress={() => {
                 setbuttonStatus("Edit");
                 handleSubmit();

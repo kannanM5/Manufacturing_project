@@ -38,7 +38,6 @@ function ListOfProducts() {
         if (response?.data?.status === 1) {
           setPage(parseInt(response?.data?.data?.page) - 1);
           setListOfProducts(response?.data?.data);
-          // toast.success(response?.data?.msg);
         }
       })
       .catch((err) => {

@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useFormik } from "formik";
-import { CustomButton, Loader, TextInputBox } from "../Components";
 import * as Yup from "yup";
-import classes from "./Modal.module.css";
-import { getCookie } from "../Store/Storage/Cookie";
+import { useFormik } from "formik";
 import toast from "react-hot-toast";
-import { getCatchMsg } from "../Utility/GeneralUtils";
+import { CustomButton, Loader, TextInputBox } from "../Components";
+import classes from "./Modal.module.css";
+import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import { employeeChangePassword } from "../Services/Services";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 
@@ -16,7 +15,7 @@ const validationSchema = Yup.object().shape({
     .required("Confirm password is required"),
 });
 
-function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
+function EmployeeChangePassword({ employeeId, modalClose }) {
   const [loader, setloader] = useState(false);
   const token = useToken();
   const userId = useEmployeeId();
@@ -54,7 +53,11 @@ function EmployeeChangePassword({ onClose, heading, employeeId, modalClose }) {
           modalClose();
           toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {

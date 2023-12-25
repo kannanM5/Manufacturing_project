@@ -68,7 +68,6 @@ function InspectionCriteria() {
         if (response?.data?.status === 1) {
           setPage(parseInt(response?.data?.data?.page) - 1);
           setlistInSpectionCriteria(response?.data?.data);
-          // toast.success(response?.data?.msg);
         } else if (response?.data?.status === 0) {
           setlistInSpectionCriteria(null);
         }
@@ -145,7 +144,7 @@ function InspectionCriteria() {
                 }
               />
             </div>
-            <div className="col-lg-3 col-md-6">
+            <div className={`col-lg-3 col-md-6 ${classes.savedLogsProcess}`}>
               <TextInputBox
                 title="Process"
                 placeHolder="Enter process"
@@ -176,7 +175,7 @@ function InspectionCriteria() {
               />
             </div>
 
-            <div className="col-lg-1 col-md-6 col-3 mt-4">
+            <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
               <CustomButton
                 title="Enter"
                 onButtonPress={() => {
@@ -194,11 +193,11 @@ function InspectionCriteria() {
                 }}
               />
             </div>
-            <div className="col-lg-1 col-md-6 col-3 mt-4">
+            <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
               <CustomButton
                 title="Search "
                 onButtonPress={handleSubmit}
-                customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+                customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
               />
             </div>
           </div>

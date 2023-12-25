@@ -1,28 +1,24 @@
 import React, { useState } from "react";
+import { useFormik } from "formik";
+import toast from "react-hot-toast";
+import * as Yup from "yup";
 import classes from "./Modal.module.css";
 import { CustomButton, Loader, TextInputBox } from "../Components";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { getCatchMsg } from "../Utility/GeneralUtils";
-import toast from "react-hot-toast";
+import { getCatchMsg, getInvalidMsg } from "../Utility/GeneralUtils";
 import { useEmployeeId, useToken } from "../Utility/StoreData";
 import {
   addInspectionCriteriaService,
   editInspectionCriteriaService,
 } from "../Services/Services";
-import { ALPHA_NUM } from "../Utility/Constants";
 
 const validationSchema = Yup.object({
   characteristics: Yup.string().required("Characteristics is required"),
   specification: Yup.string().required("Specification is required"),
   units: Yup.string().required("Unit is required"),
-  // .matches(ALPHA_NUM, "Enter valid unit"),
   method_of_check: Yup.string().required("Method of check is required"),
-  // .matches(ALPHA_NUM, "Enter valid method of check"),
 });
 
 function AddInspectionCriteria({
-  heading,
   getValue,
   modalClose,
   listApiCall,
@@ -78,7 +74,11 @@ function AddInspectionCriteria({
           modalClose();
           listApiCall();
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -108,7 +108,11 @@ function AddInspectionCriteria({
           modalClose();
           listApiCall();
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -124,7 +128,7 @@ function AddInspectionCriteria({
       {loader ? <Loader /> : null}
       <div className={classes.Container}>
         <div className="row">
-          <div className="col-lg-6 mb-3 ">
+          <div className="col-lg-6 col-md-6 mb-3 ">
             <TextInputBox
               title="Characteristics"
               placeHolder="Enter characteristics"
@@ -156,7 +160,7 @@ function AddInspectionCriteria({
               }
             />
           </div>
-          <div className="col-lg-6 mb-3 ">
+          <div className="col-lg-6 col-md-6 mb-3 ">
             <TextInputBox
               title="Specifications"
               placeHolder="Enter specifications"
@@ -188,7 +192,7 @@ function AddInspectionCriteria({
               }
             />
           </div>
-          <div className="col-lg-6 mb-3 ">
+          <div className="col-lg-6 col-md-6 mb-3 ">
             <TextInputBox
               title="Unit"
               placeHolder="Enter unit"
@@ -213,7 +217,7 @@ function AddInspectionCriteria({
               errorText={touched.units && errors.units ? errors.units : ""}
             />
           </div>
-          <div className="col-lg-6 mb-3 ">
+          <div className="col-lg-6 col-md-6 mb-3 ">
             <TextInputBox
               title="Method of check"
               placeHolder="Enter method of check"
@@ -247,13 +251,13 @@ function AddInspectionCriteria({
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-2 col-md-6 mb-2">
+          <div className="col-lg-2 col-md-3 col-4 mb-2">
             <CustomButton
               onButtonPress={handleSubmit}
               title={editData ? "Update" : "Submit"}
             />
           </div>
-          <div className="col-lg-2 col-md-6 mb-2">
+          <div className="col-lg-2 col-md-3 col-4 mb-2">
             <CustomButton
               title="Cancel"
               onButtonPress={modalClose}

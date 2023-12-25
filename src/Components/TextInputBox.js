@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import invisible from "../Assets/Icons/Svg/invisibleicon.svg"
 import invisible from "../Assets/Icons/SvgIcons/invisibleicon.svg";
 import visible from "../Assets/Icons/SvgIcons/visibleicon.svg";
 import classes from "./CustomStyle.module.css";

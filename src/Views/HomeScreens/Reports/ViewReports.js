@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { useLocation } from "react-router-dom";
+import { useEmployeeId, useToken } from "../../../Utility/StoreData";
 import { viewReports } from "../../../Services/Services";
 import { Loader } from "../../../Components";
 import FinalInspectionReport from "./Finalinspectionreport";
@@ -29,6 +29,7 @@ function ViewReports() {
       }
     });
   };
+
   const getReportPage = () => {
     if (state?.report_type === 1) {
       return <Emptypage viewReportData={reportList} />;
@@ -40,9 +41,11 @@ function ViewReports() {
       return <FinalInspectionReport viewReportData={reportList} />;
     }
   };
+
   useEffect(() => {
     if ((state, token)) handleGetViewReport(state);
   }, [state, token]);
+
   return (
     <div>
       {loader ? <Loader /> : null}

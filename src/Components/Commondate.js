@@ -13,7 +13,6 @@ export default function Commondate({
   requiredText,
   borderNone = true,
 }) {
-  console.log(value, "VALUEE");
   return (
     <div className={classes.datePicker}>
       <p className={classes.title}>

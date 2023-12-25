@@ -97,9 +97,9 @@ function FinalInspectionReport({ viewReportData }) {
 
   const getColor = () => {
     const tempData = [...values.datas];
-    const getCode = tempData
-      .map((ele) => ele?.observation)
-      .some((text) => text !== "");
+    const getCode = tempData.some((ele) =>
+      ele.observation.some((value) => value)
+    );
     return getCode;
   };
 
@@ -494,7 +494,12 @@ function FinalInspectionReport({ viewReportData }) {
                   <th colSpan={2}>Part No:</th>
                   <th colSpan={11}>{values?.tableHeadDataApi?.part_no}</th>
                   <th>Inv No:</th>
-                  <th colSpan={5}>
+                  <th
+                    colSpan={5}
+                    style={{
+                      paddingLeft: "0",
+                    }}
+                  >
                     <input
                       readOnly={viewReportData ? true : false}
                       style={{
@@ -502,17 +507,14 @@ function FinalInspectionReport({ viewReportData }) {
                           errors.invoice_no && touched.invoice_no
                             ? "2px solid red"
                             : "",
+                        paddingLeft: "10px",
                       }}
                       maxLength={20}
                       type="text"
                       value={values?.invoice_no}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("invoice_no")(alphabeticText);
+                        handleChange("invoice_no")(text);
                       }}
                     />
                   </th>
@@ -538,7 +540,12 @@ function FinalInspectionReport({ viewReportData }) {
                   <th colSpan={2}>Part Name:</th>
                   <th colSpan={11}>{values?.tableHeadDataApi?.part_name}</th>
                   <th>Quantity:</th>
-                  <th colSpan={5}>
+                  <th
+                    colSpan={5}
+                    style={{
+                      paddingLeft: "0",
+                    }}
+                  >
                     <input
                       readOnly={viewReportData ? true : false}
                       style={{
@@ -546,14 +553,14 @@ function FinalInspectionReport({ viewReportData }) {
                           errors.quantity && touched.quantity
                             ? "2px solid red"
                             : "",
+                        paddingLeft: "10px",
                       }}
                       maxLength={20}
                       type="text"
                       value={values?.quantity}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(/[^0-9]/g, "");
-                        handleChange("quantity")(alphabeticText);
+                        handleChange("quantity")(text);
                       }}
                     />
                   </th>
@@ -603,14 +610,14 @@ function FinalInspectionReport({ viewReportData }) {
               <tbody>
                 {values?.datas &&
                   values?.datas.map((ele, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>{index + 1}</td>
                       <td>{ele?.characteristics}</td>
                       <td>{ele?.specification}</td>
                       <td>{ele?.units}</td>
                       <td>{ele?.method_of_check}</td>
                       {ele?.observation.map((inputs, inputIndex) => (
-                        <td>
+                        <td key={inputIndex}>
                           <input
                             style={{
                               color: getObserVationColorCode(
@@ -625,15 +632,7 @@ function FinalInspectionReport({ viewReportData }) {
                             value={inputs}
                             onChange={(event) => {
                               const text = event.target.value;
-                              const alphabeticText = text.replace(
-                                /[^A-Za-z0-9 ]/g,
-                                ""
-                              );
-                              handleChangeValues(
-                                alphabeticText,
-                                index,
-                                inputIndex
-                              );
+                              handleChangeValues(text, index, inputIndex);
                             }}
                           />
                         </td>
@@ -647,11 +646,7 @@ function FinalInspectionReport({ viewReportData }) {
                           value={ele?.status}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleStatusChange(index, alphabeticText);
+                            handleStatusChange(index, text);
                           }}
                         />
                       </td>
@@ -664,11 +659,7 @@ function FinalInspectionReport({ viewReportData }) {
                           value={ele?.remark}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleRemarkChange(index, alphabeticText);
+                            handleRemarkChange(index, text);
                           }}
                         />
                       </td>
@@ -688,11 +679,7 @@ function FinalInspectionReport({ viewReportData }) {
                       value={values?.checked_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("checked_by")(alphabeticText);
+                        handleChange("checked_by")(text);
                       }}
                     />
                   </td>
@@ -709,11 +696,7 @@ function FinalInspectionReport({ viewReportData }) {
                       value={values?.approved_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("approved_by")(alphabeticText);
+                        handleChange("approved_by")(text);
                       }}
                     />
                   </td>

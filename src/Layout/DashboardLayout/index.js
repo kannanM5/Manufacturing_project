@@ -7,8 +7,10 @@ export default function DashboardLayout() {
     <>
       <div
         style={{
-          backgroundColor:
-            pathname === "/export_page/view_reports" ? "White" : "white",
+          background:
+            pathname === "/export_page/view_reports"
+              ? "White"
+              : "linear-gradient(to right, rgb(248, 243, 243),rgba(68, 41, 184,0.2))",
           minHeight: "100vh",
         }}
       >

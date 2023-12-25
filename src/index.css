@@ -9,49 +9,31 @@
   --fontSemibold: "Poppins SemiBold";
   --fontMedium: "Poppins Medium";
   --fontBold: "Poppins Bold";
-  --fontExtraBold: "Poppins ExtraBold";
-  --fontLight: "Poppins Light";
   --dangerColor: #f14a45;
-  --inputBg: rgba(255, 255, 255, 0.9);
   --whiteColor: #fff;
   --blackColor: #262626;
   --lowBlackColor: #252525;
   --successColor: #2ab95a;
   --btnClr: blue;
   --tableHeadBg: #878484;
-  --menuBg2: #fff9f8;
-  --cancelBtnClr: rgb(195, 193, 193);
-  --menuBg: #1a2c41;
   --inputBorder: 0.5px solid rgba(0, 0, 0, 0.25);
   --inputBg: rgba(255, 255, 255, 0.9);
   --shadow: 0px 2px 4px rgba(0, 0, 0, 0.06);
-  --inputBodyClr: rgba(38, 38, 38, 0.9);
-  --gantchartBorder: 1px solid #ffffff;
-  --btnColor: #1b08a9;
-  --textxxs: 11px;
+  /* --btnColor: #1b08a9; */
+  --btnColor: rgba(27, 8, 169, 0.6);
   --textXs1: 11px;
   --textXs: 14px;
-  --textXs2: 14.5px;
   --textSm1: 15px;
   --textS: 15.5px;
   --errorTxt: 12px;
   --textcolor: rgba(38, 38, 38, 0.9);
-  --textXs2: 14.5px;
   --textSm: 16px;
   --textMd: 18px;
-  --textLg: 24px;
-  --textXl2: 27px;
-  --textXXl: 20px;
-  --textDefault: 17px;
-  --texth6: 19px;
-  --mdText: 48px;
   --fontWm: 500;
   --fontWs: 400;
   --fontweight: 600;
 }
-.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
-  border: none !important;
-}
+
 @font-face {
   font-family: "Poppins Bold";
   src: url("../src/Assets/Fonts/Poppins/Poppins-Bold.ttf") format("woff");
@@ -65,17 +47,6 @@
 @font-face {
   font-family: "Poppins Regular";
   src: url("../src/Assets/Fonts/Poppins/Poppins-Regular.ttf") format("woff");
-  font-display: swap;
-}
-@font-face {
-  font-family: "Poppins ExtraBold";
-  src: url("../src/Assets/Fonts/Poppins/Poppins-ExtraBold.ttf") format("woff");
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Poppins Light";
-  src: url("../src/Assets/Fonts/Poppins/Poppins-Light.ttf") format("woff");
   font-display: swap;
 }
 
@@ -103,31 +74,13 @@ body {
   font-family: "Open-Sans", sans-serif;
 }
 
-@media (max-width: 575px) {
-  .offcanvas {
-    width: 90%;
+@media (min-width: 992px) and (max-width: 1200px) {
+  .ant-tabs-tab-btn,
+  .headerUsername {
+    font-size: 13px !important;
   }
 }
 
-@media (min-width: 768px) and (max-width: 992px) {
-  .offcanvas {
-    width: 35%;
-  }
-}
-
-/* @media (max-width: 575px) {
-  .offcanvas.show:not(.hiding) {
-    width: 90%;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 992px) {
-  .offcanvas.show:not(.hiding) {
-    width: 35%;
-  }
-} */
-
-/* ant design start  */
 .ant-tabs {
   display: flex;
 }

@@ -12,7 +12,7 @@
 .confirmModal .confirm_Btns {
   width: 100%;
   display: flex;
-  margin: 25px auto;
+  margin: 25px auto 10px auto;
   gap: 40px;
   justify-content: center;
   align-items: center;

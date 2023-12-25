@@ -19,6 +19,7 @@ function InstanceBase() {
     },
     (error) => Promise.reject(error)
   );
+
   instance.interceptors.response.use(
     (response) => {
       if (response.data.status === -1) {
@@ -31,6 +32,7 @@ function InstanceBase() {
       getCatchMsg(error);
     }
   );
+
   useEffect(() => {
     if (token === null) {
       try {

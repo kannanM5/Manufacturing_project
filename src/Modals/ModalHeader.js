@@ -13,7 +13,12 @@ function ModalsHeader({ onClose, heading = "" }) {
             </div>
           </div>
         </div>
-        <img className={classes.close} src={close} alt="" onClick={onClose} />
+        <img
+          className={classes.close}
+          src={close}
+          alt="close"
+          onClick={onClose}
+        />
       </div>
     </>
   );

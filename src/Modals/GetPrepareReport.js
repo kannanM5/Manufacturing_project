@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import classes from "./Modal.module.css";
 import close from "../Assets/Icons/Svg/close.svg";
 import { CustomButton, TextInputBox } from "../Components";
-import { useNavigate } from "react-router-dom";
 
 function GetPrepareReport({ onClose, heading, modalClose }) {
   const navigate = useNavigate();
@@ -29,11 +29,13 @@ function GetPrepareReport({ onClose, heading, modalClose }) {
       path: "/Prepareinscepectionreport/final_inspection_report",
     },
   ];
+
   const handleCLick = () => {
     const getDetails = dropDownItem.find((ele) => ele?.id === dropdownName);
     navigate(getDetails?.path);
     modalClose();
   };
+
   return (
     <div>
       <div className={classes.popup}>

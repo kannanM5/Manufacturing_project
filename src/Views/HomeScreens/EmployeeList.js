@@ -15,7 +15,6 @@ import {
   useEmployeeType,
   useToken,
 } from "../../Utility/StoreData";
-import { getCookie } from "../../Store/Storage/Cookie";
 
 function EmployeeList() {
   const token = useToken();
@@ -31,25 +30,16 @@ function EmployeeList() {
   const [loader, setloader] = useState(false);
 
   useEffect(() => {
-    handleGetEmployeeList();
-  }, []);
-
-  const loginUserData = getCookie("vt_enterprise_login")
-    ? getCookie("vt_enterprise_login")?.data
-    : null;
+    if (token) handleGetEmployeeList();
+  }, [token]);
 
   const handleGetEmployeeList = (page = 1) => {
     setloader(true);
     let formData = new FormData();
-    formData.append("id", loginUserData?.user_id);
-    formData.append("token", loginUserData?.token);
-    formData.append("user_type", loginUserData?.user_type);
-    // formData.append("id", userId);
-    // formData.append("token", token);
-    // formData.append("user_type", userType);
+    formData.append("id", userId);
+    formData.append("token", token);
+    formData.append("user_type", userType);
     formData.append("limit", 10);
-
-    console.log(formData, "FORMDATA");
     employeeList(page, formData)
       .then((response) => {
         if (response?.data?.status === 1) {

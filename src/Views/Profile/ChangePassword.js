@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { getCatchMsg } from "../../Utility/GeneralUtils";
+import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import classes from "./UserProfile.module.css";
 import { CustomButton, Loader, TextInputBox } from "../../Components";
 import { superAdminChangePassword } from "../../Services/Services";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
-import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object().shape({
   old_password: Yup.string().required("Current password is required"),
@@ -43,6 +43,7 @@ function ChangePassword() {
       handleChangePassword(values);
     },
   });
+
   const handleChangePassword = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -57,7 +58,11 @@ function ChangePassword() {
           toast.success(response?.data?.msg);
           navigate("/dashboard");
         } else if (response?.data?.status === 0) {
-          toast.error(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {

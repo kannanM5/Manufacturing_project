@@ -29,7 +29,7 @@ const validationSchema = Yup.object({
   type: Yup.string().required("User type is required"),
 });
 
-function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
+function AddEmployee({ listApiCall, modalClose }) {
   const token = useToken();
   const userId = useEmployeeId();
   const userType = useEmployeeType();
@@ -95,8 +95,11 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           modalClose();
           listApiCall();
         } else if (response?.data?.status === 0) {
-          // toast.error(response?.data?.msg);
-          getInvalidMsg(response?.data?.msg);
+          if (typeof response?.data?.msg === "object") {
+            getInvalidMsg(response?.data?.msg);
+          } else {
+            toast.error(response?.data?.msg);
+          }
         }
       })
       .catch((err) => {
@@ -110,22 +113,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
   return (
     <>
       {loader ? <Loader /> : null}
-      {/* <div className={classes.popup}>
-        <div className={classes.popup_head}>
-          <div className={classes.popup_head_left}>
-            <div className={classes.line}></div>
-            <div>
-              <p className={classes.Heading}>{heading}</p>
-            </div>
-          </div>
-        </div>
-        <img
-          className={classes.close}
-          src={close}
-          alt="close"
-          onClick={onClose}
-        />
-      </div> */}
+
       <div className="row mt-4">
         <div className="col-lg-4 col-md-6 col-sm-12 mb-3 ">
           <TextInputBox
@@ -288,7 +276,7 @@ function AddEmployee({ onClose, heading, editData, listApiCall, modalClose }) {
           />
         </div>
       </div>
-      <div className="col-lg-2 col-md-2 col-6 mb-2">
+      <div className="col-lg-2  col-xl-1 col-md-3 col-3 mb-2">
         <CustomButton title="Submit" onButtonPress={handleSubmit} />
       </div>
     </>

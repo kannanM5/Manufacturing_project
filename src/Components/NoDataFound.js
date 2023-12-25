@@ -13,7 +13,11 @@ const NoDataFound = () => {
         padding: "10px",
       }}
     >
-      <img src={NodataImgage} style={{ width: "50px", height: "50px" }} />
+      <img
+        src={NodataImgage}
+        style={{ width: "50px", height: "50px" }}
+        alt="NoDataImg"
+      />
       <p>No data found</p>
     </div>
   );

@@ -100,18 +100,19 @@ function SettingInspectionReport({ viewReportData }) {
       };
     }
   }, []);
+
   const getColor = () => {
     const tempData = [...values.datas];
-    const getCode = tempData
-      .map((ele) => ele?.observation)
-      .some((text) => text !== "");
+    const getCode = tempData.some((ele) =>
+      ele.observation.some((value) => value)
+    );
     return getCode;
   };
 
   const tableHeadData = [
     {
       id: 1,
-      left: "M/C N0.",
+      left: "M/C No.",
       right: "Setter Name:",
       leftData: values?.mvc_no,
       rightData: values?.setter_name,
@@ -389,7 +390,7 @@ function SettingInspectionReport({ viewReportData }) {
       if (dataIndex === index) {
         const newObservation = Array.isArray(ele.observation)
           ? [...ele.observation]
-          : Array(5).fill(""); // Assuming a default value of an empty string for non-array observations
+          : Array(5).fill("");
         newObservation[inputIndex] = event;
         return {
           ...ele,
@@ -516,7 +517,13 @@ function SettingInspectionReport({ viewReportData }) {
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
-                    <th colSpan={15} className={classes.staticHeading}>
+                    <th
+                      colSpan={15}
+                      className={classes.staticHeading}
+                      style={{
+                        paddingLeft: "0",
+                      }}
+                    >
                       {index === 0 ? (
                         <input
                           readOnly={viewReportData ? true : false}
@@ -525,23 +532,21 @@ function SettingInspectionReport({ viewReportData }) {
                               errors.mvc_no && touched.mvc_no
                                 ? "2px solid red"
                                 : "",
+                            paddingLeft: "10px",
                           }}
                           maxLength={50}
                           type="text"
                           value={head?.leftData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("mvc_no")(alphabeticText);
+                            handleChange("mvc_no")(text);
                           }}
                         />
                       ) : (
                         <span
                           style={{
                             fontFamily: "var(--fontRegular)",
+                            paddingLeft: "10px",
                           }}
                         >
                           {head?.leftData}
@@ -664,7 +669,7 @@ function SettingInspectionReport({ viewReportData }) {
               <tbody>
                 {values?.datas &&
                   values?.datas.map((ele, index) => (
-                    <tr>
+                    <tr key={index}>
                       <td>{index + 1}</td>
                       <td colSpan={6}>{ele?.characteristics}</td>
                       <td colSpan={2}>{ele?.specification}</td>
@@ -672,7 +677,7 @@ function SettingInspectionReport({ viewReportData }) {
                       <td colSpan={2}>{ele?.method_of_check}</td>
 
                       {ele?.observation.map((inputs, inputIndex) => (
-                        <td>
+                        <td key={inputIndex}>
                           <input
                             style={{
                               color: getObserVationColorCode(
@@ -721,7 +726,7 @@ function SettingInspectionReport({ viewReportData }) {
                   </td>
                   {values?.report_header_status &&
                     values?.report_header_status.map((ele, index) => (
-                      <td>
+                      <td key={index}>
                         <input
                           readOnly={viewReportData ? true : false}
                           className={classes.observationInput}

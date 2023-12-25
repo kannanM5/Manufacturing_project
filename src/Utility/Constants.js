@@ -1,4 +1,4 @@
-// export const DOWNLOAD_URL = "http://192.168.1.126/vtenterprise/uploads/";
+// export const DOWNLOAD_URL = "http://192.168.0.109/vtenterprise/uploads/";
 
 export const DOWNLOAD_URL =
   "https://vteenterprise.000webhostapp.com/vtenterprise/uploads/";

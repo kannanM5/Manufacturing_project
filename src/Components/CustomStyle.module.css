@@ -198,9 +198,6 @@
 .pagenation {
   height: 30px;
 }
-.pagenation li a {
-  padding: 11px;
-}
 .pagenation li {
   display: flex;
   justify-content: center;
@@ -211,7 +208,7 @@
   height: 30px;
 }
 .active {
-  background: rgb(239, 233, 233, 0.7);
+  background-color: white;
   color: var(--btnColor);
   border: 1px solid #e0e0e0;
   font-size: 14px;
