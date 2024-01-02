@@ -197,7 +197,7 @@ function InspectionCriteria() {
               <CustomButton
                 title="Search "
                 onButtonPress={handleSubmit}
-                customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.6)" }}
               />
             </div>
           </div>
@@ -208,6 +208,7 @@ function InspectionCriteria() {
                 <thead className={classes.NormalTable}>
                   <tr>
                     <th>S.No</th>
+                    <th>Process</th>
                     <th>Characteristics</th>
                     <th>Specifications</th>
                     <th>Units</th>
@@ -226,6 +227,7 @@ function InspectionCriteria() {
                             index
                           )}
                         </td>
+                        <td>{products?.process}</td>
                         <td>{products?.characteristics}</td>
                         <td>{products?.specification}</td>
                         <td>{products?.units}</td>
@@ -250,7 +252,7 @@ function InspectionCriteria() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6}>
+                      <td colSpan={7}>
                         <NoDataFound />
                       </td>
                     </tr>
@@ -267,7 +269,7 @@ function InspectionCriteria() {
           currentpage={page}
           forcePage={page}
           onPageChange={(val) => {
-            handleListCriteriaService(val + 1, 10);
+            handleListCriteriaService(val + 1, values);
           }}
         />
       )}

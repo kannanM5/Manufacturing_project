@@ -27,3 +27,14 @@ export const EmployeePrivateRoute = () => {
     <Navigate to={"/dashboard"} />
   );
 };
+
+export const ChangePasswordPrivateRoute = () => {
+  const EmployeePermission = getCookie("vt_enterprise_login")
+    ? getCookie("vt_enterprise_login")
+    : null;
+  return EmployeePermission?.data?.user_type === 1 ? (
+    <Outlet />
+  ) : (
+    <Navigate to={"/dashboard"} />
+  );
+};

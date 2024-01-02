@@ -115,7 +115,7 @@ function Export() {
     formData.append("filename", data);
     unlinkExcelTableReport(formData)
       .then((response) => {
-        console.log("Success");
+        console.log("Success", response?.data);
       })
       .catch((err) => console.log(err));
   };
@@ -129,20 +129,20 @@ function Export() {
     formData.append("product_id", data?.product_id);
     formData.append("report_id", data?.report_id);
     formData.append("report_type", data?.report_type);
-    console.log(formData, "FORMDATRA");
     exportReportService(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          let downloadUrl = `${DOWNLOAD_URL}${response?.data?.filename}`;
-
+          const downloadUrl = `${DOWNLOAD_URL}${response?.data?.filename}`;
           if (downloadUrl) {
             const linkSource = downloadUrl;
             const downloadLink = document.createElement("a");
+            console.log(downloadLink, "PPPP");
             downloadLink.href = linkSource;
             downloadLink.click();
-            // window.open(downloadUrl);
+
+            // window.opener(downloadUrl);
+            handleUnLinkDownloadExportReport(response?.data?.filename);
           }
-          // handleUnLinkDownloadExportReport(response?.data?.filename);
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);
         }
@@ -250,7 +250,7 @@ function Export() {
                     handleGetExportDataList(1, 10, false);
                     resetForm();
                   }}
-                  customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+                  customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.6)" }}
                 />
               </div>
             </div>

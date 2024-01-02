@@ -29,7 +29,7 @@ const validationSchema = Yup.object({
   supplier_name: Yup.string().required("Name is required"),
   invoice_no: Yup.string().required("Name is required"),
   quantity: Yup.string().required("Name is required"),
-  final_status: Yup.number().required("Final status is required"),
+  // final_status: Yup.number().required("Final status is required"),
 });
 var CryptoJS = require("crypto-js");
 
@@ -41,6 +41,7 @@ export default function Emptypage({ viewReportData }) {
   const [urlValues, setUrlValues] = useState();
   const [saveStatus, setsaveStatus] = useState(null);
   const [isFinalStatus, setisFinalstatus] = useState(null);
+  const [finalStatusRequired, setFinalStatusRequired] = useState(false);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
   const [isShowModal, setIshowModal] = useState(false);
@@ -117,10 +118,22 @@ export default function Emptypage({ viewReportData }) {
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
+        const final =
+          parseInt(isFinalStatus) === 0 || parseInt(isFinalStatus) === 1
+            ? parseInt(isFinalStatus)
+            : null;
         if (urlValues?.buttonStatus === "Edit") {
-          handleUpdateReport(values);
+          if (saveStatus === 1 && final !== 0 && final !== 1) {
+            toast.error("Final status is required");
+          } else {
+            handleUpdateReport(values);
+          }
         } else {
-          handleAddIncomingReport(values);
+          if (saveStatus === 1 && !finalStatusRequired) {
+            toast.error("Final status is required");
+          } else {
+            handleAddIncomingReport(values);
+          }
         }
       } else {
         toast.error("Observation is required");
@@ -188,7 +201,6 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
-  console.log(values.datas, "DDDDDDD");
   // edit or add api call and get resport data set values in formik
   useEffect(() => {
     if (reportData) {
@@ -235,6 +247,10 @@ export default function Emptypage({ viewReportData }) {
         final_status: reportData?.productData?.final_status ?? null,
       });
       setisFinalstatus(reportData?.productData?.final_status ?? null);
+      const temp = reportData?.productData?.final_status;
+      if (parseInt(temp) === 1 || parseInt(temp) === 0) {
+        setFinalStatusRequired(false);
+      }
     }
   }, [reportData]);
 
@@ -442,6 +458,13 @@ export default function Emptypage({ viewReportData }) {
     });
   };
 
+  const getFinalStatus = (val) => {
+    if (parseInt(val) === 0 || parseInt(val) === 1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   return (
     <div>
       {loader ? <Loader /> : null}
@@ -503,38 +526,39 @@ export default function Emptypage({ viewReportData }) {
               <tr>
                 <th
                   style={{ padding: "0 5px" }}
-                  colSpan={18}
+                  colSpan={16}
                   className={classes.CompanyName}
                 >
                   <div className={classes.rowAlignment}>
-                    <div>
-                      <img
-                        src={Logo}
-                        alt="logo"
-                        style={{ width: 40, height: 40 }}
-                      />
-                    </div>
+                    <img
+                      src={Logo}
+                      alt="logo"
+                      style={{ width: 40, height: 40 }}
+                    />
                     <div className={classes.heading}>
                       V.T.ENTERPRISE - RADIEANT IMPEX PVT. LTD.
                     </div>
-                    <div>
-                      <img
-                        src={RadiantLogo}
-                        alt="logo"
-                        style={{ width: 70, height: 50 }}
-                      />
-                    </div>
+                    <img
+                      src={RadiantLogo}
+                      alt="logo"
+                      style={{ width: 70, height: 50 }}
+                    />
                   </div>
                 </th>
+                <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
+                  DC.No
+                </td>
+                <td colSpan={2} style={{ fontSize: "var(--textXs)" }}>
+                  VTE/QA/R/01
+                </td>
               </tr>
+
               <tr>
                 <td colSpan={16} rowSpan={2}>
                   <div className={classes.heading}>
                     INCOMING INSPECTION REPORT
                   </div>
                 </td>
-                <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/01</td>
               </tr>
               <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
               <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
@@ -731,7 +755,9 @@ export default function Emptypage({ viewReportData }) {
               <tr>
                 <td colSpan={18} className={classes.final}>
                   <div className={classes.finalStatus}>
-                    <p>Final Status</p>
+                    <p style={{ fontFamily: "var(--fontSemibold)" }}>
+                      Final Status
+                    </p>
                     <div className={classes.checkBoxContainer}>
                       <input
                         disabled={viewReportData ? true : false}
@@ -739,6 +765,7 @@ export default function Emptypage({ viewReportData }) {
                         type="checkbox"
                         onClick={() => {
                           setisFinalstatus(1);
+                          setFinalStatusRequired(true);
                           setFieldValue("final_status", 1);
                         }}
                         checked={parseInt(isFinalStatus) === 1 ? true : false}
@@ -753,22 +780,26 @@ export default function Emptypage({ viewReportData }) {
                         checked={parseInt(isFinalStatus) === 0 ? true : false}
                         onClick={() => {
                           setisFinalstatus(0);
+                          setFinalStatusRequired(true);
                           setFieldValue("final_status", 0);
                         }}
                       />
                       <p>Rejected</p>
                     </div>
                   </div>
-                  <p style={{ color: "red", padding: "0 90px" }}>
-                    {errors.final_status && touched.final_status
-                      ? errors.final_status
-                      : ""}
-                  </p>
                 </td>
               </tr>
               <tr>
-                <td colSpan={4}>Checked By</td>
-                <td colSpan={5}>
+                <td
+                  style={{
+                    textAlign: "right",
+                  }}
+                  className={classes.checkedBy}
+                  colSpan={4}
+                >
+                  Checked By
+                </td>
+                <td colSpan={6}>
                   <input
                     readOnly={viewReportData ? true : false}
                     className={classes.observationInput}
@@ -782,8 +813,16 @@ export default function Emptypage({ viewReportData }) {
                     }}
                   />
                 </td>
-                <td colSpan={4}>Approved By</td>
-                <td colSpan={5}>
+                <td
+                  style={{
+                    textAlign: "right",
+                  }}
+                  className={classes.checkedBy}
+                  colSpan={2}
+                >
+                  Approved By
+                </td>
+                <td colSpan={6}>
                   <input
                     readOnly={viewReportData ? true : false}
                     className={classes.observationInput}

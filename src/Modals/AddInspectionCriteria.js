@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
@@ -54,8 +54,12 @@ function AddInspectionCriteria({
 
   const [loader, setloader] = useState(false);
   const token = useToken();
+  const focusRef = useRef(null);
   const userId = useEmployeeId();
 
+  useEffect(() => {
+    focusRef.current.focus();
+  }, []);
   const handleAddInspectionCriteria = (data) => {
     setloader(true);
     let formData = new FormData();
@@ -130,6 +134,7 @@ function AddInspectionCriteria({
         <div className="row">
           <div className="col-lg-6 col-md-6 mb-3 ">
             <TextInputBox
+              referr={focusRef}
               title="Characteristics"
               placeHolder="Enter characteristics"
               value={values.characteristics}

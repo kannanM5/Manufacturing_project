@@ -30,7 +30,6 @@ const validationSchema = Yup.object({
   setter_name: Yup.string().required("Name is required"),
   report_shift: Yup.string().required("Shift is required"),
   inspector_name: Yup.string().required("Inspector name is required"),
-  final_status: Yup.number().required("Final status is required"),
 });
 
 var CryptoJS = require("crypto-js");
@@ -41,6 +40,7 @@ function SettingInspectionReport({ viewReportData }) {
   const [urlValues, setUrlValues] = useState();
   const userId = useEmployeeId();
   const navigate = useNavigate();
+  const [finalStatusRequired, setFinalStatusRequired] = useState(false);
   const [isFinalStatus, setisFinalstatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -78,10 +78,22 @@ function SettingInspectionReport({ viewReportData }) {
     validationSchema: validationSchema,
     onSubmit: () => {
       if (getColor()) {
+        const final =
+          parseInt(isFinalStatus) === 0 || parseInt(isFinalStatus) === 1
+            ? parseInt(isFinalStatus)
+            : null;
         if (urlValues?.buttonStatus === "Edit") {
-          handleUpdateReport(values);
+          if (saveStatus === 1 && final !== 0 && final !== 1) {
+            toast.error("Final status is required");
+          } else {
+            handleUpdateReport(values);
+          }
         } else {
-          handleAddIncomingReport(values);
+          if (saveStatus === 1 && !finalStatusRequired) {
+            toast.error("Final status is required");
+          } else {
+            handleAddIncomingReport(values);
+          }
         }
       } else {
         toast.error("Observation is required");
@@ -241,6 +253,10 @@ function SettingInspectionReport({ viewReportData }) {
           reportData?.productData?.report_header_status ?? Array(5).fill(null),
       });
       setisFinalstatus(reportData?.productData?.final_status ?? null);
+      const temp = reportData?.productData?.final_status;
+      if (parseInt(temp) === 1 || parseInt(temp) === 0) {
+        setFinalStatusRequired(false);
+      }
     }
   }, [reportData]);
 
@@ -481,7 +497,7 @@ function SettingInspectionReport({ viewReportData }) {
                 <tr>
                   <th
                     style={{ paddingLeft: "5px" }}
-                    colSpan={20}
+                    colSpan={18}
                     className={classes.CompanyName}
                   >
                     <div className={classes.rowAlignment}>
@@ -502,6 +518,12 @@ function SettingInspectionReport({ viewReportData }) {
                       </div>
                     </div>
                   </th>
+                  <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
+                    DC.No
+                  </td>
+                  <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
+                    VTE/QA/R/02
+                  </td>
                 </tr>
                 <tr>
                   <td colSpan={18} rowSpan={2}>
@@ -509,8 +531,6 @@ function SettingInspectionReport({ viewReportData }) {
                       SETTING APPROVAL REPORT
                     </div>
                   </td>
-                  <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/02</td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
                 <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
@@ -518,7 +538,7 @@ function SettingInspectionReport({ viewReportData }) {
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
                     <th
-                      colSpan={15}
+                      colSpan={14}
                       className={classes.staticHeading}
                       style={{
                         paddingLeft: "0",
@@ -553,7 +573,7 @@ function SettingInspectionReport({ viewReportData }) {
                         </span>
                       )}
                     </th>
-                    <th colSpan={1}>{head?.right}</th>
+                    <th colSpan={2}>{head?.right}</th>
                     <th style={{ paddingLeft: "0" }} colSpan={3}>
                       {index === 0 ? (
                         <input
@@ -571,11 +591,7 @@ function SettingInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChange("setter_name")(alphabeticText);
+                            handleChange("setter_name")(text);
                           }}
                         />
                       ) : index === 1 ? (
@@ -604,11 +620,7 @@ function SettingInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("report_shift")(alphabeticText);
+                            handleChange("report_shift")(text);
                           }}
                         />
                       ) : (
@@ -626,11 +638,8 @@ function SettingInspectionReport({ viewReportData }) {
                           value={head?.rightData}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9. ]/g,
-                              ""
-                            );
-                            handleChange("inspector_name")(alphabeticText);
+
+                            handleChange("inspector_name")(text);
                           }}
                         />
                       )}
@@ -719,7 +728,11 @@ function SettingInspectionReport({ viewReportData }) {
                   ))}
                 <tr>
                   <td
-                    style={{ textAlign: "right", padding: "0 15px" }}
+                    style={{
+                      textAlign: "right",
+                      padding: "0 15px",
+                      fontFamily: "var(--fontSemibold)",
+                    }}
                     colSpan={13}
                   >
                     Status
@@ -735,11 +748,7 @@ function SettingInspectionReport({ viewReportData }) {
                           value={ele}
                           onChange={(event) => {
                             const text = event.target.value;
-                            const alphabeticText = text.replace(
-                              /[^A-Za-z0-9 ]/g,
-                              ""
-                            );
-                            handleChangeStatus(alphabeticText, index);
+                            handleChangeStatus(text, index);
                           }}
                         />
                       </td>
@@ -749,7 +758,9 @@ function SettingInspectionReport({ viewReportData }) {
                 <tr>
                   <td colSpan={26} className={classes.final}>
                     <div className={classes.finalStatus}>
-                      <p>Final Status</p>
+                      <p style={{ fontFamily: "var(--fontSemibold)" }}>
+                        Final Status
+                      </p>
                       <div className={classes.checkBoxContainer}>
                         <input
                           disabled={viewReportData ? true : false}
@@ -757,6 +768,7 @@ function SettingInspectionReport({ viewReportData }) {
                           type="checkbox"
                           onClick={() => {
                             setisFinalstatus(1);
+                            setFinalStatusRequired(true);
                             setFieldValue("final_status", 1);
                           }}
                           checked={parseInt(isFinalStatus) === 1 ? true : false}
@@ -771,21 +783,25 @@ function SettingInspectionReport({ viewReportData }) {
                           checked={parseInt(isFinalStatus) === 0 ? true : false}
                           onClick={() => {
                             setisFinalstatus(0);
+                            setFinalStatusRequired(true);
                             setFieldValue("final_status", 0);
                           }}
                         />
                         <p>Rejected</p>
                       </div>
                     </div>
-                    <p style={{ color: "red", padding: "0 90px" }}>
-                      {errors.final_status && touched.final_status
-                        ? errors.final_status
-                        : ""}
-                    </p>
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={4}>Checked BY</td>
+                  <td
+                    colSpan={4}
+                    style={{
+                      textAlign: "right",
+                    }}
+                    className={classes.checkedBy}
+                  >
+                    Checked By
+                  </td>
                   <td colSpan={9}>
                     <input
                       readOnly={viewReportData ? true : false}
@@ -796,16 +812,20 @@ function SettingInspectionReport({ viewReportData }) {
                       value={values?.checked_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("checked_by")(alphabeticText);
+                        handleChange("checked_by")(text);
                       }}
                     />
                   </td>
-                  <td colSpan={4}>Appproved By</td>
-                  <td colSpan={10}>
+                  <td
+                    style={{
+                      textAlign: "right",
+                    }}
+                    className={classes.checkedBy}
+                    colSpan={2}
+                  >
+                    Approved By
+                  </td>
+                  <td colSpan={5}>
                     <input
                       readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
@@ -815,11 +835,7 @@ function SettingInspectionReport({ viewReportData }) {
                       value={values?.approved_by}
                       onChange={(event) => {
                         const text = event.target.value;
-                        const alphabeticText = text.replace(
-                          /[^A-Za-z0-9 ]/g,
-                          ""
-                        );
-                        handleChange("approved_by")(alphabeticText);
+                        handleChange("approved_by")(text);
                       }}
                     />
                   </td>

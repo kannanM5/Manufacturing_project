@@ -20,6 +20,8 @@ import deleteIcon from "../../Assets/Icons/SvgIcons/delete.svg";
 import CustomToolTip from "../../Components/CustomToolTip";
 import LogoutConfirmationModal from "../../Modals/LogoutConfirmationModal";
 import NoDataFound from "../../Components/NoDataFound";
+import { getTableSNO } from "../../Utility/Constants";
+import dayjs from "dayjs";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
@@ -32,6 +34,7 @@ function SavedData() {
   const token = useToken();
   const userId = useEmployeeId();
   const [pageNo, setpageNo] = useState(1);
+  const [page, setPage] = useState(0);
   const [loader, setloader] = useState(false);
   const [deleteModal, setdeleteModal] = useState({
     modal: false,
@@ -69,7 +72,7 @@ function SavedData() {
     } else if (parseInt(type) === 3) {
       return "Line Inspection Report";
     } else {
-      return "'Final Inspection Report";
+      return "Final Inspection Report";
     }
   };
 
@@ -164,7 +167,7 @@ function SavedData() {
     savedDataList(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
-          setpageNo(parseInt(response?.data?.data?.page) - 1);
+          setPage(parseInt(response?.data?.data?.page) - 1);
           setlistInSpectionCriteria(response?.data?.data);
         } else if (response?.data?.status === 0) {
           setlistInSpectionCriteria(null);
@@ -332,6 +335,16 @@ function SavedData() {
           <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
             <CustomButton title="Search" onButtonPress={handleSubmit} />
           </div>
+          <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
+            <CustomButton
+              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.6)" }}
+              title="Reset"
+              onButtonPress={() => {
+                listSavedDataApiCall(1, 10);
+                resetForm();
+              }}
+            />
+          </div>
         </div>
 
         <div style={{ margin: "20px 0" }}>
@@ -343,6 +356,7 @@ function SavedData() {
                   <th>Part No</th>
                   <th>Process</th>
                   <th>Report Name</th>
+                  <th>Date</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -350,10 +364,21 @@ function SavedData() {
                 {listInSpectionCriteria?.items.length > 0 ? (
                   listInSpectionCriteria?.items.map((products, index) => (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      <td>
+                        {getTableSNO(
+                          parseInt(
+                            listInSpectionCriteria?.page
+                              ? listInSpectionCriteria?.page
+                              : 1
+                          ),
+                          10,
+                          index
+                        )}
+                      </td>
                       <td>{products?.part_no}</td>
                       <td>{products?.process}</td>
                       <td>{getReportType(products?.report_type)}</td>
+                      <td>{dayjs(products?.date).format("YYYY-MM-DD")}</td>
                       <td>
                         <div className={classes.icons}>
                           <CustomToolTip title={"Edit"}>
@@ -384,7 +409,7 @@ function SavedData() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5}>
+                    <td colSpan={6}>
                       <NoDataFound />
                     </td>
                   </tr>
@@ -396,14 +421,11 @@ function SavedData() {
       </div>
       {listInSpectionCriteria?.totalPage > 1 && (
         <CustomPagination
-          defaultCurrent={1}
-          showSizeChanger={true}
-          totalCount={listInSpectionCriteria?.totalCount}
-          onChange={(page) => {
-            listSavedDataApiCall(page + 1, 10);
-          }}
-          onShowSizeChange={(current, pageSize) => {
-            console.log(current, pageSize);
+          pageCount={listInSpectionCriteria?.totalPage}
+          currentpage={page}
+          forcePage={page}
+          onPageChange={(val) => {
+            listSavedDataApiCall(val + 1, 10);
           }}
         />
       )}

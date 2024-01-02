@@ -1,4 +1,4 @@
-export function setCookie(cname, cvalue, exdays = 7) {
+export function setCookie(cname, cvalue, exdays = 1) {
   const storedValue =
     typeof cvalue === "string" ? cvalue : JSON.stringify(cvalue);
   const d = new Date();

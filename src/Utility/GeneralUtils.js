@@ -59,16 +59,19 @@ export const getObserVationColorCode = (specification, data) => {
     const valueTwo = temp[1];
     const AddValue = Number(valueOne) + Number(valueTwo);
     const SubractValue = Number(valueOne) - Number(valueTwo);
+
     if (!valueTwo) {
       return "black";
     } else if (
       containsSpecialChar === "+" &&
-      Number(AddValue) === Number(data)
+      Number(AddValue) >= Number(data) &&
+      Number(data) >= Number(valueOne)
     ) {
       return "black";
     } else if (
       containsSpecialChar === "-" &&
-      Number(SubractValue) === Number(data)
+      Number(SubractValue) <= Number(data) &&
+      Number(valueOne) >= Number(data)
     ) {
       return "black";
     } else if (

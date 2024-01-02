@@ -19,9 +19,10 @@ import logout from "../../Assets/Icons/SvgIcons/logout.svg";
 import { useEmployeeId, useToken, useUserName } from "../../Utility/StoreData";
 import { signOut } from "../../Services/Services";
 import { handleStoreUserData } from "../../Store/Reducers/LoginReducer";
-import dummyIcon from "../../Assets/Icons/SvgIcons/dummy.svg.svg";
+import dummyIcon from "../../Assets/Icons/SvgIcons/dummy.svg";
 import { getCatchMsg, getTrimString } from "../../Utility/GeneralUtils";
 import saved_logsIcon from "../../Assets/Icons/SvgIcons/saved_logsIcon.svg";
+import CloseIcon from "../../Assets/Icons/SvgIcons/close_icon.svg";
 import {
   LockOutlined,
   LogoutOutlined,
@@ -103,7 +104,11 @@ export default function Header() {
     },
   ];
   const items =
-    loginUserData?.user_type !== 3 ? filteredItems : filteredItems.slice(2);
+    loginUserData?.user_type === 1
+      ? filteredItems
+      : loginUserData?.user_type === 2
+      ? [...filteredItems.slice(0, 1), ...filteredItems.slice(2)]
+      : filteredItems.slice(2);
 
   const hamburgerData = [
     {
@@ -190,7 +195,7 @@ export default function Header() {
       .finally(() => {
         setloader(false);
       });
-    setCookie("vt_enterprise_login", "");
+    setCookie("vt_enterprise_login", "", 1);
     document.cookie =
       "mconnect_user_data" + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
     navigate("/");
@@ -279,7 +284,7 @@ export default function Header() {
           </div>
           <div className={classes.sideMenuLogo}>
             <h5
-              style={{ color: "black", marginLeft: "10px", cursor: "pointer" }}
+              style={{ color: "white", marginLeft: "10px", cursor: "pointer" }}
             >
               V.T. ENTERPRISE
             </h5>
@@ -308,25 +313,23 @@ export default function Header() {
                       textAlign: "center",
                       alignSelf: "center",
                       fontFamily: "var(--fontMedium)",
+                      color: "white",
+                      textTransform: "capitalize",
                     }}
                   >
                     {getTrimString(userName, 15)}
                   </p>
                 </div>
-                <button
-                  onClick={toggleShow}
-                  className="btn-close"
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                  }}
-                />
+
+                <div onClick={toggleShow}>
+                  <img src={CloseIcon} />
+                </div>
               </div>
               <div
                 style={{
                   width: "100%",
                   height: "1px",
-                  backgroundColor: "black",
+                  backgroundColor: "white",
                   marginTop: "20px",
                 }}
               ></div>
@@ -360,6 +363,7 @@ export default function Header() {
                               alt="icons"
                             />
                             <p
+                              style={{ color: "white" }}
                               onClick={() =>
                                 ele.name === "Logout" &&
                                 setdeleteModal((prev) => {
@@ -418,7 +422,7 @@ export default function Header() {
               style={{
                 marginLeft: "10px",
                 cursor: "pointer",
-                color: "black",
+                color: "white",
               }}
             >
               V.T. ENTERPRISE
@@ -469,7 +473,7 @@ export default function Header() {
                       <Space
                         className="headerUsername"
                         style={{
-                          color: "black",
+                          color: "white",
                           padding: "0 8px",
                           fontFamily: "var(--fontMedium)",
                         }}

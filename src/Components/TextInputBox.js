@@ -24,6 +24,7 @@ export default function InputBox({
   verifyBtn,
   readOnly,
   handleKeyPress,
+  referr,
 }) {
   const [secure, setsecure] = useState(false);
 
@@ -46,6 +47,7 @@ export default function InputBox({
         }}
       >
         <input
+          ref={referr}
           draggable="false"
           name={name}
           id={id}

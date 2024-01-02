@@ -61,13 +61,15 @@ function Signin() {
           toast.success(response?.data?.msg);
           dispatch(handleStoreUserToken(response?.data?.data?.token));
           dispatch(handleStoreUserData(response?.data?.data));
-          setCookie("vt_enterprise_login", response?.data);
+          setCookie("vt_enterprise_login", response?.data, 700);
         } else if (response?.data?.status === 0) {
           if (typeof response?.data?.msg === "object") {
             getInvalidMsg(response?.data?.msg);
           } else {
             toast.error(response?.data?.msg);
           }
+        } else if (response?.data?.status === 2) {
+          toast.error(response?.data?.msg);
         }
       })
       .catch((err) => {

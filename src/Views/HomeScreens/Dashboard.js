@@ -13,7 +13,7 @@ function Dashboard() {
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-evenly",
+          justifyContent: "space-around",
           alignItems: "center",
         }}
       >
@@ -33,14 +33,19 @@ function Dashboard() {
           <span style={{ "--i": 5 }}>
             <img src={Slider5} alt="product" />
           </span>
+          <span style={{ "--i": 5 }}>
+            <img src={Slider5} alt="product" />
+          </span>
         </div>
 
         <div className={classes.DashboardContent}>
           <p className={classes.title}>Click to add</p>
-          <p style={{ fontSize: "var(--textXs)", textAlign: "center" }}>
-            " Quality means doing it right when
-            <br />
-            no one is looking. " - Henry Ford
+          <p style={{ fontSize: "var(--textSm)", textAlign: "center" }}>
+            <i>
+              " Quality means doing it right when
+              <br />
+              no one is looking. " - Henry Ford
+            </i>
           </p>
         </div>
       </div>

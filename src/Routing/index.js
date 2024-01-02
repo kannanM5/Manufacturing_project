@@ -16,6 +16,7 @@ import ViewReports from "../Views/HomeScreens/Reports/ViewReports";
 import SavedData from "../Views/HomeScreens/SavedData";
 import { authroute } from "./AuthRouting";
 import {
+  ChangePasswordPrivateRoute,
   DashboardPrivateRoute,
   EmployeePrivateRoute,
 } from "../Views/AuthScreens/PrivateRoute";
@@ -117,7 +118,7 @@ export const Indexroute = [
         element: <Finalinspectionreport />,
       },
       {
-        element: <EmployeePrivateRoute />,
+        element: <ChangePasswordPrivateRoute />,
         children: [
           {
             path: "/change_password",

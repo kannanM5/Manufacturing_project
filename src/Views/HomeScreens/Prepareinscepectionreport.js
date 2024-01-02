@@ -22,12 +22,9 @@ import {
 } from "../../Components";
 
 const validationSchema = Yup.object({
-  part_no: Yup.string()
-    .required("Part number is required")
-    .matches(ALPHA_NUM, "Enter valid part number"),
-  process: Yup.string()
-    .matches(ALPHA_NUM, "Enter valid Process")
-    .required("Process is required"),
+  part_no: Yup.string().required("Part number is required"),
+  process: Yup.string().required("Process is required"),
+  report_type: Yup.number().required("Report type is required"),
 });
 
 var CryptoJS = require("crypto-js");
@@ -39,22 +36,23 @@ function PrepareInspectionReport() {
   const navigate = useNavigate();
   const [loader, setloader] = useState(false);
   const [buttonStatus, setbuttonStatus] = useState(null);
-  const [dropdownName, setDropDownName] = useState(1);
+  const [dropdownName, setDropDownName] = useState(0);
   const {
     handleChange,
     values,
     errors,
     touched,
-    resetForm,
     setFieldError,
     setFieldTouched,
     handleSubmit,
+    setFieldValue,
   } = useFormik({
     initialValues: {
       part_no: "",
       process: "",
       token: token,
       user_id: userId,
+      report_type: null,
     },
     validationSchema: validationSchema,
     onSubmit: () => {
@@ -275,7 +273,13 @@ function PrepareInspectionReport() {
             title="Select Report Type"
             onSelect={(val) => {
               setDropDownName(val);
+              setFieldValue("report_type", val);
             }}
+            errorText={
+              errors.report_type && touched.report_type
+                ? errors?.report_type
+                : ""
+            }
           />
         </div>
         <div className="row">
@@ -285,15 +289,13 @@ function PrepareInspectionReport() {
               onButtonPress={() => {
                 setbuttonStatus("Add");
                 handleSubmit();
-                // handleGetProductsList();
-                // handleClick("Add");
               }}
             />
           </div>
           <div className="col-lg-4 col-6 mb-2 mt-3">
             <CustomButton
               title="Edit report"
-              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+              customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.6)" }}
               onButtonPress={() => {
                 setbuttonStatus("Edit");
                 handleSubmit();

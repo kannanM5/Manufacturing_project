@@ -1,13 +1,14 @@
 /* button  */
-
 .btn button {
   border: none;
   width: 100%;
   background-color: var(--btnColor);
-  color: var(--whiteColor);
+  /* color: var(--whiteColor); */
+  color: whitesmoke;
   border-radius: 5px;
   padding: 10px 5px;
-  font-family: var(--fontRegular);
+  /* font-family: var(--fontRegular); */
+  font-family: var(--fontSemibold);
   font-size: var(--textSm);
 }
 
@@ -206,6 +207,13 @@
   border-radius: 5px;
   width: 30px;
   height: 30px;
+}
+.pagenation li a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 .active {
   background-color: white;

@@ -1,4 +1,4 @@
-// export const DOWNLOAD_URL = "http://192.168.0.109/vtenterprise/uploads/";
+// export const DOWNLOAD_URL = "http://192.168.0.108/vtenterprise/uploads/";
 
 export const DOWNLOAD_URL =
   "https://vteenterprise.000webhostapp.com/vtenterprise/uploads/";
@@ -20,6 +20,13 @@ export const NAMES = /^[A-Za-z\s]+$/;
 export const REGEXNUMBERSPATTERN =
   /^[0-9]+(\.[0-9]+)?[-+*/±][0-9]+(\.[0-9]+)?|[0-9]+(\.[0-9]+)?$/;
 
+const EncryptDecryptKey = "encryptdecrypt";
 export const getTableSNO = (page, size, index) => {
   return (page - 1) * size + (index + 1);
+};
+
+export const EncryptData = (token) => {
+  var CryptoJS = require("crypto-js");
+  var EncryptData = CryptoJS.AES.encrypt(token, EncryptDecryptKey).toString();
+  return EncryptData;
 };

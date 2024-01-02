@@ -459,12 +459,12 @@ function FinalInspectionReport({ viewReportData }) {
             <table>
               <thead>
                 <tr>
-                  <td style={{ paddingLeft: "5px" }} colSpan={15} rowSpan={2}>
+                  <th style={{ paddingLeft: "0px" }} colSpan={15}>
                     <div className={classes.rowAlignment}>
                       <img
                         src={Logo}
                         alt="logo"
-                        style={{ width: 40, height: 40 }}
+                        style={{ width: 40, height: 30 }}
                       />
 
                       <div className={classes.heading}>
@@ -472,12 +472,15 @@ function FinalInspectionReport({ viewReportData }) {
                       </div>
                       <div></div>
                     </div>
-                  </td>
+                  </th>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
                   <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/04</td>
                 </tr>
-                <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
-                <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+                <tr colSpan={5}>
+                  <td colSpan={15}></td>
+                  <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
+                  <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+                </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Supplier Name:</th>
                   <th colSpan={11}>V.T. ENTERPRISE</th>
@@ -666,10 +669,16 @@ function FinalInspectionReport({ viewReportData }) {
                     </tr>
                   ))}
                 <tr>
-                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
+                  <td
+                    style={{
+                      textAlign: "right",
+                    }}
+                    className={classes.checkedBy}
+                    colSpan={3}
+                  >
                     Checked By
                   </td>
-                  <td colSpan={5}>
+                  <td colSpan={7}>
                     <input
                       readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
@@ -683,10 +692,16 @@ function FinalInspectionReport({ viewReportData }) {
                       }}
                     />
                   </td>
-                  <td style={{ fontSize: "var(--textXs)" }} colSpan={4}>
+                  <td
+                    style={{
+                      textAlign: "right",
+                    }}
+                    className={classes.checkedBy}
+                    colSpan={2}
+                  >
                     Approved By
                   </td>
-                  <td colSpan={5}>
+                  <td colSpan={6}>
                     <input
                       readOnly={viewReportData ? true : false}
                       className={classes.observationInput}
