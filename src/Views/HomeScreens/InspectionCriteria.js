@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import PageHeader from "../ManagementLayoutHeader/PageHeader";
 import classes from "./Management.module.css";
 import {
@@ -13,8 +16,6 @@ import NoDataFound from "../../Components/NoDataFound";
 import CustomPagination from "../../Components/CustomPagination";
 import { useEmployeeId, useToken } from "../../Utility/StoreData";
 import { criteriaListService } from "../../Services/Services";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { getCatchMsg } from "../../Utility/GeneralUtils";
 import { getTableSNO } from "../../Utility/Constants";
 
@@ -26,6 +27,7 @@ function InspectionCriteria() {
   const token = useToken();
   const userId = useEmployeeId();
   const [page, setPage] = useState(0);
+  const [actionStatus, setactionStatus] = useState(null);
   const [loader, setloader] = useState(false);
   const [listInSpectionCriteria, setlistInSpectionCriteria] = useState();
   const [isShowModal, setIsShowModal] = useState({
@@ -50,7 +52,21 @@ function InspectionCriteria() {
     },
     validationSchema: validationSchema,
     onSubmit: () => {
-      handleListCriteriaService(1, values);
+      if (actionStatus) {
+        if (values?.process.trim() !== "") {
+          setIsShowModal((prev) => {
+            return {
+              ...prev,
+              status: true,
+              data: null,
+            };
+          });
+        } else {
+          toast.error("Process is required.");
+        }
+      } else {
+        handleListCriteriaService(1, values);
+      }
     },
   });
 
@@ -110,7 +126,6 @@ function InspectionCriteria() {
             }}
           />
         </GlobalModal>
-
         <div className={classes.insepectionCreteria}>
           <div className="row">
             <div className="col-lg-3 col-md-6">
@@ -167,36 +182,31 @@ function InspectionCriteria() {
                   maxLength: 50,
                 }}
                 type={"text"}
+                errorText={
+                  touched.process && errors.process ? errors.process : ""
+                }
               />
             </div>
-
             <div className="col-lg-2 col-xl-1 col-md-3 col-4 mt-4">
               <CustomButton
-                title="Enter"
+                title="Add"
                 onButtonPress={() => {
-                  if (values.part_no && values.process) {
-                    setIsShowModal((prev) => {
-                      return {
-                        ...prev,
-                        status: true,
-                        data: null,
-                      };
-                    });
-                  } else {
-                    handleSubmit();
-                  }
+                  setactionStatus(true);
+                  handleSubmit();
                 }}
               />
             </div>
             <div className="col-lg-2 col-xl-1 col-md-3 col-4 mt-4">
               <CustomButton
                 title="Search "
-                onButtonPress={handleSubmit}
+                onButtonPress={() => {
+                  setactionStatus(false);
+                  handleSubmit();
+                }}
                 customButtonStyle={{ backgroundColor: "rgba(0,0,0,0.6)" }}
               />
             </div>
           </div>
-
           <div style={{ margin: "20px 0" }}>
             <div className={`table-responsive ${classes.Dashboard}`}>
               <table className={classes.listOfTable}>

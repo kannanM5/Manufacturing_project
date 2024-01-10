@@ -235,12 +235,12 @@ function Export() {
                 />
               </div>
               <div
-                className={`col-lg-2 col-xl-1 col-md-3 col-3 mt-4 ${classes.exportBtns}`}
+                className={`col-lg-2 col-xl-1 col-md-3 col-4 mt-4 ${classes.exportBtns}`}
               >
                 <CustomButton title="Search" onButtonPress={handleSubmit} />
               </div>
               <div
-                className={`col-lg-2 col-xl-1 col-md-3 col-3 mt-4 ${classes.exportBtns}`}
+                className={`col-lg-2 col-xl-1 col-md-3 col-4 mt-4 ${classes.exportBtns}`}
               >
                 <CustomButton
                   title="Reset"
