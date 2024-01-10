@@ -20,7 +20,6 @@ import { getTableSNO } from "../../Utility/Constants";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required").strict(true),
-  process: Yup.string().required("Process is required").strict(true),
 });
 
 function InspectionCriteria() {
@@ -168,14 +167,10 @@ function InspectionCriteria() {
                   maxLength: 50,
                 }}
                 type={"text"}
-                requiredText="*"
-                errorText={
-                  touched.process && errors.process ? errors.process : ""
-                }
               />
             </div>
 
-            <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
+            <div className="col-lg-2 col-xl-1 col-md-3 col-4 mt-4">
               <CustomButton
                 title="Enter"
                 onButtonPress={() => {
@@ -193,7 +188,7 @@ function InspectionCriteria() {
                 }}
               />
             </div>
-            <div className="col-lg-2 col-xl-1 col-md-3 col-3 mt-4">
+            <div className="col-lg-2 col-xl-1 col-md-3 col-4 mt-4">
               <CustomButton
                 title="Search "
                 onButtonPress={handleSubmit}

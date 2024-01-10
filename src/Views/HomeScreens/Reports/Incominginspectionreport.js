@@ -458,13 +458,6 @@ export default function Emptypage({ viewReportData }) {
     });
   };
 
-  const getFinalStatus = (val) => {
-    if (parseInt(val) === 0 || parseInt(val) === 1) {
-      return true;
-    } else {
-      return false;
-    }
-  };
   return (
     <div>
       {loader ? <Loader /> : null}
@@ -560,8 +553,12 @@ export default function Emptypage({ viewReportData }) {
                   </div>
                 </td>
               </tr>
-              <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
-              <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+              <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                REV.No
+              </td>
+              <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                00/05/10/2023
+              </td>
               {tableHeadData.map((head, index) => (
                 <tr key={index} className={classes.fourHeadings}>
                   <th colSpan={3}>{head?.left}</th>
@@ -653,19 +650,54 @@ export default function Emptypage({ viewReportData }) {
                 </tr>
               ))}
               <tr className={classes.secondHead}>
-                <th colSpan={1} rowSpan={2} className={classes.serialNo}>
+                <th
+                  colSpan={1}
+                  rowSpan={2}
+                  className={classes.serialNo}
+                  style={{
+                    paddingLeft: "0",
+                  }}
+                >
                   S.No
                 </th>
-                <th colSpan={2} rowSpan={2}>
+                <th
+                  colSpan={2}
+                  rowSpan={2}
+                  style={{
+                    minWidth: "200px",
+                    paddingLeft: "0",
+                  }}
+                >
                   Characteristics
                 </th>
-                <th colSpan={1} rowSpan={2}>
+                <th
+                  colSpan={1}
+                  rowSpan={2}
+                  style={{
+                    minWidth: "110px",
+                    paddingLeft: "0",
+                  }}
+                >
                   Specifications
                 </th>
-                <th colSpan={1} rowSpan={2}>
+                <th
+                  colSpan={1}
+                  rowSpan={2}
+                  style={{
+                    minWidth: "80px",
+                    padding: "0",
+                  }}
+                >
                   Units
                 </th>
-                <th colSpan={1} rowSpan={2}>
+                <th
+                  colSpan={1}
+                  rowSpan={2}
+                  style={{
+                    minWidth: "100px",
+                    padding: "0",
+                  }}
+                >
                   Method Of
                   <br /> Check
                 </th>
@@ -676,10 +708,23 @@ export default function Emptypage({ viewReportData }) {
                 >
                   Observations
                 </th>
-                <th colSpan={1} rowSpan={2}>
+                <th
+                  colSpan={1}
+                  rowSpan={2}
+                  style={{
+                    minWidth: "100px",
+                    paddingLeft: "0",
+                  }}
+                >
                   Status
                 </th>
-                <th colSpan={2} rowSpan={2}>
+                <th
+                  colSpan={2}
+                  rowSpan={2}
+                  style={{
+                    paddingLeft: "0",
+                  }}
+                >
                   Remarks
                 </th>
               </tr>
@@ -699,10 +744,14 @@ export default function Emptypage({ viewReportData }) {
                 values?.datas.map((ele, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td colSpan={2}>{ele?.characteristics}</td>
-                    <td>{ele?.specification}</td>
-                    <td>{ele?.units}</td>
-                    <td>{ele?.method_of_check}</td>
+                    <td className={classes.tabeleBody} colSpan={2}>
+                      {ele?.characteristics}
+                    </td>
+                    <td className={classes.tabeleBody}>{ele?.specification}</td>
+                    <td className={classes.tabeleBody}>{ele?.units}</td>
+                    <td className={classes.tabeleBody}>
+                      {ele?.method_of_check}
+                    </td>
                     {ele?.observation.map((inputs, inputIndex) => (
                       <td key={inputIndex}>
                         <input
@@ -729,6 +778,7 @@ export default function Emptypage({ viewReportData }) {
                         readOnly={viewReportData ? true : false}
                         className={classes.observationInput}
                         maxLength={20}
+                        style={{ textAlign: "center", paddingLeft: "0" }}
                         type="text"
                         value={ele?.status}
                         onChange={(event) => {
@@ -742,6 +792,10 @@ export default function Emptypage({ viewReportData }) {
                         readOnly={viewReportData ? true : false}
                         className={classes.observationInput}
                         maxLength={20}
+                        style={{
+                          textAlign: "center",
+                          paddingLeft: "0",
+                        }}
                         type="text"
                         value={ele?.remark}
                         onChange={(event) => {

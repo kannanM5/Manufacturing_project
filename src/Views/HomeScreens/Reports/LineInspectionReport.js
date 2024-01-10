@@ -547,7 +547,10 @@ function LineInspectionReport({ viewReportData }) {
                   <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
                     DC.No
                   </td>
-                  <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
+                  <td
+                    colSpan={1}
+                    style={{ fontSize: "var(--textXs)", padding: "0 5px" }}
+                  >
                     VTE/QA/R/03
                   </td>
                 </tr>
@@ -559,7 +562,9 @@ function LineInspectionReport({ viewReportData }) {
                   </td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
-                <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+                <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                  00/05/10/2023
+                </td>
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
@@ -669,15 +674,37 @@ function LineInspectionReport({ viewReportData }) {
                   </tr>
                 ))}
                 <tr className={classes.secondHead}>
-                  <th rowSpan={2} className={classes.serialNo}>
+                  <th
+                    rowSpan={2}
+                    className={classes.serialNo}
+                    style={{ paddingLeft: "0" }}
+                  >
                     S.No
                   </th>
-                  <th rowSpan={2}>Characteristics</th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    style={{ paddingLeft: "0", minWidth: "200px" }}
+                    rowSpan={2}
+                  >
+                    Characteristics
+                  </th>
+                  <th
+                    style={{ paddingLeft: "0", minWidth: "110px" }}
+                    colSpan={1}
+                    rowSpan={2}
+                  >
                     Specifications
                   </th>
-                  <th rowSpan={2}>Units</th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    style={{ paddingLeft: "0", minWidth: "80px" }}
+                    rowSpan={2}
+                  >
+                    Units
+                  </th>
+                  <th
+                    colSpan={1}
+                    style={{ paddingLeft: "0", minWidth: "100px" }}
+                    rowSpan={2}
+                  >
                     Method Of
                     <br /> Check
                   </th>
@@ -685,10 +712,11 @@ function LineInspectionReport({ viewReportData }) {
                     colSpan={10}
                     rowSpan={1}
                     className={classes.secondFourtColumn}
+                    style={{ paddingLeft: "0" }}
                   >
                     Observations
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th colSpan={1} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Remarks
                   </th>
                 </tr>
@@ -708,10 +736,16 @@ function LineInspectionReport({ viewReportData }) {
                   values?.datas.map((ele, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{ele?.characteristics}</td>
-                      <td>{ele?.specification}</td>
-                      <td>{ele?.units}</td>
-                      <td>{ele?.method_of_check}</td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.characteristics}
+                      </td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.specification}
+                      </td>
+                      <td className={classes.tabeleBody}>{ele?.units}</td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.method_of_check}
+                      </td>
                       <td>
                         <input
                           style={{

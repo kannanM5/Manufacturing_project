@@ -474,12 +474,16 @@ function FinalInspectionReport({ viewReportData }) {
                     </div>
                   </th>
                   <td style={{ fontSize: "var(--textXs)" }}>DC.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>VTE/QA/R/04</td>
+                  <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                    VTE/QA/R/04
+                  </td>
                 </tr>
                 <tr colSpan={5}>
                   <td colSpan={15}></td>
                   <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
-                  <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+                  <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                    00/05/10/2023
+                  </td>
                 </tr>
                 <tr className={classes.fourHeadings}>
                   <th colSpan={2}>Supplier Name:</th>
@@ -569,19 +573,40 @@ function FinalInspectionReport({ viewReportData }) {
                   </th>
                 </tr>
                 <tr className={classes.secondHead}>
-                  <th colSpan={1} rowSpan={2} className={classes.serialNo}>
+                  <th
+                    colSpan={1}
+                    style={{ paddingLeft: "0" }}
+                    rowSpan={2}
+                    className={classes.serialNo}
+                  >
                     S.No
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    style={{ paddingLeft: "0", minWidth: "200px" }}
+                  >
                     Characteristics
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    style={{ paddingLeft: "0", minWidth: "110px" }}
+                  >
                     Specifications
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    style={{ paddingLeft: "0", minWidth: "80px" }}
+                  >
                     Units
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    style={{ paddingLeft: "0", minWidth: "100px" }}
+                  >
                     Method Of
                     <br /> Check
                   </th>
@@ -592,10 +617,14 @@ function FinalInspectionReport({ viewReportData }) {
                   >
                     Observations
                   </th>
-                  <th colSpan={1} rowSpan={2}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    style={{ paddingLeft: "0", minWidth: "100px" }}
+                  >
                     Status
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Remarks
                   </th>
                 </tr>
@@ -615,10 +644,16 @@ function FinalInspectionReport({ viewReportData }) {
                   values?.datas.map((ele, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td>{ele?.characteristics}</td>
-                      <td>{ele?.specification}</td>
-                      <td>{ele?.units}</td>
-                      <td>{ele?.method_of_check}</td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.characteristics}
+                      </td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.specification}
+                      </td>
+                      <td className={classes.tabeleBody}>{ele?.units}</td>
+                      <td className={classes.tabeleBody}>
+                        {ele?.method_of_check}
+                      </td>
                       {ele?.observation.map((inputs, inputIndex) => (
                         <td key={inputIndex}>
                           <input
@@ -646,6 +681,7 @@ function FinalInspectionReport({ viewReportData }) {
                           className={classes.observationInput}
                           maxLength={20}
                           type="text"
+                          style={{ textAlign: "center", paddingLeft: "0" }}
                           value={ele?.status}
                           onChange={(event) => {
                             const text = event.target.value;

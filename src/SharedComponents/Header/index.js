@@ -180,6 +180,10 @@ export default function Header() {
     setShow((prevShow) => !prevShow);
   };
 
+  const removeCookie = (cookieName) => {
+    document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  };
+
   const handleLogout = () => {
     setloader(true);
     let formData = new FormData();
@@ -195,7 +199,7 @@ export default function Header() {
       .finally(() => {
         setloader(false);
       });
-    setCookie("vt_enterprise_login", "", 1);
+    removeCookie("vt_enterprise_login");
     document.cookie =
       "mconnect_user_data" + "=; expires=Thu, 01-Jan-70 00:00:01 GMT;";
     navigate("/");

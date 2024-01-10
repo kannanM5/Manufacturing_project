@@ -113,10 +113,18 @@ function ListOfProducts() {
                       {getTableSNO(parseInt(listOfProducts?.page), 10, index)}
                     </td>
                     <td>{products?.part_no}</td>
-                    <td>{products?.part_name}</td>
-                    <td>{products?.customer}</td>
-                    <td>{products?.drawing_issue_no}</td>
-                    <td>{products?.customer_part_no}</td>
+                    <td>{products?.part_name ? products?.part_name : "-"}</td>
+                    <td>{products?.customer ? products?.customer : "-"}</td>
+                    <td>
+                      {products?.drawing_issue_no
+                        ? products?.drawing_issue_no
+                        : "-"}
+                    </td>
+                    <td>
+                      {products?.customer_part_no
+                        ? products?.customer_part_no
+                        : "-"}
+                    </td>
                     <td>
                       <div className={classes.icons}>
                         <CustomToolTip title="Edit">

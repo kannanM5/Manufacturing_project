@@ -11,10 +11,6 @@ import { addProductService, editProductService } from "../Services/Services";
 
 const validationSchema = Yup.object({
   part_no: Yup.string().required("Part number is required"),
-  part_name: Yup.string().required("Part name is required"),
-  customer: Yup.string().required("Customer is required"),
-  customer_part_no: Yup.string().required("Customer part number is required"),
-  drawing_issue_no: Yup.string().required("Drawing issue number is required"),
 });
 
 function AddProducts({
@@ -181,10 +177,6 @@ function AddProducts({
               }}
               type={"text"}
               placeHolder="Enter part name"
-              requiredText="*"
-              errorText={
-                touched.part_name && errors.part_name ? errors.part_name : ""
-              }
             />
           </div>
           <div className="col-xl-6 col-md-6 form-group mb-3 col-lg-6 ">
@@ -208,10 +200,6 @@ function AddProducts({
               }}
               type={"text"}
               placeHolder="Enter customer"
-              requiredText="*"
-              errorText={
-                touched.customer && errors.customer ? errors.customer : ""
-              }
             />
           </div>
           <div className="col-xl-6 col-md-6 form-group mb-3 col-lg-6 ">
@@ -235,12 +223,6 @@ function AddProducts({
               }}
               type={"text"}
               placeHolder="Enter drawing issue number"
-              requiredText="*"
-              errorText={
-                touched.drawing_issue_no && errors.drawing_issue_no
-                  ? errors.drawing_issue_no
-                  : ""
-              }
             />
           </div>
           <div className="col-xl-6 col-md-6 form-group mb-3 col-lg-6 ">
@@ -267,12 +249,6 @@ function AddProducts({
               }}
               type={"text"}
               placeHolder="Enter customer part number"
-              requiredText="*"
-              errorText={
-                touched.customer_part_no && errors.customer_part_no
-                  ? errors.customer_part_no
-                  : ""
-              }
             />
           </div>
         </div>
@@ -282,7 +258,7 @@ function AddProducts({
             onUpdatePress={handleSubmit}
           />
         ) : (
-          <div className="col-lg-2 col-md-3 col-3  mb-2">
+          <div className="col-lg-2 col-md-3 col-4  mb-2">
             <CustomButton onButtonPress={handleSubmit} title="Submit" />
           </div>
         )}

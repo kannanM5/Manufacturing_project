@@ -133,10 +133,11 @@ table .icons img {
   width: 100%;
 }
 .Dashboard tbody td {
-  word-break: break-all;
+  word-break: break-word;
   text-align: center;
 }
 .Dashboard .observe {
+  padding-left: 0 !important;
   text-align: center;
   width: 90px;
 }
@@ -338,4 +339,10 @@ th {
   text-align: right;
   padding: 0 10px;
   font-family: var(--fontSemibold);
+}
+
+/* reports tbody */
+
+.tabeleBody {
+  padding: 0 5px;
 }

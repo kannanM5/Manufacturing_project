@@ -9,7 +9,7 @@ import { getCatchMsg, getInvalidMsg } from "../../Utility/GeneralUtils";
 import { setCookie } from "../../Store/Storage/Cookie";
 import img from "../../Assets/Images/loginimg.svg";
 import { Loader, TextInputBox, CustomButton } from "../../Components/index";
-import { EMAIL_REGEX } from "../../Utility/Constants";
+import { EMAIL_REGEX, EncryptData } from "../../Utility/Constants";
 import classes from "./AuthScreens.module.css";
 import {
   handleStoreUserData,
@@ -61,7 +61,12 @@ function Signin() {
           toast.success(response?.data?.msg);
           dispatch(handleStoreUserToken(response?.data?.data?.token));
           dispatch(handleStoreUserData(response?.data?.data));
-          setCookie("vt_enterprise_login", response?.data, 700);
+          // setCookie("vt_enterprise_login", response?.data, 700);
+          setCookie(
+            "vt_enterprise_login",
+            EncryptData(JSON.stringify(response?.data)),
+            700
+          );
         } else if (response?.data?.status === 0) {
           if (typeof response?.data?.msg === "object") {
             getInvalidMsg(response?.data?.msg);

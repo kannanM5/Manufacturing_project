@@ -136,10 +136,8 @@ function Export() {
           if (downloadUrl) {
             const linkSource = downloadUrl;
             const downloadLink = document.createElement("a");
-            console.log(downloadLink, "PPPP");
             downloadLink.href = linkSource;
             downloadLink.click();
-
             // window.opener(downloadUrl);
             handleUnLinkDownloadExportReport(response?.data?.filename);
           }

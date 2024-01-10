@@ -1,3 +1,5 @@
+import { DecryptToken } from "../../Utility/Constants";
+
 export function setCookie(cname, cvalue, exdays = 1) {
   const storedValue =
     typeof cvalue === "string" ? cvalue : JSON.stringify(cvalue);
@@ -25,9 +27,10 @@ export function getCookie(cname) {
       c = c.substring(1);
     }
     if (c.indexOf(name) === 0) {
-      return isJsonString(c.substring(name.length, c.length))
+      const getData = isJsonString(c.substring(name.length, c.length))
         ? JSON.parse(c.substring(name.length, c.length))
         : c.substring(name.length, c.length);
+      return getData !== "string" ? JSON.parse(DecryptToken(getData)) : getData;
     }
   }
   return "";

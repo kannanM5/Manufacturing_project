@@ -1,7 +1,7 @@
-// export const DOWNLOAD_URL = "http://192.168.0.108/vtenterprise/uploads/";
+export const DOWNLOAD_URL = "http://192.168.0.118/vtenterprise/uploads/";
 
-export const DOWNLOAD_URL =
-  "https://vteenterprise.000webhostapp.com/vtenterprise/uploads/";
+// export const DOWNLOAD_URL =
+//   "https://vteenterprise.000webhostapp.com/vtenterprise/uploads/";
 
 export const SALT_KEY = "L4jkmn71iwelcv@1qaz!";
 
@@ -29,4 +29,12 @@ export const EncryptData = (token) => {
   var CryptoJS = require("crypto-js");
   var EncryptData = CryptoJS.AES.encrypt(token, EncryptDecryptKey).toString();
   return EncryptData;
+};
+
+export const DecryptToken = (encriptText) => {
+  var CryptoJS = require("crypto-js");
+  var bytes = CryptoJS.AES.decrypt(encriptText, EncryptDecryptKey);
+
+  var decryptedData = bytes.toString(CryptoJS.enc.Utf8);
+  return decryptedData;
 };

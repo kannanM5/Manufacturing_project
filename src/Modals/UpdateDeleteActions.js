@@ -7,11 +7,11 @@ function UpdateDeleteActions({
 }) {
   return (
     <>
-      <div className="row my-3">
-        <div className="col-lg-3 col-12">
+      <div className="row">
+        <div className="col-lg-2 col-md-2 col-sm-4 col-6 mb-3">
           <CustomButton title="Update" onButtonPress={onUpdatePress} />
         </div>
-        <div className="col-lg-3 col-12">
+        <div className="col-lg-2 col-md-2 col-sm-4  col-6 mb-3">
           <CustomButton
             title={deleteSchedule ? "Delete" : "Cancel"}
             customButtonStyle={{

@@ -497,7 +497,7 @@ function SettingInspectionReport({ viewReportData }) {
                 <tr>
                   <th
                     style={{ paddingLeft: "5px" }}
-                    colSpan={18}
+                    colSpan={17}
                     className={classes.CompanyName}
                   >
                     <div className={classes.rowAlignment}>
@@ -521,19 +521,24 @@ function SettingInspectionReport({ viewReportData }) {
                   <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
                     DC.No
                   </td>
-                  <td colSpan={1} style={{ fontSize: "var(--textXs)" }}>
+                  <td
+                    colSpan={12}
+                    style={{ fontSize: "var(--textXs)", padding: "0 5px" }}
+                  >
                     VTE/QA/R/02
                   </td>
                 </tr>
                 <tr>
-                  <td colSpan={18} rowSpan={2}>
+                  <td colSpan={17} rowSpan={2}>
                     <div className={classes.heading}>
                       SETTING APPROVAL REPORT
                     </div>
                   </td>
                 </tr>
                 <td style={{ fontSize: "var(--textXs)" }}>REV.No</td>
-                <td style={{ fontSize: "var(--textXs)" }}>00/05/10/2023</td>
+                <td style={{ fontSize: "var(--textXs)", padding: "0 5px" }}>
+                  00/05/10/2023
+                </td>
                 {tableHeadData.map((head, index) => (
                   <tr key={index} className={classes.fourHeadings}>
                     <th colSpan={2}>{head?.left}</th>
@@ -647,25 +652,34 @@ function SettingInspectionReport({ viewReportData }) {
                   </tr>
                 ))}
                 <tr className={classes.secondHead}>
-                  <th colSpan={1} rowSpan={2} className={classes.serialNo}>
+                  <th
+                    colSpan={1}
+                    rowSpan={2}
+                    className={classes.serialNo}
+                    style={{ paddingLeft: "0" }}
+                  >
                     S.No
                   </th>
-                  <th colSpan={6} rowSpan={2}>
+                  <th colSpan={6} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Characteristics
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Specifications
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Units
                   </th>
-                  <th colSpan={2} rowSpan={2}>
+                  <th colSpan={2} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Method Of Check
                   </th>
-                  <th colSpan={5} className={classes.secondFourtColumn}>
+                  <th
+                    colSpan={5}
+                    className={classes.secondFourtColumn}
+                    style={{ paddingLeft: "0" }}
+                  >
                     Observations
                   </th>
-                  <th colSpan={6} rowSpan={2}>
+                  <th colSpan={6} rowSpan={2} style={{ paddingLeft: "0" }}>
                     Remarks
                   </th>
                 </tr>
@@ -680,10 +694,18 @@ function SettingInspectionReport({ viewReportData }) {
                   values?.datas.map((ele, index) => (
                     <tr key={index}>
                       <td>{index + 1}</td>
-                      <td colSpan={6}>{ele?.characteristics}</td>
-                      <td colSpan={2}>{ele?.specification}</td>
-                      <td colSpan={2}>{ele?.units}</td>
-                      <td colSpan={2}>{ele?.method_of_check}</td>
+                      <td className={classes.tabeleBody} colSpan={6}>
+                        {ele?.characteristics}
+                      </td>
+                      <td className={classes.tabeleBody} colSpan={2}>
+                        {ele?.specification}
+                      </td>
+                      <td className={classes.tabeleBody} colSpan={2}>
+                        {ele?.units}
+                      </td>
+                      <td className={classes.tabeleBody} colSpan={2}>
+                        {ele?.method_of_check}
+                      </td>
 
                       {ele?.observation.map((inputs, inputIndex) => (
                         <td key={inputIndex}>
