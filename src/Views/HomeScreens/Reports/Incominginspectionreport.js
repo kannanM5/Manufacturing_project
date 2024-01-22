@@ -47,48 +47,6 @@ export default function Emptypage({ viewReportData }) {
   const [isShowModal, setIshowModal] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  // child tab close parent tab is refresh
-  useEffect(() => {
-    if (!viewReportData) {
-      const handleClose = () => {
-        window.opener.postMessage("childTabClosed", "*");
-      };
-      window.addEventListener("beforeunload", handleClose);
-      return () => {
-        window.removeEventListener("beforeunload", handleClose);
-      };
-    }
-  }, []);
-
-  //view report set data
-  useEffect(() => {
-    if (!reportData) {
-      setReportData(viewReportData);
-    }
-  }, [viewReportData]);
-
-  // url crypto js get value
-  useEffect(() => {
-    if (!viewReportData) {
-      const urlParams = new URLSearchParams(location.search);
-      const encryptedData = urlParams.get("data");
-      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
-      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
-      const decryptedData = JSON.parse(decryptedText);
-      setUrlValues(decryptedData);
-    }
-  }, [location.search]);
-  // when api call is edit/add
-  useEffect(() => {
-    if (urlValues) {
-      if (urlValues?.buttonStatus === "Edit") {
-        handleEditReport();
-      } else {
-        handleGetProductsList();
-      }
-    }
-  }, [urlValues]);
-
   const {
     values,
     handleChange,
@@ -140,6 +98,71 @@ export default function Emptypage({ viewReportData }) {
       }
     },
   });
+
+  // child tab close parent tab is refresh
+  useEffect(() => {
+    if (!viewReportData) {
+      const handleClose = () => {
+        window.opener.postMessage("childTabClosed", "*");
+      };
+      window.addEventListener("beforeunload", handleClose);
+      return () => {
+        window.removeEventListener("beforeunload", handleClose);
+      };
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   if (!isShowModal) {
+  //     const beforeUnloadHandler = (event) => {
+  //       event.preventDefault();
+  //       event.returnValue = true;
+  //     };
+
+  //     if (
+  //       values.supplier_name === "" ||
+  //       values.invoice_no === "" ||
+  //       values.quantity === "" ||
+  //       values.approved_by === "" ||
+  //       values.checked_by === "" ||
+  //       values.datas === ""
+  //     ) {
+  //       window.addEventListener("beforeunload", beforeUnloadHandler);
+  //     } else {
+  //       window.removeEventListener("beforeunload", beforeUnloadHandler);
+  //     }
+  //   }
+  // }, [values, isShowModal]);
+
+  //view report set data
+  useEffect(() => {
+    if (!reportData) {
+      setReportData(viewReportData);
+    }
+  }, [viewReportData]);
+
+  // url crypto js get value
+  useEffect(() => {
+    if (!viewReportData) {
+      const urlParams = new URLSearchParams(location.search);
+      const encryptedData = urlParams.get("data");
+      const decryptedBytes = CryptoJS.AES.decrypt(encryptedData, "data");
+      const decryptedText = decryptedBytes.toString(CryptoJS.enc.Utf8);
+      const decryptedData = JSON.parse(decryptedText);
+      setUrlValues(decryptedData);
+    }
+  }, [location.search]);
+
+  // when api call is edit/add
+  useEffect(() => {
+    if (urlValues) {
+      if (urlValues?.buttonStatus === "Edit") {
+        handleEditReport();
+      } else {
+        handleGetProductsList();
+      }
+    }
+  }, [urlValues]);
 
   const tableHeadData = [
     {
@@ -332,6 +355,9 @@ export default function Emptypage({ viewReportData }) {
       .then((res) => {
         if (res?.data?.status === 1) {
           setIshowModal(true);
+          // timeOutFunction();
+          // toast.success(res?.data?.msg);
+          // CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -394,6 +420,9 @@ export default function Emptypage({ viewReportData }) {
       .then((res) => {
         if (res?.data?.status === 1) {
           setIshowModal(true);
+          // timeOutFunction();
+          // toast.success(res?.data?.msg);
+          // CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -482,7 +511,7 @@ export default function Emptypage({ viewReportData }) {
           }
           onPositiveButtonPressed={() => {
             CloseTab();
-            setIshowModal(false);
+            // setIshowModal(false);
           }}
         />
       </GlobalModal>

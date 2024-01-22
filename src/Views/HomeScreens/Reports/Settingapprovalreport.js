@@ -100,6 +100,7 @@ function SettingInspectionReport({ viewReportData }) {
       }
     },
   });
+
   // child tab close parent tab is refresh
   useEffect(() => {
     if (!viewReportData) {
