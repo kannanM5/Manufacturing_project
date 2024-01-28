@@ -139,7 +139,7 @@ function Export() {
             downloadLink.href = linkSource;
             downloadLink.click();
             // window.opener(downloadUrl);
-            handleUnLinkDownloadExportReport(response?.data?.filename);
+            // handleUnLinkDownloadExportReport(response?.data?.filename);
           }
         } else if (response?.data?.status === 0) {
           toast.error(response?.data?.msg);

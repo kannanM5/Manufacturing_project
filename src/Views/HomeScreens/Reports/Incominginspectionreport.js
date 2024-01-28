@@ -112,27 +112,27 @@ export default function Emptypage({ viewReportData }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   if (!isShowModal) {
-  //     const beforeUnloadHandler = (event) => {
-  //       event.preventDefault();
-  //       event.returnValue = true;
-  //     };
+  useEffect(() => {
+    if (!isShowModal) {
+      const beforeUnloadHandler = (event) => {
+        event.preventDefault();
+        event.returnValue = true;
+      };
 
-  //     if (
-  //       values.supplier_name === "" ||
-  //       values.invoice_no === "" ||
-  //       values.quantity === "" ||
-  //       values.approved_by === "" ||
-  //       values.checked_by === "" ||
-  //       values.datas === ""
-  //     ) {
-  //       window.addEventListener("beforeunload", beforeUnloadHandler);
-  //     } else {
-  //       window.removeEventListener("beforeunload", beforeUnloadHandler);
-  //     }
-  //   }
-  // }, [values, isShowModal]);
+      if (
+        values.supplier_name === "" ||
+        values.invoice_no === "" ||
+        values.quantity === "" ||
+        values.approved_by === "" ||
+        values.checked_by === "" ||
+        values.datas === ""
+      ) {
+        window.addEventListener("beforeunload", beforeUnloadHandler);
+      } else {
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
+      }
+    }
+  }, [values, isShowModal]);
 
   //view report set data
   useEffect(() => {
