@@ -35,8 +35,8 @@ function AddInspectionCriteria({
   } = useFormik({
     initialValues: {
       id: editData?.id,
-      part_no: getValue?.part_no ? getValue?.part_no : "",
-      process: getValue?.process ? getValue?.process : "",
+      part_no: editData?.part_no ? editData?.part_no : "",
+      process: editData?.process ? editData?.process : "",
       characteristics: editData?.characteristics || "",
       specification: editData?.specification || "",
       units: editData?.units || "",

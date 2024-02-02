@@ -39,8 +39,14 @@ function Dashboard() {
         </div>
 
         <div className={classes.DashboardContent}>
-          <p className={classes.title}>Click to add</p>
-          <p style={{ fontSize: "var(--textSm)", textAlign: "center" }}>
+          {/* <p className={classes.title}>Click to add</p> */}
+          <p
+            style={{
+              fontSize: "20px",
+              textAlign: "center",
+              color: "var(--btnClr)",
+            }}
+          >
             <i>
               " Quality means doing it right when
               <br />

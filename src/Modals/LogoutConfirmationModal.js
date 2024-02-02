@@ -12,6 +12,7 @@ function LogoutConfirmationModal({
   negativeButtonText = "Cancel",
   cancelBtn = true,
   secondaryMsg,
+  BtnTrue = true,
 }) {
   return (
     <>
@@ -37,25 +38,29 @@ function LogoutConfirmationModal({
             {secondaryMsg}
           </p>
         )}
-        <div className={classes.confirm_Btns}>
-          {cancelBtn && (
-            <CustomButton
-              customButtonStyle={{
-                padding: "10px 20px",
-                backgroundColor: "var(--tableHeadBg)",
-              }}
-              onButtonPress={onNegativeButtonPressed}
-              title={negativeButtonText}
-            />
-          )}
-          <CustomButton
-            customButtonStyle={{
-              padding: "10px 20px",
-            }}
-            onButtonPress={onPositiveButtonPressed}
-            title={positiveButtonText}
-          />
-        </div>
+        {BtnTrue && (
+          <>
+            <div className={classes.confirm_Btns}>
+              {cancelBtn && (
+                <CustomButton
+                  customButtonStyle={{
+                    padding: "10px 20px",
+                    backgroundColor: "var(--tableHeadBg)",
+                  }}
+                  onButtonPress={onNegativeButtonPressed}
+                  title={negativeButtonText}
+                />
+              )}
+              <CustomButton
+                customButtonStyle={{
+                  padding: "10px 20px",
+                }}
+                onButtonPress={onPositiveButtonPressed}
+                title={positiveButtonText}
+              />
+            </div>
+          </>
+        )}
       </div>
     </>
   );

@@ -79,7 +79,7 @@ function ListOfProducts() {
         }}
       >
         <AddProducts
-          listApiCall={handleGetProductsList}
+          listApiCall={() => handleGetProductsList(page + 1, 10)}
           editData={isShowModal?.data}
           modalClose={() => {
             setIsShowModal((prev) => {

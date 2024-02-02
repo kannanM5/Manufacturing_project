@@ -98,3 +98,14 @@ export const exportReportService = (data) => {
 export const unlinkExcelTableReport = (data) => {
   return axios.post(`unlinkfile`, data);
 };
+
+//list of process
+export const listOfProcess = (data) => {
+  return axios.post(`processlist`, data);
+};
+
+// update process
+
+export const updateProcess = (data) => {
+  return axios.post(`processupdate`, data);
+};

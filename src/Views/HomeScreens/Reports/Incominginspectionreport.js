@@ -373,6 +373,7 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
+  console.log(isShowModal, "UPDATE");
 
   const handleAddIncomingReport = (data) => {
     setloader(true);
@@ -422,7 +423,7 @@ export default function Emptypage({ viewReportData }) {
           setIshowModal(true);
           // timeOutFunction();
           // toast.success(res?.data?.msg);
-          // CloseTab();
+          CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -497,7 +498,7 @@ export default function Emptypage({ viewReportData }) {
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
-          cancelBtn={false}
+          BtnTrue={false}
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0

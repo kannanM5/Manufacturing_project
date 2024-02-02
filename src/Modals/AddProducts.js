@@ -14,9 +14,9 @@ const validationSchema = Yup.object({
 });
 
 function AddProducts({
-  onClose,
   heading,
   getValue,
+  onClose,
   modalClose,
   listApiCall,
   editData,
