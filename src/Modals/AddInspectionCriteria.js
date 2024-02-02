@@ -19,7 +19,7 @@ const validationSchema = Yup.object({
 });
 
 function AddInspectionCriteria({
-  getValue,
+  editStatus,
   modalClose,
   listApiCall,
   editData,
@@ -44,7 +44,7 @@ function AddInspectionCriteria({
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      if (editData) {
+      if (editStatus) {
         handleUpdateInspectionCriteria(values);
       } else {
         handleAddInspectionCriteria(values);
@@ -60,7 +60,9 @@ function AddInspectionCriteria({
   useEffect(() => {
     focusRef.current.focus();
   }, []);
+
   const handleAddInspectionCriteria = (data) => {
+    console.log(data, "datatat");
     setloader(true);
     let formData = new FormData();
     formData.append("token", token);
@@ -71,6 +73,8 @@ function AddInspectionCriteria({
     formData.append("specification", data?.specification);
     formData.append("units", data?.units);
     formData.append("method_of_check", data?.method_of_check);
+
+    console.log(formData, "formdata");
     addInspectionCriteriaService(formData)
       .then((response) => {
         if (response?.data?.status === 1) {
@@ -126,6 +130,7 @@ function AddInspectionCriteria({
         setloader(false);
       });
   };
+  console.log(editStatus, "VALUEEE");
 
   return (
     <div>
@@ -259,7 +264,7 @@ function AddInspectionCriteria({
           <div className="col-lg-2 col-md-3 col-4 mb-2">
             <CustomButton
               onButtonPress={handleSubmit}
-              title={editData ? "Update" : "Submit"}
+              title={editStatus ? "Update" : "Submit"}
             />
           </div>
           <div className="col-lg-2 col-md-3 col-4 mb-2">

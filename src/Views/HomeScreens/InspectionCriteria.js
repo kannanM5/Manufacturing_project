@@ -36,7 +36,7 @@ function InspectionCriteria() {
   const [isShowModal, setIsShowModal] = useState({
     status: false,
     data: null,
-    viewStatus: false,
+    editStatus: false,
   });
 
   const {
@@ -64,7 +64,7 @@ function InspectionCriteria() {
     }),
     onSubmit: () => {
       console.log(tableListStatus, "tableeeeeeee");
-      if (tableListStatus) {
+      if (tableListStatus && !actionStatus) {
         handleGetProcess(1, values);
       } else {
         if (actionStatus) {
@@ -73,7 +73,8 @@ function InspectionCriteria() {
               return {
                 ...prev,
                 status: true,
-                data: null,
+                data: values,
+                editStatus: false,
               };
             });
           } else {
@@ -85,12 +86,14 @@ function InspectionCriteria() {
       }
     },
   });
+  console.log(isShowModal?.editStatus, "VALUE");
 
   useEffect(() => {
     if (tableListStatus) {
       handleGetProcess();
       setPage(0);
       resetForm();
+      setactionStatus(false);
     }
   }, [tableListStatus]);
 
@@ -187,6 +190,7 @@ function InspectionCriteria() {
                           ...prev,
                           data: products,
                           status: true,
+                          editStatus: true,
                         };
                       });
                     }}
@@ -298,7 +302,9 @@ function InspectionCriteria() {
 
       <div>
         <GlobalModal
-          title={`${isShowModal?.data ? "Edit" : "Add"} Insepction Criteria`}
+          title={`${
+            isShowModal?.editStatus ? "Edit" : "Add"
+          } Insepction Criteria`}
           isOpen={isShowModal.status}
           onCancel={() => {
             setIsShowModal((prev) => {
@@ -311,8 +317,8 @@ function InspectionCriteria() {
         >
           <AddInspectionCriteria
             listApiCall={() => handleListCriteriaService(page + 1, values)}
-            getValue={values}
             editData={isShowModal?.data}
+            editStatus={isShowModal?.editStatus}
             modalClose={() => {
               setIsShowModal((prev) => {
                 return {
@@ -425,6 +431,7 @@ function InspectionCriteria() {
           </div>
         </div>
       </div>
+
       {tableListStatus
         ? processList?.totalPage > 1 && (
             <CustomPagination

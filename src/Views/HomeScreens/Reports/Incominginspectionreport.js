@@ -112,27 +112,27 @@ export default function Emptypage({ viewReportData }) {
     }
   }, []);
 
-  useEffect(() => {
-    if (!isShowModal) {
-      const beforeUnloadHandler = (event) => {
-        event.preventDefault();
-        event.returnValue = true;
-      };
+  // useEffect(() => {
+  //   if (!isShowModal) {
+  //     const beforeUnloadHandler = (event) => {
+  //       event.preventDefault();
+  //       event.returnValue = true;
+  //     };
 
-      if (
-        values.supplier_name === "" ||
-        values.invoice_no === "" ||
-        values.quantity === "" ||
-        values.approved_by === "" ||
-        values.checked_by === "" ||
-        values.datas === ""
-      ) {
-        window.addEventListener("beforeunload", beforeUnloadHandler);
-      } else {
-        window.removeEventListener("beforeunload", beforeUnloadHandler);
-      }
-    }
-  }, [values, isShowModal]);
+  //     if (
+  //       values.supplier_name === "" ||
+  //       values.invoice_no === "" ||
+  //       values.quantity === "" ||
+  //       values.approved_by === "" ||
+  //       values.checked_by === "" ||
+  //       values.datas === ""
+  //     ) {
+  //       window.addEventListener("beforeunload", beforeUnloadHandler);
+  //     } else {
+  //       window.removeEventListener("beforeunload", beforeUnloadHandler);
+  //     }
+  //   }
+  // }, [values, isShowModal]);
 
   //view report set data
   useEffect(() => {
@@ -373,7 +373,6 @@ export default function Emptypage({ viewReportData }) {
         setloader(false);
       });
   };
-  console.log(isShowModal, "UPDATE");
 
   const handleAddIncomingReport = (data) => {
     setloader(true);
@@ -423,7 +422,7 @@ export default function Emptypage({ viewReportData }) {
           setIshowModal(true);
           // timeOutFunction();
           // toast.success(res?.data?.msg);
-          CloseTab();
+          // CloseTab();
         } else if (res?.data?.status === 0) {
           if (typeof res?.data?.msg === "object") {
             getInvalidMsg(res?.data?.msg);
@@ -498,7 +497,7 @@ export default function Emptypage({ viewReportData }) {
         onCancel={() => setIshowModal(false)}
       >
         <LogoutConfirmationModal
-          BtnTrue={false}
+          cancelBtn={false}
           positiveButtonText="Ok"
           msg={`Data ${
             urlValues?.buttonStatus === "Add" && saveStatus === 0
@@ -512,7 +511,7 @@ export default function Emptypage({ viewReportData }) {
           }
           onPositiveButtonPressed={() => {
             CloseTab();
-            // setIshowModal(false);
+            setIshowModal(false);
           }}
         />
       </GlobalModal>
